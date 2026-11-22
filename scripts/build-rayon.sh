@@ -9,5 +9,9 @@ RUSTFLAGS="-C target-feature=+atomics,+bulk-memory,+simd128,+nontrapping-fptoint
   --manifest-path crates/bench-rayon/Cargo.toml --target-dir target/bench-rayon
 wasm-bindgen --target web --out-dir packages/immersive-map/src/wasm/bench_rayon target/bench-rayon/wasm32-unknown-unknown/release/bench_rayon.wasm
 # The helper imports its package as '../../..', which assumes a wasm-pack
-# package.json. Point it at the generated module itself.
-sed -i '' "s#import('../../..')#import('../../../bench_rayon.js')#" packages/immersive-map/src/wasm/bench_rayon/snippets/*/src/workerHelpers.js
+# package.json. Point it at the generated module itself. `-i.orig` and
+# the backup removed, as BSD and GNU sed both take it.
+for helper in packages/immersive-map/src/wasm/bench_rayon/snippets/*/src/workerHelpers.js; do
+  sed -i.orig "s#import('../../..')#import('../../../bench_rayon.js')#" "$helper"
+  rm -f "$helper.orig"
+done
