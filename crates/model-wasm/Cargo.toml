@@ -1,0 +1,16 @@
+[package]
+name = "model-wasm"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+description = "The Wasm module of the model tile worker: the model archive's directories and the decode of its tiles."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+pmtiles.workspace = true
+wasm-bindgen.workspace = true
+js-sys.workspace = true
+model-tile = { path = "../model-tile" }
+map-style = { path = "../map-style" }

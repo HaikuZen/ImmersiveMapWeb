@@ -1,0 +1,8 @@
+/target
+node_modules
+dist
+/packages/immersive-map/src/wasm
+.DS_Store
+/fixtures
+/test-results
+/playwright-report

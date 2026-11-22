@@ -1,0 +1,13 @@
+[package]
+name = "layer-wasm"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+description = "The Wasm entry of the layers' worker: GeoJSON parse and mesh build (crates/layer-mesh)."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+layer-mesh = { path = "../layer-mesh" }

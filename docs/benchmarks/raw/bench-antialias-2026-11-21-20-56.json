@@ -1,0 +1,84 @@
+[
+  {
+    "title": "B16: GPU ms per frame, lower Manhattan z15, 1200x860 CSS px",
+    "columns": [
+      "antialiasing",
+      "GPU median ms",
+      "GPU p95 ms",
+      "frames"
+    ],
+    "rows": [
+      [
+        "none",
+        6.23628,
+        6.339071,
+        300
+      ],
+      [
+        "msaa4x",
+        7.228182,
+        7.407637,
+        300
+      ],
+      [
+        "fxaa",
+        6.319361,
+        6.436651,
+        300
+      ],
+      [
+        "msaa4x+fxaa",
+        7.288847,
+        7.411637,
+        300
+      ]
+    ],
+    "raw": [
+      {
+        "variant": "none",
+        "gpu": {
+          "median": 6.23628,
+          "p95": 6.339071,
+          "mean": 6.107256816666669,
+          "min": 3.161243,
+          "n": 300
+        }
+      },
+      {
+        "variant": "msaa4x",
+        "gpu": {
+          "median": 7.228182,
+          "p95": 7.407637,
+          "mean": 7.150766163333336,
+          "min": 3.543238,
+          "n": 300
+        }
+      },
+      {
+        "variant": "fxaa",
+        "gpu": {
+          "median": 6.319361,
+          "p95": 6.436651,
+          "mean": 6.077646219999994,
+          "min": 3.047828,
+          "n": 300
+        }
+      },
+      {
+        "variant": "msaa4x+fxaa",
+        "gpu": {
+          "median": 7.288847,
+          "p95": 7.411637,
+          "mean": 6.533677320000002,
+          "min": 3.434447,
+          "n": 300
+        }
+      }
+    ],
+    "environment": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "crossOriginIsolated": true,
+      "cores": 8
+    }
+  }
+]

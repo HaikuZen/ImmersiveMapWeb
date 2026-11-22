@@ -1,0 +1,52 @@
+[
+  {
+    "title": "B17: parse 131 fixture tiles with 7 threads",
+    "columns": [
+      "path",
+      "set ms (median)",
+      "p95",
+      "tiles per second"
+    ],
+    "rows": [
+      [
+        "7 workers, a Wasm instance each",
+        337.070000000298,
+        345.47999999672174,
+        388.6433085112415
+      ],
+      [
+        "one shared-memory instance, rayon pool of 7",
+        8128.390000000596,
+        8227.910000003874,
+        16.116352684847847
+      ]
+    ],
+    "raw": {
+      "poolTimes": [
+        332.1550000011921,
+        345.47999999672174,
+        333.45499999821186,
+        309.3500000014901,
+        341.0300000011921,
+        329.64000000059605,
+        345.42000000178814,
+        337.070000000298
+      ],
+      "rayonTimes": [
+        8063.369999997318,
+        7894.445000000298,
+        8144.609999999404,
+        8227.910000003874,
+        8205.045000001788,
+        8096.609999999404,
+        8128.390000000596,
+        8075.679999999702
+      ]
+    },
+    "environment": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "crossOriginIsolated": true,
+      "cores": 8
+    }
+  }
+]

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="data:," />
+    <title>ImmersiveMap Web: draw-call benchmark</title>
+    <style>
+      body { margin: 24px; font: 14px/1.5 system-ui; background: #15171c; color: #eee; }
+      canvas { width: 320px; height: 200px; border-radius: 8px; margin-right: 12px; }
+      table { border-collapse: collapse; margin-top: 16px; }
+      td, th { padding: 6px 14px; border-bottom: 1px solid #333; text-align: right; font-variant-numeric: tabular-nums; }
+      th:first-child, td:first-child { text-align: left; }
+    </style>
+  </head>
+  <body>
+    <h2>Draw-call benchmark: CPU time to record and submit one frame</h2>
+    <p>Each draw is one quad with its own dynamic uniform offset. Median of the frames, in ms.</p>
+    <canvas id="ts" width="640" height="400"></canvas><canvas id="wgpu" width="640" height="400"></canvas>
+    <p id="status">running…</p>
+    <table id="results"><tr><th>draws</th><th>TypeScript → WebGPU</th><th>TS render bundle</th><th>Rust → wgpu → WebGPU</th></tr></table>
+    <script type="module" src="./src/bench.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,130 @@
+{
+  "source": {
+    "set": "maki",
+    "tag": "v8.0.1",
+    "commit": "9fa4d9df8ba25ce84190ecfb237a14d807e7dfbc",
+    "license": "CC0-1.0"
+  },
+  "pixelSize": 640,
+  "cellSize": 128,
+  "cellPadding": 16,
+  "cellsPerSide": 5,
+  "iconInset": 0.16,
+  "icons": [
+    {
+      "icon": "restaurant",
+      "index": 0,
+      "maki": "restaurant"
+    },
+    {
+      "icon": "cafe",
+      "index": 1,
+      "maki": "cafe"
+    },
+    {
+      "icon": "bar",
+      "index": 2,
+      "maki": "bar"
+    },
+    {
+      "icon": "park",
+      "index": 3,
+      "maki": "park"
+    },
+    {
+      "icon": "museum",
+      "index": 4,
+      "maki": "museum"
+    },
+    {
+      "icon": "hospital",
+      "index": 5,
+      "maki": "hospital"
+    },
+    {
+      "icon": "school",
+      "index": 6,
+      "maki": "college"
+    },
+    {
+      "icon": "airport",
+      "index": 7,
+      "maki": "airport"
+    },
+    {
+      "icon": "stadium",
+      "index": 8,
+      "maki": "stadium"
+    },
+    {
+      "icon": "hotel",
+      "index": 9,
+      "maki": "lodging"
+    },
+    {
+      "icon": "shopping",
+      "index": 10,
+      "maki": "shop"
+    },
+    {
+      "icon": "gasStation",
+      "index": 11,
+      "maki": "fuel"
+    },
+    {
+      "icon": "pharmacy",
+      "index": 12,
+      "maki": "pharmacy"
+    },
+    {
+      "icon": "viewpoint",
+      "index": 13,
+      "maki": "viewpoint"
+    },
+    {
+      "icon": "train",
+      "index": 14,
+      "maki": "rail-light"
+    },
+    {
+      "icon": "transit",
+      "index": 15,
+      "maki": "bus"
+    },
+    {
+      "icon": "parking",
+      "index": 16,
+      "maki": "parking"
+    },
+    {
+      "icon": "bank",
+      "index": 17,
+      "maki": "bank"
+    },
+    {
+      "icon": "theatre",
+      "index": 18,
+      "maki": "theatre"
+    },
+    {
+      "icon": "toilets",
+      "index": 19,
+      "maki": "toilet"
+    },
+    {
+      "icon": "civic",
+      "index": 20,
+      "maki": "town-hall"
+    },
+    {
+      "icon": "worship",
+      "index": 21,
+      "maki": "place-of-worship"
+    },
+    {
+      "icon": "marker",
+      "index": 22,
+      "maki": null
+    }
+  ]
+}

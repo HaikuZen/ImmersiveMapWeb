@@ -1,0 +1,13 @@
+[package]
+name = "frame-wasm"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+description = "The per-frame logic the main thread runs in Wasm (docs/benchmarks/B04-*.md): the tile placement planner, the label collisions and the pin collision layout."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+js-sys.workspace = true

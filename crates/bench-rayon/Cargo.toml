@@ -1,0 +1,23 @@
+[package]
+name = "bench-rayon"
+edition = "2024"
+license = "MIT"
+version = "0.1.0"
+description = "B17 only: the tile parser over a rayon pool in one shared-memory Wasm instance (wasm-bindgen-rayon), built with nightly."
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "=0.2.130"
+js-sys = "0.3"
+rayon = "1.10"
+wasm-bindgen-rayon = "1.3"
+tile-parse = { path = "../tile-parse" }
+map-style = { path = "../map-style" }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"

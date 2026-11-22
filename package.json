@@ -1,0 +1,34 @@
+{
+  "name": "immersive-map-web",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build:wasm": "./scripts/build-wasm.sh",
+    "build:poi-atlas": "node scripts/build-poi-atlas.mjs",
+    "dev": "npm run build:wasm && npm run dev -w playground",
+    "typecheck": "tsc -p packages/immersive-map && tsc -p apps/playground && tsc -p docs/guide && node scripts/check-guide.mjs",
+    "test:rust": "cargo test --workspace",
+    "fixtures": "node scripts/fetch-fixtures.mjs && cargo run -q -p fixture-archive",
+    "test": "vitest run",
+    "lint:rust": "cargo clippy --workspace --all-targets -- -D warnings && cargo clippy --target wasm32-unknown-unknown -p worker-wasm -p frame-wasm -p bench-wgpu -p bench-wasm -p layer-wasm -p model-wasm -- -D warnings",
+    "smoke": "playwright test",
+    "check": "npm run typecheck && npm run check:shaders && npm run lint:rust && npm run test:rust && npm run test",
+    "check:shaders": "node scripts/check-shaders.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@types/earcut": "^3.0.0",
+    "@types/node": "^26.6.6",
+    "@webgpu/types": "^0.1.74",
+    "earcut": "^3.2.4",
+    "fake-indexeddb": "^6.2.8",
+    "playwright-core": "^1.65.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^4.1.12"
+  }
+}

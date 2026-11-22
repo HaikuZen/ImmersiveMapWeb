@@ -1,0 +1,1203 @@
+[
+  {
+    "title": "B18b: GPU ms per frame of a layer's lines",
+    "columns": [
+      "surface",
+      "segments",
+      "width pt",
+      "variant",
+      "GPU median ms",
+      "GPU p95 ms",
+      "line buffers MB"
+    ],
+    "rows": [
+      [
+        "any",
+        0,
+        0,
+        "empty pass",
+        0.437244,
+        0.483035,
+        "0"
+      ],
+      [
+        "flat",
+        1000,
+        2,
+        "instance per segment",
+        0.483367,
+        0.52395,
+        "0.024"
+      ],
+      [
+        "flat",
+        1000,
+        2,
+        "triangulated ribbon",
+        0.484076,
+        0.529783,
+        "0.336"
+      ],
+      [
+        "flat",
+        1000,
+        2,
+        "pulled from storage",
+        0.494284,
+        0.55345,
+        "0.024"
+      ],
+      [
+        "flat",
+        1000,
+        8,
+        "instance per segment",
+        0.495659,
+        0.52795,
+        "0.024"
+      ],
+      [
+        "flat",
+        1000,
+        8,
+        "triangulated ribbon",
+        0.486701,
+        0.541492,
+        "0.336"
+      ],
+      [
+        "flat",
+        1000,
+        8,
+        "pulled from storage",
+        0.518117,
+        0.548284,
+        "0.024"
+      ],
+      [
+        "sphere",
+        1000,
+        2,
+        "instance per segment",
+        0.468118,
+        0.545075,
+        "0.024"
+      ],
+      [
+        "sphere",
+        1000,
+        2,
+        "triangulated ribbon",
+        0.442993,
+        0.632615,
+        "0.336"
+      ],
+      [
+        "sphere",
+        1000,
+        2,
+        "pulled from storage",
+        0.525284,
+        0.593325,
+        "0.024"
+      ],
+      [
+        "sphere",
+        1000,
+        8,
+        "instance per segment",
+        0.483367,
+        0.520158,
+        "0.024"
+      ],
+      [
+        "sphere",
+        1000,
+        8,
+        "triangulated ribbon",
+        0.482076,
+        0.523533,
+        "0.336"
+      ],
+      [
+        "sphere",
+        1000,
+        8,
+        "pulled from storage",
+        0.535909,
+        0.817696,
+        "0.024"
+      ],
+      [
+        "flat",
+        10000,
+        2,
+        "instance per segment",
+        0.64274,
+        1.339604,
+        "0.240"
+      ],
+      [
+        "flat",
+        10000,
+        2,
+        "triangulated ribbon",
+        0.602158,
+        1.201814,
+        "3.360"
+      ],
+      [
+        "flat",
+        10000,
+        2,
+        "pulled from storage",
+        0.921945,
+        1.451353,
+        "0.240"
+      ],
+      [
+        "flat",
+        10000,
+        8,
+        "instance per segment",
+        0.661656,
+        1.343272,
+        "0.240"
+      ],
+      [
+        "flat",
+        10000,
+        8,
+        "triangulated ribbon",
+        0.409703,
+        0.898486,
+        "3.360"
+      ],
+      [
+        "flat",
+        10000,
+        8,
+        "pulled from storage",
+        0.93307,
+        1.921471,
+        "0.240"
+      ],
+      [
+        "sphere",
+        10000,
+        2,
+        "instance per segment",
+        0.805405,
+        2.206758,
+        "0.240"
+      ],
+      [
+        "sphere",
+        10000,
+        2,
+        "triangulated ribbon",
+        0.63399,
+        1.541559,
+        "3.360"
+      ],
+      [
+        "sphere",
+        10000,
+        2,
+        "pulled from storage",
+        1.27969,
+        2.797582,
+        "0.240"
+      ],
+      [
+        "sphere",
+        10000,
+        8,
+        "instance per segment",
+        0.82582,
+        2.16705,
+        "0.240"
+      ],
+      [
+        "sphere",
+        10000,
+        8,
+        "triangulated ribbon",
+        0.65449,
+        1.979261,
+        "3.360"
+      ],
+      [
+        "sphere",
+        10000,
+        8,
+        "pulled from storage",
+        1.305439,
+        3.041246,
+        "0.240"
+      ],
+      [
+        "flat",
+        100000,
+        2,
+        "instance per segment",
+        2.866414,
+        4.65297,
+        "2.400"
+      ],
+      [
+        "flat",
+        100000,
+        2,
+        "triangulated ribbon",
+        2.990995,
+        4.649346,
+        "33.600"
+      ],
+      [
+        "flat",
+        100000,
+        2,
+        "pulled from storage",
+        5.205671,
+        5.275419,
+        "2.400"
+      ],
+      [
+        "flat",
+        100000,
+        8,
+        "instance per segment",
+        2.893205,
+        3.027912,
+        "2.400"
+      ],
+      [
+        "flat",
+        100000,
+        8,
+        "triangulated ribbon",
+        2.965205,
+        3.036204,
+        "33.600"
+      ],
+      [
+        "flat",
+        100000,
+        8,
+        "pulled from storage",
+        5.032339,
+        6.459319,
+        "2.400"
+      ],
+      [
+        "sphere",
+        100000,
+        2,
+        "instance per segment",
+        3.722526,
+        3.917108,
+        "2.400"
+      ],
+      [
+        "sphere",
+        100000,
+        2,
+        "triangulated ribbon",
+        3.46003,
+        3.547363,
+        "33.600"
+      ],
+      [
+        "sphere",
+        100000,
+        2,
+        "pulled from storage",
+        8.272873,
+        8.361997,
+        "2.400"
+      ],
+      [
+        "sphere",
+        100000,
+        8,
+        "instance per segment",
+        3.697152,
+        3.881816,
+        "2.400"
+      ],
+      [
+        "sphere",
+        100000,
+        8,
+        "triangulated ribbon",
+        3.444655,
+        3.511071,
+        "33.600"
+      ],
+      [
+        "sphere",
+        100000,
+        8,
+        "pulled from storage",
+        8.25754,
+        8.326915,
+        "2.400"
+      ]
+    ],
+    "raw": [
+      {
+        "kind": "gpu",
+        "surface": "any",
+        "segments": 0,
+        "widthPoints": 0,
+        "variant": "empty pass",
+        "gpu": {
+          "median": 0.437244,
+          "p95": 0.483035,
+          "mean": 0.41242025833333334,
+          "min": 0.165873,
+          "n": 120
+        },
+        "bytes": 0
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 1000,
+        "widthPoints": 2,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.483367,
+          "p95": 0.52395,
+          "mean": 0.45151188333333336,
+          "min": 0.200789,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 1000,
+        "widthPoints": 2,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.484076,
+          "p95": 0.529783,
+          "mean": 0.4745297083333334,
+          "min": 0.212497,
+          "n": 120
+        },
+        "bytes": 336000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 1000,
+        "widthPoints": 2,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 0.494284,
+          "p95": 0.55345,
+          "mean": 0.4363350250000001,
+          "min": 0.224747,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 1000,
+        "widthPoints": 8,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.495659,
+          "p95": 0.52795,
+          "mean": 0.4723761000000001,
+          "min": 0.204372,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 1000,
+        "widthPoints": 8,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.486701,
+          "p95": 0.541492,
+          "mean": 0.47520078333333343,
+          "min": 0.19983,
+          "n": 120
+        },
+        "bytes": 336000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 1000,
+        "widthPoints": 8,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 0.518117,
+          "p95": 0.548284,
+          "mean": 0.5005302250000001,
+          "min": 0.224164,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 1000,
+        "widthPoints": 2,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.468118,
+          "p95": 0.545075,
+          "mean": 0.42599446666666657,
+          "min": 0.211081,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 1000,
+        "widthPoints": 2,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.442993,
+          "p95": 0.632615,
+          "mean": 0.41059969166666666,
+          "min": 0.197954,
+          "n": 120
+        },
+        "bytes": 336000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 1000,
+        "widthPoints": 2,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 0.525284,
+          "p95": 0.593325,
+          "mean": 0.5188587916666665,
+          "min": 0.271538,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 1000,
+        "widthPoints": 8,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.483367,
+          "p95": 0.520158,
+          "mean": 0.43618014999999993,
+          "min": 0.210081,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 1000,
+        "widthPoints": 8,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.482076,
+          "p95": 0.523533,
+          "mean": 0.44964841666666666,
+          "min": 0.208456,
+          "n": 120
+        },
+        "bytes": 336000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 1000,
+        "widthPoints": 8,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 0.535909,
+          "p95": 0.817696,
+          "mean": 0.5248145333333334,
+          "min": 0.253496,
+          "n": 120
+        },
+        "bytes": 24000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 10000,
+        "widthPoints": 2,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.64274,
+          "p95": 1.339604,
+          "mean": 0.6395583249999998,
+          "min": 0.399119,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 10000,
+        "widthPoints": 2,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.602158,
+          "p95": 1.201814,
+          "mean": 0.680036475,
+          "min": 0.409451,
+          "n": 120
+        },
+        "bytes": 3360000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 10000,
+        "widthPoints": 2,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 0.921945,
+          "p95": 1.451353,
+          "mean": 0.9259314416666662,
+          "min": 0.623199,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 10000,
+        "widthPoints": 8,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.661656,
+          "p95": 1.343272,
+          "mean": 0.7221373000000001,
+          "min": 0.420243,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 10000,
+        "widthPoints": 8,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.409703,
+          "p95": 0.898486,
+          "mean": 0.5140126166666665,
+          "min": 0.397703,
+          "n": 120
+        },
+        "bytes": 3360000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 10000,
+        "widthPoints": 8,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 0.93307,
+          "p95": 1.921471,
+          "mean": 1.0452642083333334,
+          "min": 0.64949,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 10000,
+        "widthPoints": 2,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.805405,
+          "p95": 2.206758,
+          "mean": 1.1100649833333334,
+          "min": 0.533159,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 10000,
+        "widthPoints": 2,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.63399,
+          "p95": 1.541559,
+          "mean": 0.8043717499999999,
+          "min": 0.492908,
+          "n": 120
+        },
+        "bytes": 3360000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 10000,
+        "widthPoints": 2,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 1.27969,
+          "p95": 2.797582,
+          "mean": 1.4562121250000004,
+          "min": 0.975485,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 10000,
+        "widthPoints": 8,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 0.82582,
+          "p95": 2.16705,
+          "mean": 1.1680196833333336,
+          "min": 0.524284,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 10000,
+        "widthPoints": 8,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 0.65449,
+          "p95": 1.979261,
+          "mean": 0.8466564666666668,
+          "min": 0.527783,
+          "n": 120
+        },
+        "bytes": 3360000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 10000,
+        "widthPoints": 8,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 1.305439,
+          "p95": 3.041246,
+          "mean": 1.5139695833333333,
+          "min": 1.00036,
+          "n": 120
+        },
+        "bytes": 240000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 100000,
+        "widthPoints": 2,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 2.866414,
+          "p95": 4.65297,
+          "mean": 3.0985359916666644,
+          "min": 2.794499,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 100000,
+        "widthPoints": 2,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 2.990995,
+          "p95": 4.649346,
+          "mean": 3.299506633333332,
+          "min": 2.777874,
+          "n": 120
+        },
+        "bytes": 33600000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 100000,
+        "widthPoints": 2,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 5.205671,
+          "p95": 5.275419,
+          "mean": 5.1610323666666655,
+          "min": 4.932466,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 100000,
+        "widthPoints": 8,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 2.893205,
+          "p95": 3.027912,
+          "mean": 2.9041959583333328,
+          "min": 2.839874,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 100000,
+        "widthPoints": 8,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 2.965205,
+          "p95": 3.036204,
+          "mean": 2.9525636583333346,
+          "min": 2.780291,
+          "n": 120
+        },
+        "bytes": 33600000
+      },
+      {
+        "kind": "gpu",
+        "surface": "flat",
+        "segments": 100000,
+        "widthPoints": 8,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 5.032339,
+          "p95": 6.459319,
+          "mean": 5.2243948666666675,
+          "min": 4.901467,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 100000,
+        "widthPoints": 2,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 3.722526,
+          "p95": 3.917108,
+          "mean": 3.7972466083333334,
+          "min": 3.628444,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 100000,
+        "widthPoints": 2,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 3.46003,
+          "p95": 3.547363,
+          "mean": 3.467121341666667,
+          "min": 3.33449,
+          "n": 120
+        },
+        "bytes": 33600000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 100000,
+        "widthPoints": 2,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 8.272873,
+          "p95": 8.361997,
+          "mean": 8.281406233333335,
+          "min": 8.055043,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 100000,
+        "widthPoints": 8,
+        "variant": "instance per segment",
+        "gpu": {
+          "median": 3.697152,
+          "p95": 3.881816,
+          "mean": 3.7355975166666666,
+          "min": 3.632237,
+          "n": 120
+        },
+        "bytes": 2400000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 100000,
+        "widthPoints": 8,
+        "variant": "triangulated ribbon",
+        "gpu": {
+          "median": 3.444655,
+          "p95": 3.511071,
+          "mean": 3.4529508166666654,
+          "min": 3.335325,
+          "n": 120
+        },
+        "bytes": 33600000
+      },
+      {
+        "kind": "gpu",
+        "surface": "sphere",
+        "segments": 100000,
+        "widthPoints": 8,
+        "variant": "pulled from storage",
+        "gpu": {
+          "median": 8.25754,
+          "p95": 8.326915,
+          "mean": 8.227701899999998,
+          "min": 7.970296,
+          "n": 120
+        },
+        "bytes": 2400000
+      }
+    ],
+    "environment": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "crossOriginIsolated": true,
+      "cores": 8
+    }
+  },
+  {
+    "title": "B18b: an update of a layer's data, ms",
+    "columns": [
+      "segments",
+      "variant",
+      "line buffers MB",
+      "build median",
+      "build p95",
+      "upload median",
+      "upload p95",
+      "total median"
+    ],
+    "rows": [
+      [
+        1000,
+        "instance per segment",
+        "0.024",
+        0.2449999898672104,
+        0.5049999952316284,
+        0.005000010132789612,
+        0.01000000536441803,
+        0.25
+      ],
+      [
+        1000,
+        "triangulated ribbon",
+        "0.336",
+        0.4599999934434891,
+        0.6099999994039536,
+        0.04999999701976776,
+        0.07500000298023224,
+        0.5099999904632568
+      ],
+      [
+        1000,
+        "pulled from storage",
+        "0.024",
+        0.2449999898672104,
+        0.5049999952316284,
+        0.005000010132789612,
+        0.01000000536441803,
+        0.25
+      ],
+      [
+        10000,
+        "instance per segment",
+        "0.240",
+        1.1649999916553497,
+        1.5150000005960464,
+        0.019999995827674866,
+        0.025000005960464478,
+        1.1849999874830246
+      ],
+      [
+        10000,
+        "triangulated ribbon",
+        "3.360",
+        1.7149999886751175,
+        2.614999994635582,
+        0.9249999970197678,
+        2.355000004172325,
+        2.6399999856948853
+      ],
+      [
+        10000,
+        "pulled from storage",
+        "0.240",
+        1.1649999916553497,
+        1.5150000005960464,
+        0.030000001192092896,
+        0.2149999886751175,
+        1.1949999928474426
+      ],
+      [
+        100000,
+        "instance per segment",
+        "2.400",
+        7.314999997615814,
+        8.20499999821186,
+        0.1849999874830246,
+        0.20000000298023224,
+        7.499999985098839
+      ],
+      [
+        100000,
+        "triangulated ribbon",
+        "33.600",
+        16.34000000357628,
+        18.134999990463257,
+        7.045000001788139,
+        8.640000000596046,
+        23.385000005364418
+      ],
+      [
+        100000,
+        "pulled from storage",
+        "2.400",
+        7.314999997615814,
+        8.20499999821186,
+        0.2849999964237213,
+        0.5850000083446503,
+        7.5999999940395355
+      ]
+    ],
+    "raw": [
+      {
+        "kind": "update",
+        "segments": 1000,
+        "variant": "instance per segment",
+        "bytes": 24000,
+        "build": {
+          "median": 0.2449999898672104,
+          "p95": 0.5049999952316284,
+          "mean": 0.28783333202203115,
+          "min": 0.19999998807907104,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.005000010132789612,
+          "p95": 0.01000000536441803,
+          "mean": 0.0066666667660077415,
+          "min": 0,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 1000,
+        "variant": "triangulated ribbon",
+        "bytes": 336000,
+        "build": {
+          "median": 0.4599999934434891,
+          "p95": 0.6099999994039536,
+          "mean": 0.48133333325386046,
+          "min": 0.39000000059604645,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.04999999701976776,
+          "p95": 0.07500000298023224,
+          "mean": 0.05366666664679845,
+          "min": 0.04499998688697815,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 1000,
+        "variant": "pulled from storage",
+        "bytes": 24000,
+        "build": {
+          "median": 0.2449999898672104,
+          "p95": 0.5049999952316284,
+          "mean": 0.28783333202203115,
+          "min": 0.19999998807907104,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.005000010132789612,
+          "p95": 0.01000000536441803,
+          "mean": 0.007333333293596904,
+          "min": 0.004999995231628418,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 10000,
+        "variant": "instance per segment",
+        "bytes": 240000,
+        "build": {
+          "median": 1.1649999916553497,
+          "p95": 1.5150000005960464,
+          "mean": 1.2175000001986822,
+          "min": 0.9849999994039536,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.019999995827674866,
+          "p95": 0.025000005960464478,
+          "mean": 0.020499999821186065,
+          "min": 0.015000000596046448,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 10000,
+        "variant": "triangulated ribbon",
+        "bytes": 3360000,
+        "build": {
+          "median": 1.7149999886751175,
+          "p95": 2.614999994635582,
+          "mean": 1.8636666670441628,
+          "min": 1.594999998807907,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.9249999970197678,
+          "p95": 2.355000004172325,
+          "mean": 1.006500000258287,
+          "min": 0.32500000298023224,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 10000,
+        "variant": "pulled from storage",
+        "bytes": 240000,
+        "build": {
+          "median": 1.1649999916553497,
+          "p95": 1.5150000005960464,
+          "mean": 1.2175000001986822,
+          "min": 0.9849999994039536,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.030000001192092896,
+          "p95": 0.2149999886751175,
+          "mean": 0.06316666652758916,
+          "min": 0.019999995827674866,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 100000,
+        "variant": "instance per segment",
+        "bytes": 2400000,
+        "build": {
+          "median": 7.314999997615814,
+          "p95": 8.20499999821186,
+          "mean": 7.478499999642372,
+          "min": 7.21000000834465,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.1849999874830246,
+          "p95": 0.20000000298023224,
+          "mean": 0.17683333307504653,
+          "min": 0.10500000417232513,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 100000,
+        "variant": "triangulated ribbon",
+        "bytes": 33600000,
+        "build": {
+          "median": 16.34000000357628,
+          "p95": 18.134999990463257,
+          "mean": 16.56316666652759,
+          "min": 16.015000000596046,
+          "n": 30
+        },
+        "upload": {
+          "median": 7.045000001788139,
+          "p95": 8.640000000596046,
+          "mean": 6.849333332975705,
+          "min": 4.780000001192093,
+          "n": 30
+        }
+      },
+      {
+        "kind": "update",
+        "segments": 100000,
+        "variant": "pulled from storage",
+        "bytes": 2400000,
+        "build": {
+          "median": 7.314999997615814,
+          "p95": 8.20499999821186,
+          "mean": 7.478499999642372,
+          "min": 7.21000000834465,
+          "n": 30
+        },
+        "upload": {
+          "median": 0.2849999964237213,
+          "p95": 0.5850000083446503,
+          "mean": 0.34466666728258133,
+          "min": 0.2199999988079071,
+          "n": 30
+        }
+      }
+    ],
+    "environment": {
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+      "crossOriginIsolated": true,
+      "cores": 8
+    }
+  }
+]
