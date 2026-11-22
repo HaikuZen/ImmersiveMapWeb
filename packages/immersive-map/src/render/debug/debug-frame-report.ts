@@ -78,7 +78,7 @@ export interface DebugLabelCounts {
 }
 
 /**
- * What the map hands the debug entry (`@immersive-map/web/debug`) after
+ * What the map hands the debug entry (`@artembobkin/immersive-map/debug`) after
  * each drawn frame: everything the debug overlay draws over the map and the
  * HUD snapshot's text reads. Filled at the end of `ImmersiveMap.drawFrame`
  * and read synchronously, before the next frame: several fields are the

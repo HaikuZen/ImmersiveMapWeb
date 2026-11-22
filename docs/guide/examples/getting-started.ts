@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/GettingStarted.md.
 
-import { ImmersiveMap, ImmersiveMapSettings } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapSettings } from "@artembobkin/immersive-map";
 
 /** The first map: the whole planet from the hosted tiles, with the built-in style. */
 export async function firstMap(): Promise<ImmersiveMap> {
@@ -56,7 +56,7 @@ export function teardown(map: ImmersiveMap): void {
 
 /** The debug panel, from its own entry, loaded only when asked for. */
 export async function withDebugPanel(container: HTMLElement): Promise<ImmersiveMap> {
-  const { ImmersiveMapDebugPanel } = await import("@immersive-map/web/debug");
+  const { ImmersiveMapDebugPanel } = await import("@artembobkin/immersive-map/debug");
   const map = await ImmersiveMap.create({ container, debugPanel: ImmersiveMapDebugPanel.hud });
   return map;
 }

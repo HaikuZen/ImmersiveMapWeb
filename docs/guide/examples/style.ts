@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/Style.md.
 
-import { ImmersiveMap, ImmersiveMapSettings, LabelLanguage, nightFogSettings, zoomCurve } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapSettings, LabelLanguage, nightFogSettings, zoomCurve } from "@artembobkin/immersive-map";
 
 /** The built-in look with a few colours changed. */
 export async function changedColours(container: HTMLElement): Promise<ImmersiveMap> {

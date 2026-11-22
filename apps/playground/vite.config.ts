@@ -1,6 +1,6 @@
 import { createReadStream, createWriteStream, existsSync, mkdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { defineConfig, type Connect, type Plugin } from "vite";
+import { defaultClientConditions, defineConfig, type Connect, type Plugin } from "vite";
 
 const root = resolve(import.meta.dirname, "../..");
 
@@ -72,6 +72,9 @@ export default defineConfig({
     target: "esnext",
     rollupOptions: { input: Object.fromEntries(pages.map((p) => [p, resolve(import.meta.dirname, `${p}.html`)])) },
   },
+  // The library's TypeScript source, not its built dist: the package exports
+  // it under this condition for its own repository.
+  resolve: { conditions: ["immersive-map-source", ...defaultClientConditions] },
   worker: { format: "es" },
   server: { port: 5173, headers: isolation, fs: { allow: [root] } },
   preview: { port: 4173, headers: isolation },

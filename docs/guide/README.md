@@ -1,6 +1,6 @@
 # The guide
 
-The guide of `@immersive-map/web`, the browser port of the [ImmersiveMap](https://github.com/artembobkin/ImmersiveMap) Swift engine. Each page has the topic of a page of the Swift engine's `Documentation/`, with the examples on the TypeScript API, and says where the browser differs.
+The guide of `@artembobkin/immersive-map`, the browser port of the [ImmersiveMap](https://github.com/artembobkin/ImmersiveMap) Swift engine. Each page has the topic of a page of the Swift engine's `Documentation/`, with the examples on the TypeScript API, and says where the browser differs.
 
 1. [Getting started](GettingStarted.md): what the map needs, the first map, the options and the settings.
 2. [Setting up the tile source](TileSource.md): the PMTiles archive, your own archive, maps without the hosted tiles, the disk cache.

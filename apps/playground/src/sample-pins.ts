@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-import { type ImmersiveMap, ImmersiveMapPin, ImmersiveMapSelectionController, PinImageFactory, type PinImage } from "@immersive-map/web";
+import { type ImmersiveMap, ImmersiveMapPin, ImmersiveMapSelectionController, PinImageFactory, type PinImage } from "@artembobkin/immersive-map";
 
 /** The playground's `pins=1`: pins near the default view (the centre of Moscow) with pictures drawn locally, so nothing is fetched. */
 const centre = { latitude: 55.752, longitude: 37.6175 };

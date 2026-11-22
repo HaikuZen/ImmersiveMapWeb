@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-import { type ImmersiveMap, ImmersiveMapSceneModel, ImmersiveMapSelectionController } from "@immersive-map/web";
+import { type ImmersiveMap, ImmersiveMapSceneModel, ImmersiveMapSelectionController } from "@artembobkin/immersive-map";
 
 /** The playground's `models=1`: the app's own 3D models near the default view (the centre of Moscow), from the playground's own files, so nothing leaves the machine. */
 const centre = { latitude: 55.752, longitude: 37.6175 };

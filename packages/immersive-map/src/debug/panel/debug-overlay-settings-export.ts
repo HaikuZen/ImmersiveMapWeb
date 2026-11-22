@@ -59,7 +59,7 @@ export const DebugOverlaySettingsExport = {
       `// ${DebugOverlaySettingsExport.isoDate(date)}`,
       ...cameraLines.map((line) => `// ${line}`),
       "",
-      `import { ${imports} } from "@immersive-map/web";`,
+      `import { ${imports} } from "@artembobkin/immersive-map";`,
       "",
       "export const settings = ImmersiveMapSettings.default",
       ...DebugOverlaySettingsExport.modifiers(settings.scene, settings.tiles.groundRelief.surroundings).map((line) => `  ${line}`),

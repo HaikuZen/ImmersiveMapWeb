@@ -6,9 +6,9 @@
  * host and runtime protocols. The engine keeps no panel of its own: it holds
  * what a panel reads and drags (`DebugOverlayControlState`, the trace
  * recorders, the tile loading status) and hands the panel every frame's
- * report (`DebugFrameReport`), so a page that imports `@immersive-map/web`
+ * report (`DebugFrameReport`), so a page that imports `@artembobkin/immersive-map`
  * alone carries nothing of the panel's views. The panel itself is the
- * `@immersive-map/web/debug` entry (`ImmersiveMapDebugPanel.hud`).
+ * `@artembobkin/immersive-map/debug` entry (`ImmersiveMapDebugPanel.hud`).
  */
 
 import type { ImmersiveMapSettings } from "../configuration/immersive-map-settings.ts";
@@ -19,7 +19,7 @@ import { TileLoadingStatusReporter } from "../render/debug/tile-loading-status-r
 import { TileTraceRecorder } from "../render/debug/tile-trace-recorder.ts";
 
 /**
- * A debug panel drawn over the map: the one `@immersive-map/web/debug`
+ * A debug panel drawn over the map: the one `@artembobkin/immersive-map/debug`
  * ships (`ImmersiveMapDebugPanel.hud`), installed with the map's
  * `debugPanel` option or `installDebugPanel`. Opaque to an app.
  */

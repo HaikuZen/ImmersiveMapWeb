@@ -9,7 +9,7 @@
 // main thread's long tasks, and the tiles that landed. Every two seconds the
 // record goes to the dev server (`/__trace`, written to fixtures/trace.json).
 
-import type { ImmersiveMap } from "@immersive-map/web";
+import type { ImmersiveMap } from "@artembobkin/immersive-map";
 
 export function addTraceRecorder(map: ImmersiveMap): void {
   const degrees = 180 / Math.PI;

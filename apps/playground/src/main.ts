@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-import { type FrameEvent, ImmersiveMap, ImmersiveMapPin, ImmersiveMapSceneModel, ImmersiveMapSettings, ImmersiveMapTerrainSource, ImmersiveMapTilesService, type TileLoadedEvent } from "@immersive-map/web";
+import { type FrameEvent, ImmersiveMap, ImmersiveMapPin, ImmersiveMapSceneModel, ImmersiveMapSettings, ImmersiveMapTerrainSource, ImmersiveMapTilesService, type TileLoadedEvent } from "@artembobkin/immersive-map";
 import { addSampleAnnotations } from "./sample-annotations.ts";
 import { addTraceRecorder } from "./trace-recorder.ts";
 import { addSamplePins } from "./sample-pins.ts";
@@ -80,7 +80,7 @@ const map = await ImmersiveMap.create({
   // `cameraControls=1` shows the on-screen camera panel (stage 8).
   cameraControls: params.get("cameraControls") === "1",
   // `debug=1` installs the debug panel (stage 9), from its own entry, loaded only then.
-  ...(params.get("debug") === "1" ? { debugPanel: (await import("@immersive-map/web/debug")).ImmersiveMapDebugPanel.hud } : {}),
+  ...(params.get("debug") === "1" ? { debugPanel: (await import("@artembobkin/immersive-map/debug")).ImmersiveMapDebugPanel.hud } : {}),
 });
 let hudQueued = false;
 const queueHud = () => {

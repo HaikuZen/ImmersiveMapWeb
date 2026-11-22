@@ -1,6 +1,6 @@
 # ImmersiveMap Web
 
-[![License](https://img.shields.io/github/license/artembobkin/ImmersiveMapWeb?style=flat-square)](LICENSE)
+[![npm](https://img.shields.io/npm/v/@artembobkin/immersive-map?style=flat-square)](https://www.npmjs.com/package/@artembobkin/immersive-map) [![License](https://img.shields.io/github/license/artembobkin/ImmersiveMapWeb?style=flat-square)](LICENSE)
 
 ImmersiveMap Web is a **WebGPU map** rendering engine for **web pages**, written in TypeScript with a Rust core compiled to WebAssembly. It is the browser version of [ImmersiveMap](https://github.com/artembobkin/ImmersiveMap), the Swift and Metal engine for Apple platforms.
 
@@ -54,7 +54,7 @@ The same map works with no outside network: serve a `.pmtiles` file from your ow
 ## Quick Start
 
 ```ts
-import { ImmersiveMap } from "@immersive-map/web";
+import { ImmersiveMap } from "@artembobkin/immersive-map";
 
 const map = await ImmersiveMap.create({
   container: document.getElementById("map")!,
@@ -65,22 +65,20 @@ The map fills the container with a canvas, so give the container a size in CSS.
 
 ## Installation
 
-The package is `@immersive-map/web`. It is not on npm yet: for now, use it from this repository, where `apps/playground` is a working Vite app on top of it.
+Add the package from npm:
 
 ```sh
-git clone https://github.com/artembobkin/ImmersiveMapWeb.git
-cd ImmersiveMapWeb
-npm install
-npm run dev                 # builds the WebAssembly modules, then serves the playground on http://localhost:5173
+npm install @artembobkin/immersive-map
 ```
 
-Building the WebAssembly modules needs Rust (see [Development](docs/Development.md)). The package ships its TypeScript source, its WebAssembly modules and its assets, so your bundler compiles it and serves the assets next to your app.
+It ships ES modules with their type declarations, the WebAssembly modules and the assets. Your bundler copies them next to your app with no configuration: Vite and webpack 5 are checked.
 
 ## Requirements
 
 - A browser with WebGPU. There is no WebGL fallback: Chrome and Edge 113+, Chrome for Android 121+, Safari 26+, Firefox 141+ on Windows
 - A secure context (HTTPS or `localhost`)
-- A bundler that compiles TypeScript and module workers, such as Vite
+- A bundler that follows `new URL(…, import.meta.url)` and module workers, such as Vite or webpack 5
+- TypeScript 6+ for the types (or `@webgpu/types` with an older one)
 - No cross-origin isolation: the map needs no COOP or COEP headers
 - WebCodecs for the video export only
 

@@ -9,6 +9,7 @@
   "scripts": {
     "build:wasm": "./scripts/build-wasm.sh",
     "build:poi-atlas": "node scripts/build-poi-atlas.mjs",
+    "build:package": "node scripts/build-package.mjs",
     "dev": "npm run build:wasm && npm run dev -w playground",
     "typecheck": "tsc -p packages/immersive-map && tsc -p apps/playground && tsc -p docs/guide && node scripts/check-guide.mjs",
     "test:rust": "cargo test --workspace",
@@ -16,7 +17,7 @@
     "test": "vitest run",
     "lint:rust": "cargo clippy --workspace --all-targets -- -D warnings && cargo clippy --target wasm32-unknown-unknown -p worker-wasm -p frame-wasm -p bench-wgpu -p bench-wasm -p layer-wasm -p model-wasm -- -D warnings",
     "smoke": "playwright test",
-    "check": "npm run typecheck && npm run check:shaders && npm run lint:rust && npm run test:rust && npm run test",
+    "check": "npm run typecheck && npm run check:shaders && npm run lint:rust && npm run test:rust && npm run test && npm run build:package",
     "check:shaders": "node scripts/check-shaders.mjs"
   },
   "devDependencies": {

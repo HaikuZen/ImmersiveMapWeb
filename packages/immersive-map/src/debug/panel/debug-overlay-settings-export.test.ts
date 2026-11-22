@@ -91,10 +91,10 @@ describe("DebugOverlaySettingsExport", () => {
     expect(line).toContain("pois: zoomCurve(0.7)");
     const without = Export.typeScriptCode(ImmersiveMapSettings.default, new Date(0), []);
     expect(without).not.toContain("labelOpacity");
-    expect(without).toContain('import { ImmersiveMapSettings } from "@immersive-map/web";');
+    expect(without).toContain('import { ImmersiveMapSettings } from "@artembobkin/immersive-map";');
     const withOpacity = Export.typeScriptCode(ImmersiveMapSettings.default, new Date(0), [], opacity);
     expect(withOpacity).toContain(`${line};`);
-    expect(withOpacity).toContain('import { ImmersiveMapSettings, zoomCurve } from "@immersive-map/web";');
+    expect(withOpacity).toContain('import { ImmersiveMapSettings, zoomCurve } from "@artembobkin/immersive-map";');
   });
 
   test("the file's name sorts by when it was taken", () => {

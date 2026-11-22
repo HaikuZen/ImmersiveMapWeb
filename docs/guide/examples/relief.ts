@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/Relief.md.
 
-import { ImmersiveMap, ImmersiveMapSettings, ImmersiveMapTerrainSource } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapSettings, ImmersiveMapTerrainSource } from "@artembobkin/immersive-map";
 
 /** The relief turned on, over Zermatt. */
 export async function reliefOn(container: HTMLElement): Promise<ImmersiveMap> {

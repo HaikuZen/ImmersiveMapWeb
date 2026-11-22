@@ -2,15 +2,15 @@
 // SPDX-License-Identifier: MIT
 
 /**
- * `@immersive-map/web/debug`: the debug panel drawn over the map, kept
- * apart from the engine so a page that imports `@immersive-map/web` alone
+ * `@artembobkin/immersive-map/debug`: the debug panel drawn over the map, kept
+ * apart from the engine so a page that imports `@artembobkin/immersive-map` alone
  * carries nothing of it (the Swift `ImmersiveMapDebug` product). The engine
  * holds what the panel reads and drags and the slot it fills
  * (`ImmersiveMapDebugPanel`), and this entry fills it:
  *
  * ```ts
- * import { ImmersiveMap } from "@immersive-map/web";
- * import { ImmersiveMapDebugPanel } from "@immersive-map/web/debug";
+ * import { ImmersiveMap } from "@artembobkin/immersive-map";
+ * import { ImmersiveMapDebugPanel } from "@artembobkin/immersive-map/debug";
  *
  * const map = await ImmersiveMap.create({ container, debugPanel: ImmersiveMapDebugPanel.hud });
  * ```

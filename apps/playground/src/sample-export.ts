@@ -8,7 +8,7 @@ import {
   ImmersiveMapCameraTourShot,
   type ImmersiveMapVideoExportProgress,
   ImmersiveMapTourVideoRecorder,
-} from "@immersive-map/web";
+} from "@artembobkin/immersive-map";
 
 /** What the last export made, for the smoke test (`window.exportDemo`). */
 interface ExportDemoResult {

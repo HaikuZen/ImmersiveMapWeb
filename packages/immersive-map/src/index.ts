@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-// The public surface of `@immersive-map/web`.
+// The public surface of `@artembobkin/immersive-map`.
 
 export { ImmersiveMap } from "./ui/immersive-map-host.ts";
 export type { ImmersiveMapOptions } from "./ui/immersive-map-host.ts";

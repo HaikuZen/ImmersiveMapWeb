@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/Scene.md.
 
-import { ImmersiveMap, ImmersiveMapSettings } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapSettings } from "@artembobkin/immersive-map";
 
 /** The scene's look, in one settings value. */
 export async function sceneMap(container: HTMLElement): Promise<ImmersiveMap> {

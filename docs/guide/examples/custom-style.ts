@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/CustomStyle.md.
 
-import { ImmersiveMap, ImmersiveMapSettings } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapSettings } from "@artembobkin/immersive-map";
 
 /** A grey look of the app's own, written as changes to the built-in theme. */
 export async function monoStyle(container: HTMLElement): Promise<ImmersiveMap> {

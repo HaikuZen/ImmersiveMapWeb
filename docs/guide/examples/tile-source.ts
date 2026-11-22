@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/TileSource.md.
 
-import { ImmersiveMap, ImmersiveMapByteCount, ImmersiveMapSettings, ImmersiveMapTilesService } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapByteCount, ImmersiveMapSettings, ImmersiveMapTilesService } from "@artembobkin/immersive-map";
 
 /** The hosted archive the map draws by default. */
 export const hostedArchive: string = ImmersiveMapTilesService.tileArchiveURL;

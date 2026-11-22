@@ -15,7 +15,7 @@ import {
   ImmersiveMapCity,
   ImmersiveMapSettings,
   PullCurve,
-} from "@immersive-map/web";
+} from "@artembobkin/immersive-map";
 
 /** The control zones turned off where the app's own controls sit. */
 export const noControlZones: ImmersiveMapSettings = ImmersiveMapSettings.default.cameraControlZones({ pitch: false, zoom: false });

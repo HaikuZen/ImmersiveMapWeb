@@ -46,7 +46,7 @@ import type { FrameEvent, MapView } from "./immersive-map-view.ts";
 export interface ImmersiveMapOptions extends ImmersiveMapRendererAppOptions {
   /**
    * The debug panel drawn over the map (`ImmersiveMapDebugPanel.hud` of
-   * `@immersive-map/web/debug`, the Swift `debugPanel(_:)` modifier): its
+   * `@artembobkin/immersive-map/debug`, the Swift `debugPanel(_:)` modifier): its
    * HUD, its overlays and the settings it drags live. Giving one switches
    * the panel on in the settings (`ImmersiveMapSettings.debugPanel`), and
    * `debugPanel(false)` hides it from then on. None when left out.
@@ -282,7 +282,7 @@ export class ImmersiveMap {
 
   /**
    * Installs a debug panel over the map (`ImmersiveMapDebugPanel.hud` of
-   * `@immersive-map/web/debug`), the first one given kept, and switches it
+   * `@artembobkin/immersive-map/debug`), the first one given kept, and switches it
    * on in the settings: the Swift `debugPanel(_:)` modifier.
    * `setSettings((s) => s.debugPanel(false))` hides it from then on.
    */

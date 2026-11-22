@@ -9,7 +9,7 @@
 // the renderer), settled first, then driven frame after frame.
 // `?only=<variant>` builds one variant and stays, for a screenshot.
 
-import { ImmersiveMap, ImmersiveMapSettings, type FrameEvent } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapSettings, type FrameEvent } from "@artembobkin/immersive-map";
 import { done, fail, publish, stat } from "./harness.ts";
 
 const variants: [string, (s: ImmersiveMapSettings) => ImmersiveMapSettings][] = [

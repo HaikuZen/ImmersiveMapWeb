@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/Attribution.md.
 
-import { ImmersiveMap, ImmersiveMapAttribution, ImmersiveMapSettings } from "@immersive-map/web";
+import { ImmersiveMap, ImmersiveMapAttribution, ImmersiveMapSettings } from "@artembobkin/immersive-map";
 
 /** The credit of the app's own tiles, in place of "© OpenStreetMap". */
 export async function ownCredit(container: HTMLElement): Promise<ImmersiveMap> {

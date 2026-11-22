@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-import type { ImmersiveMap } from "@immersive-map/web";
+import type { ImmersiveMap } from "@artembobkin/immersive-map";
 
 /**
  * The playground's `layers=1`: a sample of the app's own data over central

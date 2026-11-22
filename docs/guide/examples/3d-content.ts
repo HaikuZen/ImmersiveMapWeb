@@ -3,7 +3,7 @@
 
 // The examples of docs/guide/3DContent.md.
 
-import { geoCoordinate, ImmersiveMap, ImmersiveMapSceneModel, ImmersiveMapSceneModelSource, ImmersiveMapSettings, ImmersiveMapTilesService } from "@immersive-map/web";
+import { geoCoordinate, ImmersiveMap, ImmersiveMapSceneModel, ImmersiveMapSceneModelSource, ImmersiveMapSettings, ImmersiveMapTilesService } from "@artembobkin/immersive-map";
 
 /** The hosted archive of building models: off by default, named to show them. */
 export const hostedModels: ImmersiveMapSettings = ImmersiveMapSettings.default.modelArchive(ImmersiveMapTilesService.modelArchiveURL);

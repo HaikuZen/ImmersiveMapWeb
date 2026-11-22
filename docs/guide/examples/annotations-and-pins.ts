@@ -14,7 +14,7 @@ import {
   PinImageFactory,
   PinImageSource,
   PinShape,
-} from "@immersive-map/web";
+} from "@artembobkin/immersive-map";
 
 interface Place {
   readonly id: string;

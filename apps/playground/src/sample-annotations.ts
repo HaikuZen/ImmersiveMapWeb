@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-import { type GeoCoordinate, type ImmersiveMap, geoCoordinate } from "@immersive-map/web";
+import { type GeoCoordinate, type ImmersiveMap, geoCoordinate } from "@artembobkin/immersive-map";
 
 /** A sample annotation of the playground's `annotations=1`: a place and how it shows. */
 interface SamplePlace {

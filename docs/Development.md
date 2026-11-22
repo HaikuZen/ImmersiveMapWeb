@@ -32,6 +32,18 @@ node scripts/probe.mjs http://localhost:4173 <dir>   # headless Chrome: screensh
 
 Needs rustup with the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` of the version pinned in `Cargo.toml`, and binaryen (`wasm-opt`).
 
+## The npm package
+
+```sh
+npm run build:wasm
+npm run build:package       # packages/immersive-map/dist, README.md and LICENSE
+cd packages/immersive-map && npm pack --dry-run
+```
+
+`scripts/build-package.mjs` compiles the library to ES modules with declarations, the layout of `src` kept file for file, turns the shaders' `?raw` imports into modules of their own, copies the runtime WebAssembly modules and checks that every relative import and `new URL` of the output names a file the package ships. `npm pack` and `npm publish` run it on their own (`prepack`). Inside the repository the playground, the tests and the guide read the TypeScript source instead, through the package's `immersive-map-source` export condition.
+
+To publish a new version: raise `version` in `packages/immersive-map/package.json`, then run `npm publish --access public` in `packages/immersive-map` from a terminal of your own: npm confirms the account's two-factor authentication in the browser, which it offers only in an interactive terminal. Add `--tag next` for a preview release.
+
 ## Tests
 
 ```sh

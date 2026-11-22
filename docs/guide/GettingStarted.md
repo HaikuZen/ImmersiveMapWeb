@@ -1,6 +1,6 @@
 # Getting started
 
-`@immersive-map/web` is a map for web pages: a globe that unrolls into a flat map, with buildings, relief, your own data and 3D models. It draws with WebGPU and does its heavy work in WebAssembly workers. This page takes you from adding the package to the first map on screen.
+`@artembobkin/immersive-map` is a map for web pages: a globe that unrolls into a flat map, with buildings, relief, your own data and 3D models. It draws with WebGPU and does its heavy work in WebAssembly workers. This page takes you from adding the package to the first map on screen.
 
 ## What the map needs
 
@@ -11,11 +11,17 @@
 
 ## Adding the package
 
-The package is `@immersive-map/web`. It ships its TypeScript source, its WebAssembly modules and its assets (the font atlases, the globe's overview, the tree model, the pin shapes), so the app's bundler compiles it and serves the assets next to the app. The map loads nothing of its own from a CDN. In this repository the WebAssembly modules are built with `npm run build:wasm`, and `apps/playground` is a working Vite app that uses the package.
+```sh
+npm install @artembobkin/immersive-map
+```
 
-The map starts its tile workers as module workers (`new Worker(new URL(...), { type: "module" })`). With Vite, set `worker: { format: "es" }` in the config, as `apps/playground/vite.config.ts` does.
+The package ships ES modules with their type declarations, its WebAssembly modules and its assets (the font atlases, the globe's overview, the tree model, the pin shapes). The map loads nothing of its own from a CDN: the app's bundler copies the WebAssembly modules and the assets next to the app and serves them from there.
 
-The debug panel is a separate entry, `@immersive-map/web/debug`, so a page that imports `@immersive-map/web` alone carries none of it.
+The code finds its workers, WebAssembly modules and assets the standard way, `new URL("…", import.meta.url)` and `new Worker(new URL("…", import.meta.url), { type: "module" })`, which the current bundlers follow with no configuration. Vite 8 and webpack 5 are checked: a new app with the package and nothing else draws the map in development and in a production build.
+
+The types need TypeScript 6 or later, whose `lib.dom` declares WebGPU. With an older TypeScript, add `@webgpu/types` to the project.
+
+The debug panel is a separate entry, `@artembobkin/immersive-map/debug`, so a page that imports `@artembobkin/immersive-map` alone carries none of it.
 
 ## The first map
 
@@ -98,7 +104,7 @@ Others build the map's GPU side again, with the camera kept where it is and the 
 ## The debug panel
 
 ```ts
-const { ImmersiveMapDebugPanel } = await import("@immersive-map/web/debug");
+const { ImmersiveMapDebugPanel } = await import("@artembobkin/immersive-map/debug");
 const map = await ImmersiveMap.create({ container, debugPanel: ImmersiveMapDebugPanel.hud });
 ```
 

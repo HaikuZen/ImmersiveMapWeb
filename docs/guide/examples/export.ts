@@ -13,7 +13,7 @@ import {
   ImmersiveMapStillCaptureError,
   ImmersiveMapStillRecorder,
   ImmersiveMapTourVideoRecorder,
-} from "@immersive-map/web";
+} from "@artembobkin/immersive-map";
 
 /** A picture with no map on the page. */
 export async function picture(): Promise<Blob> {

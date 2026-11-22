@@ -10,7 +10,7 @@ import {
   ImmersiveMapLayersController,
   ImmersiveMapSelectionController,
   ImmersiveMapSelectionKind,
-} from "@immersive-map/web";
+} from "@artembobkin/immersive-map";
 
 /** The app's data registered once, then drawn by two layers. */
 export async function districtsAndStops(container: HTMLElement, stops: readonly GeoCoordinate[]): Promise<ImmersiveMap> {

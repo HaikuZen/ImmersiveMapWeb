@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 // The debug panel's platform-neutral logic, for the DOM panel of the
-// `@immersive-map/web/debug` entry: the tabs, the texts, the layout
+// `@artembobkin/immersive-map/debug` entry: the tabs, the texts, the layout
 // measures, the settings override and export, and a planner per group of
 // controls with its ranges, axes, titles and edits. Nothing in the main
 // bundle imports it.
