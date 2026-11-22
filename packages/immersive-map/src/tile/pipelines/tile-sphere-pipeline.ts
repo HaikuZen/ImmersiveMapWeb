@@ -23,6 +23,7 @@ import { globeModuleSource } from "../../globe/globe-shader-source.ts";
 import shading from "../shaders/tile-shading.wgsl?raw";
 import sphere from "../shaders/tile-sphere.wgsl?raw";
 import { type FlatTileClass, flatTileDepthStencil, tileBlend, tileVertexLayout, type TilePipelineContext } from "./tile-pipeline.ts";
+import { stageEntry } from "../../render/core/stage-constants.ts";
 
 export type SphereTileClass = "opaqueFills" | "fills" | "ribbons" | "ribbonCores" | "ribbonFeathers";
 
@@ -50,6 +51,8 @@ export class SphereTilePipelines {
   private readonly pipelines = new Map<string, GPURenderPipeline>();
   private readonly layout: GPUPipelineLayout;
   private readonly module: GPUShaderModule;
+  /** The module's source, which says the overrides each entry point uses (`stageEntry`). */
+  private readonly code: string;
   /** The per-draw storage array's layout (group 1), the plane's. */
   readonly drawLayout: GPUBindGroupLayout;
 
@@ -61,7 +64,8 @@ export class SphereTilePipelines {
     const { device } = context;
     this.drawLayout = layouts.drawLayout;
     this.layout = device.createPipelineLayout({ label: "tile sphere", bindGroupLayouts: [layouts.frameLayout, layouts.drawLayout, layouts.stylesLayout] });
-    this.module = device.createShaderModule({ label: "tile sphere", code: globeModuleSource(clipDistances, [shading], sphere) });
+    this.code = globeModuleSource(clipDistances, [shading], sphere);
+    this.module = device.createShaderModule({ label: "tile sphere", code: this.code });
   }
 
   pipeline(tileClass: SphereTileClass, morph: boolean): GPURenderPipeline {
@@ -102,11 +106,10 @@ export class SphereTilePipelines {
     return {
       label: `tile sphere ${tileClass}${morph ? " morph" : ""}`,
       layout: this.layout,
-      vertex: { module: this.module, entryPoint: "tileSphereVertex", constants, buffers: [tileVertexLayout] },
+      vertex: { module: this.module, ...stageEntry(this.code, "tileSphereVertex", constants), buffers: [tileVertexLayout] },
       fragment: {
         module: this.module,
-        entryPoint: "tileSphereFragment",
-        constants,
+        ...stageEntry(this.code, "tileSphereFragment", constants),
         targets: [{ format: colorFormat, ...(blended ? { blend: tileBlend } : {}) }],
       },
       // Every tile triangle is counter-clockwise in render space and the

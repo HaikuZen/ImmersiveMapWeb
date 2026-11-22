@@ -717,7 +717,7 @@ export class ImmersiveMapRenderer {
       this.loop.requestFrame();
     });
     // An export's canvas keeps the export's size: a detached element reports a zero box.
-    if (options.offscreen === undefined) this.resizeObserver.observe(canvas, { box: "device-pixel-content-box" });
+    if (options.offscreen === undefined) observeDrawableSize(this.resizeObserver, canvas);
     // A hidden page parks the loop, and showing it again draws what accumulated.
     document.addEventListener("visibilitychange", () => this.loop.setParked(document.hidden), { signal: this.abort.signal });
     this.loop.setParked(document.hidden);
@@ -1608,6 +1608,20 @@ export function drawableSize(entry: Pick<ResizeObserverEntry, "contentRect" | "d
   const box = entry.devicePixelContentBoxSize?.[0];
   if (box && Math.abs(box.inlineSize - width) <= 2 && Math.abs(box.blockSize - height) <= 2) return [Math.max(1, box.inlineSize), Math.max(1, box.blockSize)];
   return [width, height];
+}
+
+/**
+ * Watches the canvas's size, by its device-pixel content box where the
+ * browser has it. WebKit does not know that box and throws on it: there the
+ * content box is watched, and `drawableSize` takes its CSS size times the
+ * device pixel ratio.
+ */
+export function observeDrawableSize(observer: Pick<ResizeObserver, "observe">, canvas: Element): void {
+  try {
+    observer.observe(canvas, { box: "device-pixel-content-box" });
+  } catch {
+    observer.observe(canvas, { box: "content-box" });
+  }
 }
 
 /** The tile pipelines' context of a device. */

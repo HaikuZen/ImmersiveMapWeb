@@ -25,6 +25,7 @@ import shading from "../shaders/tile-shading.wgsl?raw";
 import { gridVertexLayout } from "../pipelines/placement-pipeline.ts";
 import { flatTileDepthStencil, tileBlend, TILE_VERTEX_STRIDE, type TilePipelineContext } from "../pipelines/tile-pipeline.ts";
 import type { RasterizationSettings } from "../../configuration/tile-settings.ts";
+import { stageEntry } from "../../render/core/stage-constants.ts";
 
 /**
  * The texture format: the colour the engine renders in, unconverted. The
@@ -128,8 +129,10 @@ export class RasterTilePipeline {
 
     const bakeModule = device.createShaderModule({ label: "raster tile bake", code: shading + "\n" + bake });
     const mipModule = device.createShaderModule({ label: "raster tile mip", code: mip });
-    const drawModule = device.createShaderModule({ label: "raster tile", code: [groundFog, shadowLibrary, groundShadowReceiver, relief, draw].join("\n") });
-    const sphereModule = device.createShaderModule({ label: "raster tile sphere", code: globeModuleSource(clipDistances, [], sphereDraw) });
+    const drawCode = [groundFog, shadowLibrary, groundShadowReceiver, relief, draw].join("\n");
+    const sphereCode = globeModuleSource(clipDistances, [], sphereDraw);
+    const drawModule = device.createShaderModule({ label: "raster tile", code: drawCode });
+    const sphereModule = device.createShaderModule({ label: "raster tile sphere", code: sphereCode });
     const constants = { kTileRasterMipLevelBias: settings.mipLevelBias };
     const drawLayout = device.createPipelineLayout({ bindGroupLayouts: [layouts.frameLayout, layouts.drawLayout, textureLayout] });
     // The plane's draw and the relief's share one module, which reads the relief's group.
@@ -138,8 +141,8 @@ export class RasterTilePipeline {
       device.createRenderPipelineAsync({
         label: `raster tile flat${raised ? " relief" : ""}`,
         layout: flatLayout,
-        vertex: { module: drawModule, entryPoint: "tileRasterFlatVertex", constants: { kTileRasterRelief: raised ? 1 : 0 }, buffers: [gridVertexLayout] },
-        fragment: { module: drawModule, entryPoint: "tileRasterFlatFragment", constants: { ...constants, kTileRasterRelief: raised ? 1 : 0 }, targets: [{ format: colorFormat }] },
+        vertex: { module: drawModule, ...stageEntry(drawCode, "tileRasterFlatVertex", { kTileRasterRelief: raised ? 1 : 0 }), buffers: [gridVertexLayout] },
+        fragment: { module: drawModule, ...stageEntry(drawCode, "tileRasterFlatFragment", { ...constants, kTileRasterRelief: raised ? 1 : 0 }), targets: [{ format: colorFormat }] },
         primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" },
         depthStencil: flatTileDepthStencil(depthStencilFormat, "opaqueFills"),
         multisample: { count: sampleCount },
@@ -149,8 +152,8 @@ export class RasterTilePipeline {
       return device.createRenderPipelineAsync({
         label: `raster tile sphere${morph ? " morph" : ""}`,
         layout: drawLayout,
-        vertex: { module: sphereModule, entryPoint: "tileRasterSphereVertex", constants: sphereConstants, buffers: [gridVertexLayout] },
-        fragment: { module: sphereModule, entryPoint: "tileRasterSphereFragment", constants: sphereConstants, targets: [{ format: colorFormat }] },
+        vertex: { module: sphereModule, ...stageEntry(sphereCode, "tileRasterSphereVertex", sphereConstants), buffers: [gridVertexLayout] },
+        fragment: { module: sphereModule, ...stageEntry(sphereCode, "tileRasterSphereFragment", sphereConstants), targets: [{ format: colorFormat }] },
         // The far side of the planet goes to back-face culling, as the
         // vector ground's does. The depth is the ground's first rank.
         primitive: { topology: "triangle-list", frontFace: "ccw", cullMode: "back" },

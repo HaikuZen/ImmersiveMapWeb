@@ -1,4 +1,4 @@
-import { createReadStream, createWriteStream, existsSync, mkdirSync, statSync } from "node:fs";
+import { appendFileSync, createReadStream, createWriteStream, existsSync, mkdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { defaultClientConditions, defineConfig, type Connect, type Plugin } from "vite";
 
@@ -57,6 +57,27 @@ function traceSink(): Plugin {
   };
 }
 
+/** Dev only: `POST /__log` appends the playground's `remotelog=1` records to fixtures/remote-log.jsonl (git-ignored). */
+function remoteLogSink(): Plugin {
+  const middleware: Connect.NextHandleFunction = (request, response, next) => {
+    if (request.url !== "/__log" || request.method !== "POST") return next();
+    mkdirSync(join(root, "fixtures"), { recursive: true });
+    const chunks: Buffer[] = [];
+    request.on("data", (chunk: Buffer) => chunks.push(chunk));
+    request.on("end", () => {
+      appendFileSync(join(root, "fixtures/remote-log.jsonl"), `${Buffer.concat(chunks).toString("utf8").replace(/\n/g, " ")}\n`);
+      response.statusCode = 204;
+      response.end();
+    });
+  };
+  // The preview server too: a phone loads a built page far faster through a tunnel than the dev server's modules.
+  return {
+    name: "remote-log-sink",
+    configureServer: (server) => void server.middlewares.use(middleware),
+    configurePreviewServer: (server) => void server.middlewares.use(middleware),
+  };
+}
+
 // Cross-origin isolation gives performance.now() microsecond resolution for
 // the measurements. The library itself does not need it.
 const isolation = {
@@ -67,7 +88,7 @@ const isolation = {
 const pages = ["index", "bench", "bench-prep", "bench-inflate", "bench-transfer", "bench-storage", "bench-atlas", "bench-encode", "bench-planner", "bench-labels", "bench-pins", "bench-lines", "bench-layer-lines", "bench-terrain", "bench-geojson", "bench-threads", "bench-offscreen", "bench-precision", "bench-antialias", "bench-occlusion", "bench-export", "bench-models"];
 
 export default defineConfig({
-  plugins: [fixtures(), traceSink()],
+  plugins: [fixtures(), traceSink(), remoteLogSink()],
   build: {
     target: "esnext",
     rollupOptions: { input: Object.fromEntries(pages.map((p) => [p, resolve(import.meta.dirname, `${p}.html`)])) },

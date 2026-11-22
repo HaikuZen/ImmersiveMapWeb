@@ -31,6 +31,7 @@ import trees from "../shaders/trees.wgsl?raw";
 import { TileSourceStencilPriority } from "../drawers/depth-rank.ts";
 import { TreeModelContents } from "../trees/tree-model.ts";
 import type { TilePipelineContext } from "./tile-pipeline.ts";
+import { stageEntry } from "../../render/core/stage-constants.ts";
 
 /** The 12-byte extruded vertex (the Swift `ExtrudedVertexIn`). */
 export const EXTRUDED_VERTEX_STRIDE = 12;
@@ -234,7 +235,8 @@ export class StandingPipelines {
   private descriptors(): Record<"building" | "buildingRelief" | "caster" | "casterRelief" | "tree" | "treeShadow", GPURenderPipelineDescriptor> {
     const { device, colorFormat, depthStencilFormat, sampleCount } = this.context;
     const prefix = [shadowLibrary, groundFog, standingFrame].join("\n");
-    const extrudedModule = device.createShaderModule({ label: "tile extruded", code: prefix + "\n" + extruded });
+    const extrudedCode = prefix + "\n" + extruded;
+    const extrudedModule = device.createShaderModule({ label: "tile extruded", code: extrudedCode });
     const treeModule = device.createShaderModule({ label: "trees", code: prefix + "\n" + trees });
     const worldLayout = device.createPipelineLayout({ bindGroupLayouts: [this.standingFrameLayout, this.drawLayout, this.extrudedStylesLayout, this.liftsLayout] });
     const casterLayout = device.createPipelineLayout({ bindGroupLayouts: [this.emptyLayout, this.drawLayout, this.emptyLayout, this.liftsLayout] });
@@ -245,7 +247,7 @@ export class StandingPipelines {
     const building = (relief: boolean): GPURenderPipelineDescriptor => ({
       label: `tile extruded${relief ? " relief" : ""}`,
       layout: worldLayout,
-      vertex: { module: extrudedModule, entryPoint: "tileExtrudedVertex", constants: { kExtrudedRelief: relief ? 1 : 0 }, buffers: [extrudedVertexLayout] },
+      vertex: { module: extrudedModule, ...stageEntry(extrudedCode, "tileExtrudedVertex", { kExtrudedRelief: relief ? 1 : 0 }), buffers: [extrudedVertexLayout] },
       fragment: { module: extrudedModule, entryPoint: "tileExtrudedFragment", targets: [{ format: colorFormat }] },
       primitive: { topology: "triangle-list", frontFace: "cw", cullMode: "back" },
       depthStencil: surfaceMaskDepthStencil(depthStencilFormat),
@@ -256,7 +258,7 @@ export class StandingPipelines {
     const caster = (relief: boolean): GPURenderPipelineDescriptor => ({
       label: `tile extruded caster${relief ? " relief" : ""}`,
       layout: casterLayout,
-      vertex: { module: extrudedModule, entryPoint: "tileExtrudedShadowVertex", constants: { kExtrudedRelief: relief ? 1 : 0 }, buffers: [extrudedCasterVertexLayout] },
+      vertex: { module: extrudedModule, ...stageEntry(extrudedCode, "tileExtrudedShadowVertex", { kExtrudedRelief: relief ? 1 : 0 }), buffers: [extrudedCasterVertexLayout] },
       primitive: { topology: "triangle-list", cullMode: "none" },
       depthStencil: { format: ShadowCascadeAtlas.depthFormat, depthWriteEnabled: true, depthCompare: "less-equal" },
     });

@@ -34,6 +34,7 @@ import type { StandingPipelines } from "../../tile/pipelines/standing-pipelines.
 import type { TilePipelineContext } from "../../tile/pipelines/tile-pipeline.ts";
 import modelTileSource from "../shaders/model-tile.wgsl?raw";
 import sceneModelSource from "../shaders/scene-model.wgsl?raw";
+import { stageEntry } from "../../render/core/stage-constants.ts";
 
 /** The 16-byte vertex of a model tile (`ModelTileContents.vertexStride`). */
 export const MODEL_TILE_VERTEX_STRIDE = 16;
@@ -207,8 +208,10 @@ export class ModelPipelines {
     const { device, colorFormat, depthStencilFormat, sampleCount } = this.context;
     const prefix = [clipDistancesLibrary, shadowLibrary, groundFog, standingFrame].join("\n");
     const variant = (source: string) => clipDistanceVariant(prefix + "\n" + source, this.clipDistances);
-    const tileModule = device.createShaderModule({ label: "model tile", code: variant(modelTileSource) });
-    const sceneModule = device.createShaderModule({ label: "scene model", code: variant(sceneModelSource) });
+    const tileCode = variant(modelTileSource);
+    const sceneCode = variant(sceneModelSource);
+    const tileModule = device.createShaderModule({ label: "model tile", code: tileCode });
+    const sceneModule = device.createShaderModule({ label: "scene model", code: sceneCode });
     const s = this.standing;
     const tileLayout = device.createPipelineLayout({ bindGroupLayouts: [s.standingFrameLayout, s.drawLayout, this.modelTileTextureLayout] });
     const tileCasterLayout = device.createPipelineLayout({ bindGroupLayouts: [s.emptyLayout, s.drawLayout] });
@@ -222,8 +225,8 @@ export class ModelPipelines {
     const modelTile = (clips: boolean): GPURenderPipelineDescriptor => ({
       label: `model tile${clips ? " clipped" : ""}`,
       layout: tileLayout,
-      vertex: { module: tileModule, entryPoint: "modelTileVertex", constants: { kModelTileClipsBelowGround: clips ? 1 : 0 }, buffers: [modelTileVertexLayout] },
-      fragment: { module: tileModule, entryPoint: "modelTileFragment", constants: { kModelTileClipsBelowGround: clips ? 1 : 0 }, targets: [{ format: colorFormat }] },
+      vertex: { module: tileModule, ...stageEntry(tileCode, "modelTileVertex", { kModelTileClipsBelowGround: clips ? 1 : 0 }), buffers: [modelTileVertexLayout] },
+      fragment: { module: tileModule, ...stageEntry(tileCode, "modelTileFragment", { kModelTileClipsBelowGround: clips ? 1 : 0 }), targets: [{ format: colorFormat }] },
       primitive: opaque,
       depthStencil: surfaceMask(depthStencilFormat),
       multisample,
@@ -231,8 +234,8 @@ export class ModelPipelines {
     const sceneModel = (label: string, clips: boolean, depthStencil: GPUDepthStencilState): GPURenderPipelineDescriptor => ({
       label,
       layout: sceneLayout,
-      vertex: { module: sceneModule, entryPoint: "sceneModelVertex", constants: { kSceneModelClipsBelowGround: clips ? 1 : 0 }, buffers: [sceneModelVertexLayout] },
-      fragment: { module: sceneModule, entryPoint: "sceneModelFragment", constants: { kSceneModelClipsBelowGround: clips ? 1 : 0 }, targets: [{ format: colorFormat }] },
+      vertex: { module: sceneModule, ...stageEntry(sceneCode, "sceneModelVertex", { kSceneModelClipsBelowGround: clips ? 1 : 0 }), buffers: [sceneModelVertexLayout] },
+      fragment: { module: sceneModule, ...stageEntry(sceneCode, "sceneModelFragment", { kSceneModelClipsBelowGround: clips ? 1 : 0 }), targets: [{ format: colorFormat }] },
       primitive: opaque,
       depthStencil,
       multisample,

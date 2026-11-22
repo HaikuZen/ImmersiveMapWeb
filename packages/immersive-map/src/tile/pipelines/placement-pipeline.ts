@@ -20,6 +20,7 @@ import placementRelief from "../shaders/placement-relief.wgsl?raw";
 import relief from "../relief/shaders/ground-relief.wgsl?raw";
 import rasterSphere from "../shaders/tile-raster-sphere.wgsl?raw";
 import { TileSourceStencilPriority } from "../drawers/depth-rank.ts";
+import { stageEntry } from "../../render/core/stage-constants.ts";
 
 /** A raster grid's vertex: its tile-local position. */
 export const gridVertexLayout: GPUVertexBufferLayout = {
@@ -88,14 +89,15 @@ export class PlacementPipeline {
       depthStencil,
       multisample,
     });
-    const sphereModule = device.createShaderModule({ label: "placement sphere", code: globeModuleSource(options.clipDistances, [], rasterSphere) });
+    const sphereCode = globeModuleSource(options.clipDistances, [], rasterSphere);
+    const sphereModule = device.createShaderModule({ label: "placement sphere", code: sphereCode });
     const sphere = (morph: boolean): GPURenderPipeline => {
       const constants = { kGlobeMorph: morph ? 1 : 0 };
       return device.createRenderPipeline({
         label: `placement stencil sphere${morph ? " morph" : ""}`,
         layout,
-        vertex: { module: sphereModule, entryPoint: "tileRasterSphereVertex", constants, buffers: [gridVertexLayout] },
-        fragment: { module: sphereModule, entryPoint: "placementSphereFragment", constants, targets },
+        vertex: { module: sphereModule, ...stageEntry(sphereCode, "tileRasterSphereVertex", constants), buffers: [gridVertexLayout] },
+        fragment: { module: sphereModule, ...stageEntry(sphereCode, "placementSphereFragment", constants), targets },
         primitive,
         depthStencil,
         multisample,

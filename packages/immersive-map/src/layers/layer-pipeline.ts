@@ -6,6 +6,7 @@ import { globeModuleSource } from "../globe/globe-shader-source.ts";
 import { GlobeSurfaceDepthRank, TileSourceStencilPriority } from "../tile/drawers/depth-rank.ts";
 import { LayerMeshLayout } from "./cache/layer-mesh-file.ts";
 import layersSource from "./shaders/layers.wgsl?raw";
+import { stageEntry } from "../render/core/stage-constants.ts";
 
 /** The surface the frame draws the layers on, `kLayerSurface` in layers.wgsl. */
 export type LayerSurface = "flat" | "sphere" | "morph";
@@ -153,16 +154,16 @@ export class LayerPipeline {
 
   private async compile(): Promise<Map<string, LayerPipelineStates>> {
     const { device, colorFormat, depthStencilFormat, sampleCount, clipDistances } = this.context;
-    const module = device.createShaderModule({ label: "layers", code: globeModuleSource(clipDistances, [groundFog], layersSource) });
+    const code = globeModuleSource(clipDistances, [groundFog], layersSource);
+    const module = device.createShaderModule({ label: "layers", code });
     const layout = device.createPipelineLayout({ label: "layers", bindGroupLayouts: [this.context.frameLayout, this.context.drawLayout] });
     const stencil: GPUStencilFaceState = { compare: "equal", failOp: "keep", depthFailOp: "keep", passOp: "keep" };
     const make = (surface: LayerSurface, behind: boolean, kind: "fill" | "line" | "point"): Promise<GPURenderPipeline> => {
       const constants = { kLayerSurface: surfaceValue[surface] };
-      const vertex: GPUVertexState = { module, entryPoint: `layer${capitalized(kind)}Vertex`, constants, buffers: kind === "fill" ? fillBuffers : kind === "line" ? lineBuffers : pointBuffers };
+      const vertex: GPUVertexState = { module, ...stageEntry(code, `layer${capitalized(kind)}Vertex`, constants), buffers: kind === "fill" ? fillBuffers : kind === "line" ? lineBuffers : pointBuffers };
       const fragment: GPUFragmentState = {
         module,
-        entryPoint: `layer${capitalized(kind)}Fragment`,
-        constants,
+        ...stageEntry(code, `layer${capitalized(kind)}Fragment`, constants),
         targets: [kind === "line" ? { format: colorFormat } : { format: colorFormat, blend }],
       };
       return device.createRenderPipelineAsync({

@@ -4,6 +4,8 @@
 
 ImmersiveMap Web is a **WebGPU map** rendering engine for **web pages**, written in TypeScript with a Rust core compiled to WebAssembly. It is the browser version of [ImmersiveMap](https://github.com/artembobkin/ImmersiveMap), the Swift and Metal engine for Apple platforms.
 
+**[Live demo](https://artembobkin.github.io/ImmersiveMapWeb/)** (a browser with WebGPU: Chrome, Edge, Safari 26).
+
 <!-- The same views as the Swift engine's README, rendered by this engine in Chrome (scripts/screenshots.mjs). -->
 <p align="center">
   <img src="Assets/readme-globe-europe.avif" width="100%" alt="The globe over Europe: biomes, the road network and the atmosphere">

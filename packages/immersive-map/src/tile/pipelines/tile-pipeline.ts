@@ -41,6 +41,7 @@ import tile from "../shaders/tile.wgsl?raw";
 import relief_ from "../relief/shaders/ground-relief.wgsl?raw";
 import { TileSourceStencilPriority } from "../drawers/depth-rank.ts";
 import { groundReliefBindGroupLayout } from "../relief/frame/ground-relief-gpu.ts";
+import { stageEntry } from "../../render/core/stage-constants.ts";
 
 export type FlatTileClass = "opaqueFills" | "fills" | "lines" | "roadOpaque" | "roadBlended" | "roadEdgeLines";
 
@@ -173,7 +174,8 @@ export class FlatTilePipelines {
 
   private descriptor(tileClass: FlatTileClass, relief: boolean): GPURenderPipelineDescriptor {
     const { device, colorFormat, depthStencilFormat, sampleCount } = this.context;
-    this.module ??= device.createShaderModule({ label: "tile", code: [shading, groundFog, shadowLibrary, groundShadowReceiver, relief_, tile].join("\n") });
+    const code = [shading, groundFog, shadowLibrary, groundShadowReceiver, relief_, tile].join("\n");
+    this.module ??= device.createShaderModule({ label: "tile", code });
     const module = this.module;
     const road = tileClass === "roadOpaque" || tileClass === "roadBlended" || tileClass === "roadEdgeLines";
     const constants: Record<string, number> = {
@@ -187,11 +189,10 @@ export class FlatTilePipelines {
     return {
       label: `tile ${tileClass}${relief ? " relief" : ""}`,
       layout: this.pipelineLayout,
-      vertex: { module, entryPoint: "tileVertex", constants, buffers: [tileVertexLayout] },
+      vertex: { module, ...stageEntry(code, "tileVertex", constants), buffers: [tileVertexLayout] },
       fragment: {
         module,
-        entryPoint: road ? "tileRoadFragment" : "tileFragment",
-        constants,
+        ...stageEntry(code, road ? "tileRoadFragment" : "tileFragment", constants),
         targets: [{ format: colorFormat, ...(blended ? { blend: tileBlend } : {}) }],
       },
       primitive: tileClass === "roadEdgeLines" ? { topology: "line-list" } : { topology: "triangle-list", frontFace: "ccw", cullMode: "back" },

@@ -1,6 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
+import { watchMapRemotely } from "./remote-log.ts";
 import { type FrameEvent, ImmersiveMap, ImmersiveMapPin, ImmersiveMapSceneModel, ImmersiveMapSettings, ImmersiveMapTerrainSource, ImmersiveMapTilesService, type TileLoadedEvent } from "@artembobkin/immersive-map";
 import { addSampleAnnotations } from "./sample-annotations.ts";
 import { addTraceRecorder } from "./trace-recorder.ts";
@@ -120,6 +121,8 @@ if (params.get("export") === "1") addSampleExport(map);
 if (params.get("models") === "1") addSampleSceneModels(map);
 // `trace=1` records the pointer, the frames and the long tasks for a person's own session.
 if (params.get("trace") === "1") addTraceRecorder(map);
+// `remotelog=1` sends the console and the map's state to the dev server, for a phone.
+watchMapRemotely(map);
 // What scripts/screenshots.mjs adds the reference's pins and scene models with.
 Object.assign(window, { ImmersiveMapPin, ImmersiveMapSceneModel, ImmersiveMapSettings });
 // The debug panel stands where the playground's own HUD does.

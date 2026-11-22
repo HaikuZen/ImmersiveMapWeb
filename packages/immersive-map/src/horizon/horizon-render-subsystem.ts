@@ -9,6 +9,7 @@ import { TileSourceStencilPriority } from "../tile/drawers/depth-rank.ts";
 import { HorizonBandMath, type HorizonHaze, HorizonFrameResolver } from "./horizon-frame-resolver.ts";
 import { HorizonUniformLayout, writeHorizonUniform } from "./horizon-uniform.ts";
 import horizonSource from "./shaders/horizon.wgsl?raw";
+import { stageEntry } from "../render/core/stage-constants.ts";
 
 /** The GPU the horizon draws into. */
 export interface HorizonPipelineContext {
@@ -63,8 +64,7 @@ export class HorizonPipeline {
         layout: pipelineLayout,
         vertex: {
           module,
-          entryPoint: "horizonBandVertex",
-          constants,
+          ...stageEntry(horizonSource, "horizonBandVertex", constants),
           buffers: [
             {
               arrayStride: 8,
@@ -75,7 +75,7 @@ export class HorizonPipeline {
             },
           ],
         },
-        fragment: { module, entryPoint: "horizonBandFragment", constants, targets: [{ format: colorFormat, blend: premultipliedOver }] },
+        fragment: { module, ...stageEntry(horizonSource, "horizonBandFragment", constants), targets: [{ format: colorFormat, blend: premultipliedOver }] },
         primitive: { topology: "triangle-list", cullMode: "none" },
         depthStencil: {
           format: depthStencilFormat,
