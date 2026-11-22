@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-// The camera route of docs/GOAL.md section 8, scripted: Moscow, Manhattan and
+// The camera route of the performance check, scripted: Moscow, Manhattan and
 // the Alps, each reached by a jump, waited on until its tiles are in (the time
 // to the first full frame), then flown for a few seconds (turning, tilting,
 // zooming in and out, panning) while every frame's CPU and GPU time is kept.
@@ -123,7 +123,7 @@ if (errors.length) section += `\nОшибки страницы: ${errors.join(";
 const file = join(root, "docs/benchmarks/progress.md");
 if (!existsSync(file)) {
   await mkdir(dirname(file), { recursive: true });
-  await writeFile(file, "# Производительность по этапам\n\nОблёт `scripts/flyover.mjs` (раздел 8 `docs/GOAL.md`): Москва, Манхэттен, Альпы. Регрессия больше 10% без объяснения считается ошибкой.\n");
+  await writeFile(file, "# Производительность по этапам\n\nОблёт `scripts/flyover.mjs` (маршрут камеры задан в самом скрипте): Москва, Манхэттен, Альпы. Регрессия больше 10% без объяснения считается ошибкой.\n");
 }
 await appendFile(file, section);
 console.log(section);

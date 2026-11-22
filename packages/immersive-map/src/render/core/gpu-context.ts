@@ -3,8 +3,8 @@
 
 /**
  * The map's WebGPU device and what it can do. Every optional feature the
- * engine has a use for is asked for when the adapter has it (docs/GOAL.md,
- * section 3), and each one's absence has a fallback inside WebGPU.
+ * engine has a use for is asked for when the adapter has it, and each one's
+ * absence has a fallback inside WebGPU.
  */
 
 export interface GpuCapabilities {

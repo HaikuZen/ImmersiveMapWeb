@@ -25,7 +25,7 @@ const map = await ImmersiveMap.create({
 });
 ```
 
-The map fills the container with a canvas, so give the container a size in CSS. This is the whole planet from the hosted tiles, with the built-in style, the globe at low zooms, buildings with detailed models of the landmarks (see [3D content](3DContent.md)), trees and the attribution badge. Nothing needs a key or an account.
+The map fills the container with a canvas, so give the container a size in CSS. This is the whole planet from the hosted tiles, with the built-in style, the globe at low zooms, buildings, trees and the attribution badge. Nothing needs a key or an account. Detailed models of the landmarks are one setting away (see [3D content](3DContent.md)).
 
 `ImmersiveMap.create` resolves once the GPU and the tile workers are ready. `map.destroy()` tears down the canvas, the workers, the listeners and the GPU resources, for example when the part of the page that holds the map goes away.
 

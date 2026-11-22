@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-// The benchmark harness (docs/GOAL.md, section 4): fixed fixtures, warm-up,
+// The benchmark harness (docs/benchmarks/README.md): fixed fixtures, warm-up,
 // then many iterations, reported as median and p95. A page publishes its
 // result on window.benchResults for scripts/bench.mjs to collect.
 
