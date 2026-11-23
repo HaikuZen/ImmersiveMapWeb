@@ -12,5 +12,4 @@ crate-type = ["cdylib"]
 pmtiles.workspace = true
 wasm-bindgen.workspace = true
 js-sys.workspace = true
-model-tile = { path = "../model-tile" }
-map-style = { path = "../map-style" }
+map-worker.workspace = true

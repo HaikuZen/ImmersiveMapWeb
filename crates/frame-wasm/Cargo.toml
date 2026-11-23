@@ -11,3 +11,4 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 wasm-bindgen.workspace = true
 js-sys.workspace = true
+map-frame = { workspace = true, features = ["js-math"] }

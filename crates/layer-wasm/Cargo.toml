@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen.workspace = true
-layer-mesh = { path = "../layer-mesh" }
+layer-mesh.workspace = true

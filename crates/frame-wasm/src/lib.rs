@@ -5,7 +5,9 @@
 //! found it faster than TypeScript: the tile placement planner
 //! (docs/benchmarks/B04-planner.md), the label collision solve
 //! (docs/benchmarks/B04-labels.md) and the pin collision layout
-//! (docs/benchmarks/B04-pins.md).
+//! (docs/benchmarks/B04-pins.md). The logic is the `map-frame` crate of
+//! ImmersiveMapCore, shared with the other hosts, and this module is its
+//! binding to JavaScript.
 
 pub mod collisions;
 pub mod pins;

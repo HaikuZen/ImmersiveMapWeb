@@ -13,10 +13,9 @@ use std::ops::Range;
 use wasm_bindgen::prelude::*;
 
 mod archive;
-mod tile;
 
 pub use archive::{Archive, Located, LocateKind};
-use tile::{PreparedTile, TextureBytes, TextureMode, prepare};
+use map_worker::model_tile::{PreparedTile, TextureBytes, TextureMode, prepare};
 
 /// A model tile decoded and checked. The blocks stay in the tile's bytes
 /// as they came into Wasm memory until a take method copies each out once.

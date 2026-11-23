@@ -10,11 +10,11 @@ How this repository is laid out and how to build, run and test it.
 
 ## Layout
 
-- `crates/pmtiles`: the PMTiles v3 format (header, directories, Hilbert tile id), pure Rust, no IO.
-- `crates/mvt`: a zero-copy Mapbox Vector Tile decoder.
-- `crates/tile-prep`: an MVT tile in, a GPU-ready vertex and index buffer out (prototype style).
-- `crates/worker-wasm`: the Wasm module a tile worker runs (archive navigation, tile preparation, the terrain tiles' decode).
-- `crates/ground-relief`: the terrain tiles' decoder (Terrarium and Mapbox in WebP or PNG to half-float heights), pure Rust.
+- [ImmersiveMapCore](https://github.com/artembobkin/ImmersiveMapCore): the Rust the engine shares with its other ports, a repository of its own and a git dependency of this one (see "The shared core" below). The PMTiles format, the MVT decoder, the style, the tile parse, the terrain decode, the layers' meshes, the model tile's format, the placement planner, the label and pin collisions.
+- `crates/worker-wasm`: the Wasm module a tile worker runs (archive navigation, tile preparation, the terrain tiles' decode), a binding over the core.
+- `crates/frame-wasm`: the Wasm module of the main thread (the placement planner, the label collisions, the pin layout), a binding over the core.
+- `crates/model-wasm`, `crates/layer-wasm`: the Wasm modules of the model tile worker and of the layers' worker, bindings over the core.
+- `crates/fixture-archive`: builds the local test archive from the downloaded fixtures.
 - `crates/bench-wgpu`: the Rust half of the draw-call benchmark.
 - `packages/immersive-map`: the TypeScript library: the public API, the WebGPU renderer, the worker pool.
 - `apps/playground`: the dev pages: the map (`index.html`) and the benchmark (`bench.html`).
@@ -31,6 +31,27 @@ node scripts/probe.mjs http://localhost:4173 <dir>   # headless Chrome: screensh
 ```
 
 Needs rustup with the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` of the version pinned in `Cargo.toml`, and binaryen (`wasm-opt`).
+
+## The shared core
+
+The crates under `crates/` hold only what is the browser's: the `wasm-bindgen` bindings and the benchmarks. The logic they bind is in [ImmersiveMapCore](https://github.com/artembobkin/ImmersiveMapCore), which `Cargo.toml` names as a git dependency pinned to a commit. Its tests run there (`cargo test --workspace` in a checkout of it), and `npm run test:rust` here runs the bindings' own.
+
+To take a newer core, change the `rev` of every core crate in `Cargo.toml` (and in `crates/bench-rayon/Cargo.toml`) to its commit.
+
+To work on the core and this repository together, check the core out beside this one and add this to the root `Cargo.toml` while you work, without committing it:
+
+```toml
+[patch."https://github.com/artembobkin/ImmersiveMapCore"]
+pmtiles = { path = "../ImmersiveMapCore/crates/pmtiles" }
+tile-prep = { path = "../ImmersiveMapCore/crates/tile-prep" }
+ground-relief = { path = "../ImmersiveMapCore/crates/ground-relief" }
+layer-mesh = { path = "../ImmersiveMapCore/crates/layer-mesh" }
+model-tile = { path = "../ImmersiveMapCore/crates/model-tile" }
+map-frame = { path = "../ImmersiveMapCore/crates/map-frame" }
+map-worker = { path = "../ImmersiveMapCore/crates/map-worker" }
+```
+
+The core's `text-layout` carries a copy of the label atlases' metrics (`atlas.json`, `atlas_thin.json`). When `scripts/encode-atlases.mjs` changes them in `packages/immersive-map/assets`, copy them into the core's `crates/text-layout/assets` as well and raise its `PREPARED_TILE_TEXT_REVISION`.
 
 ## The npm package
 
