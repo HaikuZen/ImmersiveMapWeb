@@ -224,7 +224,11 @@ export const RoadLabelPlacer = {
         for (let offset = 1; offset < count; offset++) {
           if (visible[start + offset] === 0) pathVisible = false;
           const a = (start + offset) * 2;
-          cumulative[offset] = cumulative[offset - 1]! + Math.hypot(points[a]! - points[a - 2]!, points[a + 1]! - points[a - 1]!);
+          // A square root and not Math.hypot, which guards against an overflow
+          // screen pixels cannot reach and costs a third of the placement.
+          const stepX = points[a]! - points[a - 2]!;
+          const stepY = points[a + 1]! - points[a - 1]!;
+          cumulative[offset] = cumulative[offset - 1]! + Math.sqrt(stepX * stepX + stepY * stepY);
         }
       }
       const totalLength = count >= 2 ? cumulative[count - 1]! : 0;
@@ -291,7 +295,7 @@ export const RoadLabelPlacer = {
             const a = start * 2;
             const dx = points[a + 2]! - points[a]!;
             const dy = points[a + 3]! - points[a + 1]!;
-            const length = Math.hypot(dx, dy);
+            const length = Math.sqrt(dx * dx + dy * dy);
             if (length > 0) {
               px = points[a]! + (dx / length) * targetDistance;
               py = points[a + 1]! + (dy / length) * targetDistance;
@@ -302,7 +306,7 @@ export const RoadLabelPlacer = {
             const a = (start + count - 1) * 2;
             const dx = points[a]! - points[a - 2]!;
             const dy = points[a + 1]! - points[a - 1]!;
-            const length = Math.hypot(dx, dy);
+            const length = Math.sqrt(dx * dx + dy * dy);
             if (length > 0) {
               px = points[a]! + (dx / length) * (targetDistance - totalLength);
               py = points[a + 1]! + (dy / length) * (targetDistance - totalLength);
