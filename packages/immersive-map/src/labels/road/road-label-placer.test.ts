@@ -54,7 +54,7 @@ function place(options: PlaceOptions): { placements: GlyphPlacement[]; extrapola
   };
   const output = new RoadLabelPlacement();
   const visible = options.visible ?? options.pathPoints.map(() => true);
-  RoadLabelPlacer.placeProjected(geometry, Float64Array.from(options.pathPoints.flat()), Uint8Array.from(visible.map(Number)), options.pixelsPerPoint ?? 1, new RoadLabelPlacerScratch(), output);
+  RoadLabelPlacer.placeProjected(geometry, Float64Array.from(options.pathPoints.flat()), Uint8Array.from(visible.map(Number)), options.pixelsPerPoint ?? 1, output);
   const placements: GlyphPlacement[] = [];
   const boxHalfSizes: Point[] = [];
   for (let glyph = 0; glyph < glyphCount; glyph++) {

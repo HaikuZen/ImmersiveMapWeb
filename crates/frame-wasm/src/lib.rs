@@ -13,5 +13,6 @@ pub mod collisions;
 pub mod coverage;
 pub mod pins;
 pub mod planner;
+pub mod road_labels;
 
 pub use planner::plan_placements;

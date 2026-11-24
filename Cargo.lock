@@ -275,7 +275,7 @@ dependencies = [
 [[package]]
 name = "ground-relief"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "image-webp",
  "png",
@@ -363,7 +363,7 @@ dependencies = [
 [[package]]
 name = "layer-mesh"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "earcut",
  "serde",
@@ -422,17 +422,33 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d15f86d12da44cd8d4ec3c73984537eb7f4cadcb9776a575a0a8a05ca11005c"
 
 [[package]]
+name = "map-camera"
+version = "0.1.0"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
+dependencies = [
+ "map-geo",
+]
+
+[[package]]
 name = "map-frame"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "js-sys",
+ "map-camera",
+ "map-geo",
+ "map-visibility",
 ]
+
+[[package]]
+name = "map-geo"
+version = "0.1.0"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 
 [[package]]
 name = "map-style"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "mvt",
  "serde",
@@ -441,12 +457,15 @@ dependencies = [
 [[package]]
 name = "map-visibility"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
+dependencies = [
+ "map-geo",
+]
 
 [[package]]
 name = "map-worker"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "map-style",
  "model-tile",
@@ -485,7 +504,7 @@ dependencies = [
 [[package]]
 name = "model-tile"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "astc-decode",
 ]
@@ -503,7 +522,7 @@ dependencies = [
 [[package]]
 name = "mvt"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 
 [[package]]
 name = "naga"
@@ -590,7 +609,7 @@ checksum = "c938015719552d665fd0553b90d96cd7ff58e83e4c061ca99e6bb78865a72752"
 [[package]]
 name = "pmtiles"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 
 [[package]]
 name = "png"
@@ -843,7 +862,7 @@ dependencies = [
 [[package]]
 name = "text-layout"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "map-style",
  "serde",
@@ -882,12 +901,12 @@ dependencies = [
 [[package]]
 name = "tile-flattening"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 
 [[package]]
 name = "tile-parse"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "earcut",
  "map-style",
@@ -900,7 +919,7 @@ dependencies = [
 [[package]]
 name = "tile-prep"
 version = "0.1.0"
-source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=7021397847ba8f2c698975d5c6c575946192140b#7021397847ba8f2c698975d5c6c575946192140b"
+source = "git+https://github.com/artembobkin/ImmersiveMapCore?rev=fe48c5f62ee61e422adf2df805499bd26de11372#fe48c5f62ee61e422adf2df805499bd26de11372"
 dependencies = [
  "earcut",
  "mvt",

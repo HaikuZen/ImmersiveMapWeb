@@ -12,7 +12,7 @@ How this repository is laid out and how to build, run and test it.
 
 - [ImmersiveMapCore](https://github.com/artembobkin/ImmersiveMapCore): the Rust the engine shares with its other ports, a repository of its own and a git dependency of this one (see "The shared core" below). The PMTiles format, the MVT decoder, the style, the tile parse, the terrain decode, the layers' meshes, the model tile's format, the placement planner, the label and pin collisions.
 - `crates/worker-wasm`: the Wasm module a tile worker runs (archive navigation, tile preparation, the terrain tiles' decode), a binding over the core.
-- `crates/frame-wasm`: the Wasm module of the main thread (the tile coverage, the placement planner, the label collisions, the pin layout), a binding over the core.
+- `crates/frame-wasm`: the Wasm module of the main thread (the tile coverage, the placement planner, the placement of road names, the label collisions, the pin layout), a binding over the core.
 - `crates/model-wasm`, `crates/layer-wasm`: the Wasm modules of the model tile worker and of the layers' worker, bindings over the core.
 - `crates/fixture-archive`: builds the local test archive from the downloaded fixtures.
 - `crates/bench-wgpu`: the Rust half of the draw-call benchmark.

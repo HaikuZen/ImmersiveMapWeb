@@ -58,7 +58,7 @@ import { overviewFadeAlpha } from "../common/label-text-style.ts";
 import type { LabelWorkingSetChange } from "../common/label-working-set-change.ts";
 import { RoadLabelCache, type RoadLabelTileRecord } from "../road/road-label-cache.ts";
 import { RoadLabelNearCameraFilter } from "../road/road-label-near-camera-filter.ts";
-import { RoadBoxBuffer, RoadGlyphLayout, RoadLabelPlacer, RoadLabelPlacerScratch } from "../road/road-label-placer.ts";
+import { RoadBoxBuffer, RoadGlyphLayout, RoadLabelPlacer } from "../road/road-label-placer.ts";
 
 /** What the label decisions read of a frame. */
 export interface LabelFrameInput {
@@ -193,7 +193,6 @@ export class BaseLabelPrepare {
   private roadRecordActive: boolean[] = [];
   private readonly roadItems = new LabelCollisionRoadItems();
   private readonly roadBoxes = new RoadBoxBuffer();
-  private readonly roadScratch = new RoadLabelPlacerScratch();
 
   /** The base labels' state for the draw: whether any fade is in flight this frame. */
   baseFadesActive = false;
@@ -515,7 +514,7 @@ export class BaseLabelPrepare {
         const lift = GroundReliefTileLift.make(relief, record.resident.tile, displacements.get(tileKey(record.resident.tile)));
         if (lift !== undefined) lifts = { metres: record.reliefMetres(lift.relief), datumMetres: lift.datumMetres, unitsPerMetre: lift.relief.strength * lift.unitsPerMetre };
       }
-      RoadLabelPlacer.place(record.geometry, origin, m, frame.drawWidth, frame.drawHeight, frame.pixelsPerPoint, maximumDepth, this.roadScratch, record.placement, lifts);
+      RoadLabelPlacer.place(record.geometry, origin, m, frame.drawWidth, frame.drawHeight, frame.pixelsPerPoint, maximumDepth, record.placement, lifts);
     });
   }
 
