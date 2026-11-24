@@ -9,13 +9,21 @@
 // Run: node scripts/check-shaders.mjs (part of `npm run check`).
 
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "packages/immersive-map/src");
-const naga = join(process.env.HOME, ".cargo/bin/naga");
+// The naga CLI: the one NAGA names, else cargo's, else the one on PATH.
+const cargoNaga = join(process.env.HOME ?? "", ".cargo/bin/naga");
+const naga = process.env.NAGA || (existsSync(cargoNaga) ? cargoNaga : "naga");
+try {
+  execFileSync(naga, ["--version"], { stdio: "pipe" });
+} catch {
+  console.error(`No naga at ${naga}. Install the version Cargo.lock names: cargo install naga-cli --version "~30.0" --locked`);
+  process.exit(1);
+}
 const scratch = mkdtempSync(join(tmpdir(), "wgsl-"));
 
 function walk(dir) {

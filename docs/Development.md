@@ -6,7 +6,9 @@ How this repository is laid out and how to build, run and test it.
 
 - Node.js and npm.
 - rustup with the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` of the version pinned in `Cargo.toml`, and binaryen (`wasm-opt`).
-- Chrome, which the smoke tests and the benchmarks drive.
+- Nightly Rust with `rust-src` and the same target, for `crates/bench-rayon` (B17), whose module the type check reads: `rustup toolchain install nightly --component rust-src`, then `rustup target add wasm32-unknown-unknown --toolchain nightly`.
+- `naga-cli` of the `naga` version in `Cargo.lock` (30.0), which validates the shaders: `cargo install naga-cli --version "~30.0" --locked`. `NAGA` names another one.
+- Chrome or Chromium with WebGPU, which the smoke tests and the benchmarks drive: Chrome's usual place on macOS, Google Chrome or Chromium in `/usr/bin` on Linux, or the one `CHROME` names.
 
 ## Layout
 
@@ -69,6 +71,8 @@ To publish a new version: raise `version` in `packages/immersive-map/package.jso
 ## Tests
 
 ```sh
+npm run build:wasm          # the Wasm modules, which the fixtures script and the tests import
+./scripts/build-rayon.sh    # the B17 benchmark's module (nightly), which the type check reads
 npm run fixtures            # download the test tiles and build the local archive (once)
 npm run check               # typecheck, shader validation, clippy, cargo test, Vitest
 npm run smoke               # Playwright in Chrome with WebGPU
