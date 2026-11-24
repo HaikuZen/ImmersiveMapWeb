@@ -10,7 +10,7 @@ import { type Tile, tileFromKey, tileKey, tileParentAt } from "../tile.ts";
  * of a tilted camera and the globe's back side stay resident. The cover is
  * the one z0 tile, the whole world generalized to a single tile: the flat
  * map's horizon backdrop and the sphere's far field draw it
- * (`TileCulling.flatBackdropZoomLevel`, `GlobeTileCoverage.floorZoom`). A
+ * (`TileCulling.flatBackdropZoomLevel`, the sphere's floor zoom). A
  * memory warning still drops it when not currently demanded. It warms up
  * again from disk.
  */

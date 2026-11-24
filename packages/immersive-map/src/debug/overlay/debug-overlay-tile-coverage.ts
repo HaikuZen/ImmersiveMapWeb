@@ -6,7 +6,7 @@ import type { FlatRenderState } from "../../presentation/resolved-presentation-s
 import type { DebugFrameReport } from "../../render/debug/debug-frame-report.ts";
 import type { PlaceTile, ResidentTile } from "../../tile/placement/place-tile.ts";
 import type { Tile } from "../../tile/tile.ts";
-import { CoveragePolygonBuilder } from "../../tile/visibility/coverage-polygon.ts";
+import { coverageFootprint } from "../../wasm/frame_wasm/frame_wasm.js";
 
 /** An axis-aligned rectangle, the `CGRect` of the Swift coverage maps: origin at the minimum corner. */
 export interface DebugRect {
@@ -76,8 +76,10 @@ export const DebugOverlayTileCoverage = {
     const center = report.mapCameraState.centerWorldMercator;
     if (report.renderSurfaceMode !== "flat") return { placements, footprint: [], center, eye: undefined };
     const flat = report.flatRenderState;
-    const polygon = CoveragePolygonBuilder.make(report.projectionView);
-    const footprint = polygon === undefined ? [] : polygon.vertices.map((vertex) => DebugOverlayTileCoverage.mercator(vertex, flat));
+    // The footprint the coverage cut its bands from (`map-visibility`), as x and y pairs.
+    const vertices = report.projectionView === null || report.projectionView === undefined ? [] : coverageFootprint(report.projectionView);
+    const footprint: Vec2[] = [];
+    for (let o = 0; o < vertices.length; o += 2) footprint.push(DebugOverlayTileCoverage.mercator([vertices[o]!, vertices[o + 1]!], flat));
     const eye = DebugOverlayTileCoverage.mercator([report.cameraEye[0], report.cameraEye[1]], flat);
     return { placements, footprint, center, eye };
   },

@@ -12,13 +12,14 @@ version = "0.1.0"
 [workspace.dependencies]
 # The shared engine code (github.com/artembobkin/ImmersiveMapCore), pinned to a
 # commit. docs/Development.md says how to build against a local checkout.
-pmtiles = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
-tile-prep = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
-ground-relief = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
-layer-mesh = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
-model-tile = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
-map-frame = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
-map-worker = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "c356631f9f8a9e1cceff4d6cdcb2d66c49e81321" }
+pmtiles = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+tile-prep = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+ground-relief = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+layer-mesh = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+model-tile = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+map-frame = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+map-worker = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
+map-visibility = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "7021397847ba8f2c698975d5c6c575946192140b" }
 wasm-bindgen = "=0.2.130"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"

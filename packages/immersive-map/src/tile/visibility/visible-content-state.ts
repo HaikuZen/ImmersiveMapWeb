@@ -27,8 +27,8 @@ export interface VisibleContentState {
   /** Moves when the targets or their rasters differ from the last frame's: the working set gates on it. */
   readonly coverageVersion: number;
   /**
-   * The ring rules' bands, nearest first (`FlatRingRuleCoverage` on the
-   * plane, `GlobeTileCoverage` on the sphere): each rule's zoom, last ring
+   * The ring rules' bands, nearest first (the plane's bands and the
+   * sphere's, `TileCulling`): each rule's zoom, last ring
    * and tile count.
    */
   readonly flatRingBands: readonly FlatRingBand[];

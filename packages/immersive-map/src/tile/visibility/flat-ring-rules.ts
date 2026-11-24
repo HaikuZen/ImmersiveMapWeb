@@ -71,8 +71,8 @@ export function flatRingRule(zoomDrop: number, distance: number, options: FlatRi
 
 /**
  * The rules, nearest first. Any number of them. The debug panel edits the
- * list, and both surfaces read it: the plane through `FlatRingRuleCoverage`,
- * the sphere through `GlobeTileCoverage`, which reads every switch of a rule
+ * list, and both surfaces read it: the plane through the coverage's bands,
+ * the sphere through its walk (`TileCulling`), which reads every switch of a rule
  * as the plane does.
  */
 export interface FlatRingRules {
@@ -114,7 +114,7 @@ const defaultRules = frozenRules([
 /**
  * The globe's zooms: the exact tiles with their lines to ring 1, then two
  * levels coarser to ring 3 as geometry, with their labels and without lines.
- * Ground past ring 3 is the pinned world cover (`GlobeTileCoverage`).
+ * Ground past ring 3 is the pinned world cover (`TileCulling`).
  */
 const globeDefaultRules = frozenRules([flatRingRule(0, 1), flatRingRule(2, 3, { drawsLines: false })]);
 

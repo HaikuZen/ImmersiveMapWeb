@@ -51,7 +51,7 @@ interface Fingerprint {
  * state and the tile settings: the target zoom, then the coverage
  * (`TileCulling`). The plane's ring rules are those of the set the frame's
  * zoom falls in. With `reliefHeights` the coverage reaches the tiles the
- * relief lifts into view (`CoveragePolygonBuilder`).
+ * relief lifts into view (the footprint over the relief's slab).
  *
  * The Swift engine's `RenderFrameVisibilityResolver`. The coverage is a pure
  * function of the camera pose, the drawable's size, the presentation and the
