@@ -13,8 +13,8 @@ wasm-bindgen = "=0.2.130"
 js-sys = "0.3"
 rayon = "1.10"
 wasm-bindgen-rayon = "1.3"
-tile-parse = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-map-style = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
+tile-parse = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+map-style = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
 
 [profile.release]
 opt-level = 3

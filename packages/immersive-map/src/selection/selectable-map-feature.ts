@@ -33,7 +33,37 @@ export interface SelectableMapFeature {
   setSelected(isSelected: boolean, selection: ImmersiveMapSelection): void;
   /** Delivers the feature's own tap event for a hit. True when an action of the app took it. */
   deliverTap(hit: SelectionHit, point: ImmersiveMapScreenPoint): boolean;
+  /**
+   * The gesture the feature's objects are picked by now, a single tap for
+   * every feature but one that states another (the tile grid, by its
+   * settings). The handler asks a feature only about its own gesture.
+   * A single tap when left out.
+   */
+  readonly tapKind?: MapTapKind;
+  /**
+   * Whether the feature has anything a gesture of its kind could land on
+   * now. While a feature claims the double tap this way, the double tap is
+   * its own and does not zoom the map. Asked only of a feature whose kind
+   * is not the single tap. False when left out.
+   */
+  readonly claimsItsTapKind?: boolean;
+  /**
+   * Whether a tap the feature took ends the map's selection, as a tap on
+   * the bare map does. For a feature that covers the ground and whose
+   * objects are never the selection themselves (the tile grid): without it
+   * nothing under the grid would be a tap away from a selected object.
+   * False when left out.
+   */
+  readonly clearsSelectionOnTap?: boolean;
 }
+
+/**
+ * The gestures that pick an object on the map, as the gesture controller
+ * tells them apart: a tap or a click of the main button, a double tap or a
+ * double click, and a click of the secondary button or a long press on a
+ * touch screen.
+ */
+export type MapTapKind = "single" | "double" | "secondary";
 
 /** The object a tap landed on. */
 export interface SelectionHit {

@@ -16,7 +16,11 @@ const width = 400;
 const height = 300;
 
 /** A map on a fake surface, a fake clock and fake timers, with the events a browser would dispatch. */
-function makeMap(cameraPosition: ImmersiveMapCameraPosition = ImmersiveMapCameraPosition.make(48.8566, 2.3522, 12)) {
+function makeMap(
+  cameraPosition: ImmersiveMapCameraPosition = ImmersiveMapCameraPosition.make(48.8566, 2.3522, 12),
+  /** The settings the map runs by, and the taps a feature of the map claims. */
+  extra: { readonly settings?: ImmersiveMapSettings; readonly claims?: ReadonlySet<"double" | "secondary"> } = {},
+) {
   let time = 100;
   let timerId = 0;
   const timers = new Map<number, () => void>();
@@ -39,7 +43,7 @@ function makeMap(cameraPosition: ImmersiveMapCameraPosition = ImmersiveMapCamera
   const camera = new ImmersiveMapCameraController();
   const zones = new ControlZones(ImmersiveMapSettings.default.camera.controlZones);
   const runtimes = createImmersiveMapCameraRuntimes({
-    settings: ImmersiveMapSettings.default,
+    settings: extra.settings ?? ImmersiveMapSettings.default,
     initialCameraPosition: cameraPosition,
     cameraController: camera,
     render,
@@ -53,11 +57,14 @@ function makeMap(cameraPosition: ImmersiveMapCameraPosition = ImmersiveMapCamera
     style: { touchAction: "auto" },
   });
   const taps: Vec2[] = [];
+  const claimedTaps: { kind: string; point: Vec2 }[] = [];
   const gestures = new MapGestureController({
     surface,
     host: runtimes,
     controlZones: zones,
     onTap: (point) => taps.push(point),
+    isTapClaimed: (kind) => extra.claims?.has(kind) ?? false,
+    onClaimedTap: (kind, point) => claimedTaps.push({ kind, point }),
     now: () => time,
     timers: fakeTimers,
   });
@@ -80,7 +87,7 @@ function makeMap(cameraPosition: ImmersiveMapCameraPosition = ImmersiveMapCamera
       callback();
     }
   };
-  return { ...runtimes, camera, render, surface, gestures, zones, taps, dispatch, pointer, advance, fireTimers };
+  return { ...runtimes, camera, render, surface, gestures, zones, taps, claimedTaps, dispatch, pointer, advance, fireTimers };
 }
 
 describe("MapGestureController", () => {
@@ -357,6 +364,94 @@ describe("MapGestureController", () => {
     expect(map.cameraAnimationRuntime.isCameraFlightActive).toBe(true);
     map.cameraAnimationRuntime.advanceAnimationsIfNeeded(102);
     expect(map.cameraRuntime.currentCameraState()!.zoom).toBeCloseTo(zoom + 1, 6);
+  });
+
+  test("with the double tap zoom off a tap reports at once and a second one counts", () => {
+    const map = makeMap(undefined, { settings: ImmersiveMapSettings.default.doubleTapZoom(false) });
+    const zoom = map.cameraRuntime.currentCameraState()!.zoom;
+    map.pointer("pointerdown", 1, 100, 100);
+    map.pointer("pointerup", 1, 100, 100);
+    expect(map.taps).toEqual([[100, 100]]);
+    map.advance(0.1);
+    map.pointer("pointerdown", 1, 101, 100);
+    map.pointer("pointerup", 1, 101, 100);
+    expect(map.taps).toEqual([
+      [100, 100],
+      [101, 100],
+    ]);
+    map.fireTimers();
+    expect(map.cameraRuntime.currentCameraState()!.zoom).toBe(zoom);
+    expect(map.cameraAnimationRuntime.isCameraFlightActive).toBe(false);
+  });
+
+  test("a claimed double tap goes to its feature and does not zoom", () => {
+    const map = makeMap(undefined, { claims: new Set(["double"]) });
+    map.pointer("pointerdown", 1, 100, 100);
+    map.pointer("pointerup", 1, 100, 100);
+    map.advance(0.1);
+    map.pointer("pointerdown", 1, 102, 100);
+    map.pointer("pointerup", 1, 102, 100);
+    expect(map.claimedTaps).toEqual([{ kind: "double", point: [102, 100] }]);
+    expect(map.taps).toEqual([]);
+    expect(map.cameraAnimationRuntime.isCameraFlightActive).toBe(false);
+    // A single tap stays a tap, once no second one follows.
+    map.advance(1);
+    map.pointer("pointerdown", 1, 50, 50);
+    map.pointer("pointerup", 1, 50, 50);
+    map.fireTimers();
+    expect(map.taps).toEqual([[50, 50]]);
+  });
+
+  test("a click of the right button is a claimed secondary tap, a drag of it still tilts", () => {
+    const map = makeMap(undefined, { claims: new Set(["secondary"]) });
+    const mouse = { pointerType: "mouse", button: 2 };
+    map.pointer("pointerdown", 1, 100, 100, mouse);
+    map.pointer("pointerup", 1, 100, 100, mouse);
+    expect(map.claimedTaps).toEqual([{ kind: "secondary", point: [100, 100] }]);
+    map.pointer("pointerdown", 1, 100, 100, mouse);
+    map.pointer("pointermove", 1, 100, 160, mouse);
+    expect(map.interactionRuntime.isActive("mapTilt"), "the drag is the tilt's").toBe(true);
+    map.pointer("pointerup", 1, 100, 160, mouse);
+    expect(map.claimedTaps).toHaveLength(1);
+    // Unclaimed, the click is nothing.
+    const plain = makeMap();
+    plain.pointer("pointerdown", 1, 100, 100, mouse);
+    plain.pointer("pointerup", 1, 100, 100, mouse);
+    expect(plain.claimedTaps).toEqual([]);
+  });
+
+  test("a touch held on its place is a claimed secondary tap, a touch that moves is not", () => {
+    const map = makeMap(undefined, { claims: new Set(["secondary"]) });
+    map.pointer("pointerdown", 1, 100, 100);
+    map.advance(0.5);
+    map.fireTimers();
+    expect(map.claimedTaps).toEqual([{ kind: "secondary", point: [100, 100] }]);
+    map.pointer("pointerup", 1, 100, 100);
+    map.fireTimers();
+    expect(map.taps).toEqual([]);
+    map.pointer("pointerdown", 1, 100, 100);
+    map.pointer("pointermove", 1, 100, 140);
+    map.advance(0.5);
+    map.fireTimers();
+    map.pointer("pointerup", 1, 100, 140);
+    expect(map.claimedTaps).toHaveLength(1);
+  });
+
+  test("a mouse press within the tap tolerance is a click, past it a drag", () => {
+    const map = makeMap(undefined, { settings: ImmersiveMapSettings.default.doubleTapZoom(false).tapMovementTolerance(6) });
+    const mouse = { pointerType: "mouse" };
+    const centre = map.cameraRuntime.currentCameraState()!.centerWorldMercator;
+    map.pointer("pointerdown", 1, 100, 100, mouse);
+    map.pointer("pointermove", 1, 105, 100, mouse);
+    map.pointer("pointerup", 1, 105, 100, mouse);
+    expect(map.taps).toEqual([[105, 100]]);
+    expect(map.cameraRuntime.currentCameraState()!.centerWorldMercator).toEqual(centre);
+    map.pointer("pointerdown", 1, 100, 100, mouse);
+    map.pointer("pointermove", 1, 107, 100, mouse);
+    map.pointer("pointermove", 1, 120, 100, mouse);
+    map.pointer("pointerup", 1, 120, 100, mouse);
+    expect(map.taps).toHaveLength(1);
+    expect(map.cameraRuntime.currentCameraState()!.centerWorldMercator).not.toEqual(centre);
   });
 
   test("a drag in the zoom zone zooms instead of panning, for touch only", () => {

@@ -20,6 +20,7 @@ export * from "./presentation-settings.ts";
 export * from "./scene-settings.ts";
 export * from "./settings-application-planner.ts";
 export * from "./terrain-source.ts";
+export * from "./tile-grid-settings.ts";
 export * from "./tile-settings.ts";
 export * from "./tiles-service.ts";
 export * from "./view-settings.ts";

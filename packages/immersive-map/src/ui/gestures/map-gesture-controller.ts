@@ -42,18 +42,29 @@ export interface MapGestureControllerOptions {
    * the background tap.
    */
   readonly onTap?: (point: Vec2, pointerType: string) => void;
+  /**
+   * Whether a feature of the map takes the double tap, or the secondary tap
+   * (the right button's click, a long press on a touch screen), as its own
+   * now: the tile grid, by its settings. Asked before the gesture is treated
+   * as the camera's.
+   */
+  readonly isTapClaimed?: (kind: "double" | "secondary") => boolean;
+  /** A double tap or a secondary tap a feature has claimed, in CSS pixels from the surface's top-left corner. */
+  readonly onClaimedTap?: (kind: "double" | "secondary", point: Vec2) => void;
   /** Seconds on the render loop's clock, `performance.now() / 1000` by default. */
   readonly now?: () => number;
   readonly timers?: GestureTimers;
 }
 
-/** The slop a pointer moves before a drag is recognized, in CSS pixels. */
+/**
+ * The slop a touch moves before a drag is recognized, in CSS pixels. A
+ * mouse's is a setting (`CameraSettings.tapMovementTolerancePoints`).
+ */
 const touchSlop = 8;
-const mouseSlop = 3;
 /** How long the controller waits for a second tap, in seconds, and how far it may land from the first, in CSS pixels. */
 const doubleTapInterval = 0.3;
 const doubleTapDistance = 40;
-/** A press held longer than this is no tap. */
+/** A press held longer than this is no tap. A touch held this long on one place is a long press, the touch screen's secondary tap. */
 const tapMaximumDuration = 0.5;
 /** The window the release velocity is measured over, in seconds. */
 const velocityWindow = 0.1;
@@ -85,6 +96,8 @@ interface TrackedPointer {
   position: Vec2;
   last: Vec2;
   recognized: boolean;
+  /** The press was taken as a long press: its release is no tap. */
+  spent?: boolean;
   /** Recent (time, x, y) samples, for the release velocity. */
   samples: [number, number, number][];
 }
@@ -132,7 +145,12 @@ type SingleMode = "none" | "pan" | "tilt";
  * - wheel: zoom at the cursor, a trackpad pinch (`ctrlKey`) or Safari's
  *   gesture events scaling and rotating;
  * - tap or click: `onTap`, once no second one follows. A double tap or
- *   double click flies one level in toward the point.
+ *   double click flies one level in toward the point, unless the settings
+ *   turn that off (`CameraSettings.isDoubleTapZoomEnabled`), and then a tap
+ *   reports at once.
+ * - a click of the right button, or a long press of a touch: a feature's
+ *   secondary tap, when one claims it (`isTapClaimed`, `onClaimedTap`), as
+ *   it may the double tap.
  * - touch drags starting in an enabled control zone drive the zone.
  *
  * Every gesture cancels the camera animations when it begins and reports
@@ -149,6 +167,8 @@ export class MapGestureController {
   private readonly host: MapGestureHost;
   private readonly controlZones: ControlZones | null;
   private readonly onTap: ((point: Vec2, pointerType: string) => void) | null;
+  private readonly isTapClaimed: (kind: "double" | "secondary") => boolean;
+  private readonly onClaimedTap: ((kind: "double" | "secondary", point: Vec2) => void) | null;
   private readonly now: () => number;
   private readonly timers: GestureTimers;
   private readonly abort = new AbortController();
@@ -160,6 +180,8 @@ export class MapGestureController {
   private singlePointer: number | null = null;
   private twoFinger: TwoFingerState | null = null;
   private pendingTap: { point: Vec2; time: number; type: string; handle: unknown } | null = null;
+  /** The touch that becomes a long press if it stays down on its place. */
+  private longPress: { pointer: number; handle: unknown } | null = null;
   private wheelIdleHandle: unknown = null;
   private pinchWheelIdleHandle: unknown = null;
   private safariGesture: { lastScale: number; lastRotation: number } | null = null;
@@ -170,6 +192,8 @@ export class MapGestureController {
     this.host = options.host;
     this.controlZones = options.controlZones ?? null;
     this.onTap = options.onTap ?? null;
+    this.isTapClaimed = options.isTapClaimed ?? ((): boolean => false);
+    this.onClaimedTap = options.onClaimedTap ?? null;
     this.now = options.now ?? ((): number => performance.now() / 1000);
     this.timers = options.timers ?? {
       setTimeout: (callback, milliseconds) => globalThis.setTimeout(callback, milliseconds),
@@ -207,6 +231,7 @@ export class MapGestureController {
       this.clearTimer(this.pendingTap.handle);
       this.pendingTap = null;
     }
+    this.cancelLongPress();
     for (const pointer of this.pointers.values()) {
       if (pointer.zone !== null && pointer.recognized) {
         pointer.zone.ended();
@@ -277,7 +302,9 @@ export class MapGestureController {
     if (ids.length === 1) {
       this.singlePointer = pointer.id;
       this.singleMode = "none";
+      this.armLongPress(pointer);
     } else if (ids.length === 2 && this.twoFinger === null) {
+      this.cancelLongPress();
       this.endSinglePointerGesture(true);
       this.beginTwoFinger(ids[0]!, ids[1]!, time);
     }
@@ -323,6 +350,9 @@ export class MapGestureController {
       // Already released.
     }
     const time = this.now();
+    if (this.longPress?.pointer === pointer.id) {
+      this.cancelLongPress();
+    }
 
     if (pointer.role === "zone") {
       if (pointer.recognized) {
@@ -356,8 +386,13 @@ export class MapGestureController {
     if (!pointer.recognized) {
       this.singleMode = "none";
       const isPrimary = pointer.type !== "mouse" || pointer.button === 0;
-      if (!cancelled && isPrimary && time - pointer.startTime <= tapMaximumDuration) {
-        this.handleTap(pointer.position, pointer.type, time);
+      if (!cancelled && pointer.spent !== true && time - pointer.startTime <= tapMaximumDuration) {
+        if (isPrimary) {
+          this.handleTap(pointer.position, pointer.type, time);
+        } else if (this.isTapClaimed("secondary")) {
+          // The right button pressed and released on one place: a drag of it tilts, a click picks.
+          this.onClaimedTap?.("secondary", pointer.position);
+        }
       }
       return;
     }
@@ -380,11 +415,15 @@ export class MapGestureController {
 
   private moveSinglePointer(pointer: TrackedPointer): void {
     if (!pointer.recognized) {
-      const slop = pointer.type === "mouse" ? mouseSlop : touchSlop;
+      const slop = pointer.type === "mouse" ? Math.max(this.host.cameraRuntime.currentSettings.camera.tapMovementTolerancePoints, 0) : touchSlop;
+      // A press that has not left its tolerance is still a click. A tolerance of zero drags at the first move.
       if (Math.hypot(pointer.position[0] - pointer.start[0], pointer.position[1] - pointer.start[1]) < slop) {
         return;
       }
       pointer.recognized = true;
+      if (this.longPress?.pointer === pointer.id) {
+        this.cancelLongPress();
+      }
       const tilts = pointer.type === "mouse" && (pointer.button === 2 || pointer.altKey);
       this.singleMode = tilts ? "tilt" : "pan";
       this.setInteractionActive(true, tilts ? "mapTilt" : "mapPan");
@@ -589,10 +628,24 @@ export class MapGestureController {
    * A single tap waits for the double tap to fail: it reports only once no
    * second tap follows within `doubleTapInterval`. A double tap zooms one
    * level in toward the point, the world point under the finger staying put
-   * (see `zoomAnchorFactor`).
+   * (see `zoomAnchorFactor`), unless a feature of the map has claimed the
+   * double tap, which then gets it in place of the zoom. While a double tap
+   * means nothing on the map (the zoom is off in the settings and no
+   * feature claims it), nothing is waited for: every tap reports at once.
    */
   private handleTap(point: Vec2, pointerType: string, time: number): void {
     const pending = this.pendingTap;
+    const claimed = this.isTapClaimed("double");
+    const waitsForDouble = claimed || this.host.cameraRuntime.currentSettings.camera.isDoubleTapZoomEnabled;
+    if (!waitsForDouble) {
+      if (pending !== null) {
+        this.clearTimer(pending.handle);
+        this.pendingTap = null;
+        this.onTap?.(pending.point, pending.type);
+      }
+      this.onTap?.(point, pointerType);
+      return;
+    }
     if (
       pending !== null &&
       time - pending.time <= doubleTapInterval &&
@@ -600,7 +653,11 @@ export class MapGestureController {
     ) {
       this.clearTimer(pending.handle);
       this.pendingTap = null;
-      this.handleDoubleTap(point);
+      if (claimed) {
+        this.onClaimedTap?.("double", point);
+      } else {
+        this.handleDoubleTap(point);
+      }
       return;
     }
     if (pending !== null) {
@@ -615,6 +672,35 @@ export class MapGestureController {
       }
     }, doubleTapInterval * 1000);
     this.pendingTap = { point, time, type: pointerType, handle };
+  }
+
+  /**
+   * A touch that stays down on its place for `tapMaximumDuration` is a long
+   * press, the touch screen's secondary tap: it goes to the feature that
+   * has claimed the secondary tap, while the finger is still down.
+   */
+  private armLongPress(pointer: TrackedPointer): void {
+    this.cancelLongPress();
+    if (pointer.type === "mouse" || !this.isTapClaimed("secondary")) {
+      return;
+    }
+    const handle = this.timers.setTimeout(() => {
+      this.longPress = null;
+      const held = this.pointers.get(pointer.id);
+      if (held === undefined || held.recognized || this.singlePointer !== held.id || !this.isTapClaimed("secondary")) {
+        return;
+      }
+      held.spent = true;
+      this.onClaimedTap?.("secondary", held.position);
+    }, tapMaximumDuration * 1000);
+    this.longPress = { pointer: pointer.id, handle };
+  }
+
+  private cancelLongPress(): void {
+    if (this.longPress !== null) {
+      this.clearTimer(this.longPress.handle);
+      this.longPress = null;
+    }
   }
 
   private handleDoubleTap(point: Vec2): void {

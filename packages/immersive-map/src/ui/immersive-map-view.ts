@@ -72,6 +72,8 @@ export interface FrameEvent {
   readonly pendingSceneModelMeshes: number;
   /** The layers of the app's data the frame drew. */
   readonly drawnAppLayers: number;
+  /** The tiles of the tile grid the frame drew, 0 without a grid. */
+  readonly drawnTileGridTiles: number;
   /** The globe-to-plane transition the frame was drawn at, 0 the globe and 1 the plane. */
   readonly transition: number;
   /**
@@ -96,6 +98,7 @@ export interface FrameEventInputs {
   readonly pendingLayerMeshes?: number;
   readonly pendingSceneModelMeshes?: number;
   readonly drawnAppLayers?: number;
+  readonly drawnTileGridTiles?: number;
 }
 
 export function makeFrameEvent(inputs: FrameEventInputs): FrameEvent {
@@ -111,6 +114,7 @@ export function makeFrameEvent(inputs: FrameEventInputs): FrameEvent {
     pendingLayerMeshes: inputs.pendingLayerMeshes ?? 0,
     pendingSceneModelMeshes: inputs.pendingSceneModelMeshes ?? 0,
     drawnAppLayers: inputs.drawnAppLayers ?? 0,
+    drawnTileGridTiles: inputs.drawnTileGridTiles ?? 0,
     transition: inputs.transition,
     hasPendingWork: inputs.placement.requestedTilesCount > 0 || (inputs.pendingTerrainTiles ?? 0) > 0 || (inputs.pendingLayerMeshes ?? 0) > 0 || (inputs.pendingSceneModelMeshes ?? 0) > 0,
   };

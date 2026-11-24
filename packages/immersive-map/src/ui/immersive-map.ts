@@ -96,6 +96,10 @@ import { ImmersiveMapLayersController } from "../layers/immersive-map-layers-con
 import type { ImmersiveMapLayerTapEvent } from "../layers/immersive-map-layer-tap-event.ts";
 import type { LayerFrame } from "../layers/layer-render-subsystem.ts";
 import { ImmersiveMapLayerRuntime, layerFrameOf } from "./immersive-map-layer-runtime.ts";
+import type { ImmersiveMapTileGridController } from "../tile-grid/immersive-map-tile-grid-controller.ts";
+import { makeTileGridAtlas, type TileGridAtlas, type TileGridAtlasSource } from "../tile-grid/tile-grid-atlas.ts";
+import type { TileGridRenderFrame } from "../tile-grid/tile-grid-render-subsystem.ts";
+import { ImmersiveMapTileGridRuntime, tileGridFrameOf } from "./immersive-map-tile-grid-runtime.ts";
 import { ImmersiveMapPinsController } from "../pins/immersive-map-pins-controller.ts";
 import { loadPinShapeResource, PinsGpu, type PinShapeResource } from "../pins/drawers/pins-gpu.ts";
 import { PinsRenderer } from "../pins/pins-renderer.ts";
@@ -138,6 +142,8 @@ export interface ImmersiveMapOptions {
   readonly selection?: ImmersiveMapSelectionController | null;
   /** The app's layers of its own data, a new controller when left out (`ImmersiveMap.layers`). */
   readonly layers?: ImmersiveMapLayersController;
+  /** The app's handle on the tile grid, which also shows the grid: none when left out (`ImmersiveMap.tileGrid`). */
+  readonly tileGrid?: ImmersiveMapTileGridController | null;
   /** The app's pins controller, a new one when left out (`ImmersiveMap.pins`). */
   readonly pins?: ImmersiveMapPinsController;
   /** The app's 3D models (glTF, GLB or OBJ at coordinates), a new controller when left out (`ImmersiveMap.sceneModels`). */
@@ -225,6 +231,8 @@ const labelAtlasURLs = [new URL("../../assets/atlas.json", import.meta.url).href
 interface LabelAtlasMetrics {
   readonly glyphs: number[];
   readonly emTexels: { readonly bold: number; readonly thin: number };
+  /** The bold atlas's glyphs as the tile grid writes its texts with them. */
+  readonly tileGrid: TileGridAtlas;
 }
 
 async function fetchLabelAtlasMetrics(): Promise<LabelAtlasMetrics> {
@@ -232,10 +240,10 @@ async function fetchLabelAtlasMetrics(): Promise<LabelAtlasMetrics> {
     labelAtlasURLs.map(async (url) => {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`ImmersiveMap could not load its label atlas ${url}: HTTP ${response.status}`);
-      return (await response.json()) as LabelAtlasGlyphs & { readonly atlas: { readonly size: number } };
+      return (await response.json()) as LabelAtlasGlyphs & TileGridAtlasSource;
     }),
   );
-  return { glyphs: labelAtlasGlyphs([bold!, thin!]), emTexels: { bold: bold!.atlas.size, thin: thin!.atlas.size } };
+  return { glyphs: labelAtlasGlyphs([bold!, thin!]), emTexels: { bold: bold!.atlas.size, thin: thin!.atlas.size }, tileGrid: makeTileGridAtlas(bold!) };
 }
 
 const defaultWorkerCount = (): number => Math.max(2, Math.min(8, (navigator.hardwareConcurrency || 4) - 1));
@@ -340,6 +348,9 @@ export class ImmersiveMapRenderer {
   private readonly layerRuntime: ImmersiveMapLayerRuntime;
   /** What the layers read of the frame being drawn. */
   private layerFrame: LayerFrame | undefined;
+  private readonly tileGridRuntime: ImmersiveMapTileGridRuntime;
+  /** What the tile grid reads of the frame being drawn. */
+  private tileGridFrame: TileGridRenderFrame | undefined;
   /** The app's pins (`ImmersiveMapPinsController`): `map.pins.set([...])`. */
   readonly pins: ImmersiveMapPinsController;
   private readonly pinsGpu: PinsGpu;
@@ -420,7 +431,7 @@ export class ImmersiveMapRenderer {
         standingPipelines.prewarm(),
         workers.ready,
       ]);
-      map = new ImmersiveMapRenderer(options, settings, gpu, pipelines, spherePipelines, standingPipelines, rasterPipeline, sampleCount, workers, glyphs, labelGpu, atlasMetrics.emTexels, { gpu: pinsGpu, shape: pinShape });
+      map = new ImmersiveMapRenderer(options, settings, gpu, pipelines, spherePipelines, standingPipelines, rasterPipeline, sampleCount, workers, glyphs, labelGpu, atlasMetrics.emTexels, atlasMetrics.tileGrid, { gpu: pinsGpu, shape: pinShape });
       return map;
     } catch (error) {
       if (map) map.destroy();
@@ -445,6 +456,7 @@ export class ImmersiveMapRenderer {
     private readonly glyphs: readonly number[],
     labelGpu: LabelGpu | undefined,
     private readonly atlasEmTexels: { readonly bold: number; readonly thin: number },
+    tileGridAtlas: TileGridAtlas,
     pinResources: { readonly gpu: PinsGpu; readonly shape: PinShapeResource },
   ) {
     this.currentSettings = settings;
@@ -608,6 +620,20 @@ export class ImmersiveMapRenderer {
         this.labelInput === undefined ? undefined : { ...this.labelInput, buildingRise: this.buildings.riseCoverage, buildingRiseSignature: this.buildings.riseSignature };
       this.engine.register(new ScreenLabelSubsystem(labelGpu, this.labelPrepare, labelInput, () => this.labelDraw));
     }
+    // The tile grid, in the overlay over the map's names and under the
+    // pins. An export's map shows none: the grid is a tool of the screen.
+    this.tileGridRuntime = new ImmersiveMapTileGridRuntime({
+      controller: options.offscreen === undefined ? (options.tileGrid ?? null) : null,
+      pipeline: { device, colorFormat: gpu.colorFormat, clipDistances: gpu.capabilities.clipDistances, cameraBuffer: this.cameraBuffer, globeBuffer: this.globeBuffer },
+      atlas: tileGridAtlas,
+      labelAtlasTexture: () => this.labelGpu?.boldAtlas,
+      settings: () => this.settings.tileGrid,
+      frame: () => this.tileGridFrame,
+      requestFrame: () => {
+        if (!this.destroyed) this.loop.requestFrame("externalStateChanged");
+      },
+    });
+    this.engine.register(this.tileGridRuntime.subsystem);
     this.postProcessing = new PostProcessingSubsystem(device, gpu.colorFormat, () => this.engine.postProcessingInput);
     this.engine.register(this.postProcessing);
     this.frameSetup = {
@@ -619,6 +645,7 @@ export class ImmersiveMapRenderer {
         starfieldEnabled: !settings.scene.space.isTransparent,
         sceneModelsEnabled: false,
         appLayersEnabled: false,
+        tileGridEnabled: false,
       },
       clearColor: { r: 0, g: 0, b: 0, a: 0 },
       sampleCount,
@@ -664,6 +691,8 @@ export class ImmersiveMapRenderer {
       host: this.cameraRuntimes,
       controlZones: this.controlZones,
       onTap: (point) => this.handleMapTap({ x: point[0], y: point[1] }),
+      isTapClaimed: (kind) => this.selectionHandler.isClaimed(kind),
+      onClaimedTap: (kind, point) => this.handleClaimedTap(kind, { x: point[0], y: point[1] }),
     });
     this.selectionHandler = new ImmersiveMapSelectionHandler(
       {
@@ -705,6 +734,9 @@ export class ImmersiveMapRenderer {
     this.pickDataProviders.push(() => this.models.pickData());
     this.selectableFeatures.push(this.layerRuntime.selection);
     this.pickDataProviders.push(() => this.layerRuntime.pickData());
+    // The grid lies on the ground under everything else: the last a tap asks.
+    this.selectableFeatures.push(this.tileGridRuntime.selection);
+    this.pickDataProviders.push(() => this.tileGridRuntime.pickData());
 
     this.startTiles(workers);
 
@@ -986,6 +1018,23 @@ export class ImmersiveMapRenderer {
     if (this.selectionHandler.handleMapTap(point) === "background") this.cameraRuntimes.cameraRuntime.notifyMapBackgroundTap();
   }
 
+  /** A double tap or a secondary tap a feature has claimed (the tile grid, by its settings). */
+  private handleClaimedTap(kind: "double" | "secondary", point: ImmersiveMapScreenPoint): void {
+    this.selectionHandler.handleMapTap(point, kind);
+  }
+
+  /**
+   * The app's handle on the tile grid, null for none: attaching one shows
+   * the grid, and null takes it away (`ImmersiveMapTileGridController`).
+   */
+  get tileGrid(): ImmersiveMapTileGridController | null {
+    return this.tileGridRuntime.tileGridController;
+  }
+
+  set tileGrid(controller: ImmersiveMapTileGridController | null) {
+    if (this.offscreen === undefined) this.tileGridRuntime.attach(controller);
+  }
+
   /**
    * The recorder whose tour exports draw this map (the Swift
    * `tourVideoRecorder(_:)` modifier): the export takes the map's settings,
@@ -1095,6 +1144,7 @@ export class ImmersiveMapRenderer {
     this.labelPrepare?.reset();
     this.labelGpu?.destroy();
     this.layerRuntime.destroy();
+    this.tileGridRuntime.destroy();
     this.models.destroy();
     this.sceneModelTapListeners.clear();
     this.engine.destroy();
@@ -1250,6 +1300,7 @@ export class ImmersiveMapRenderer {
     this.globeConstants = presentation.renderSurfaceMode !== "flat" ? this.writeGlobeUniform(presentation, projectionView) : undefined;
     this.pinFrame = { cameraUniform: { matrix: projectionView, eye: cameraFrame.cameraEye }, presentation, screenMatrix: cameraFrame.cameraMatrices.screen, timeSeconds: now };
     this.layerFrame = layerFrameOf(presentation, cameraFrame, reliefFrame?.isActive ?? false);
+    this.tileGridFrame = tileGridFrameOf(presentation, cameraFrame);
     this.sceneModelFrame = { drawWidth: width, drawHeight: height, projectionView: cameraFrame.cameraMatrices.projectionView, cameraEye: cameraFrame.cameraEye, presentation, timeSeconds: now, frameIndex: this.frameNumber };
     this.modelTileFrame = {
       renderSurfaceMode: presentation.renderSurfaceMode,
@@ -1408,6 +1459,7 @@ export class ImmersiveMapRenderer {
         pendingLayerMeshes: this.layerRuntime.subsystem.pendingCount,
         pendingSceneModelMeshes: this.models.pendingCount,
         drawnAppLayers: this.layerRuntime.subsystem.drawnLayerCount,
+        drawnTileGridTiles: this.tileGridRuntime.subsystem.drawnTileCount,
       });
       for (const listener of this.frameListeners) listener(event);
     }

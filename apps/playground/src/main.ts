@@ -8,6 +8,7 @@ import { addTraceRecorder } from "./trace-recorder.ts";
 import { addSamplePins } from "./sample-pins.ts";
 import { addSampleExport } from "./sample-export.ts";
 import { addSampleLayers } from "./sample-layers.ts";
+import { addSampleTileGrid } from "./sample-tile-grid.ts";
 import { addSampleSceneModels } from "./sample-scene-models.ts";
 
 const hud = document.getElementById("hud")!;
@@ -115,6 +116,8 @@ if (params.get("annotations") === "1") addSampleAnnotations(map);
 if (params.get("pins") === "1") addSamplePins(map);
 // `layers=1` draws a sample of the app's own data over central Moscow (stage 6).
 if (params.get("layers") === "1") addSampleLayers(map);
+// `grid=1` lays the tile grid over the map, a tap on a tile selecting it.
+if (params.get("grid") === "1") addSampleTileGrid(map, params);
 // `export=1` adds the export panel: a still and a short tour to MP4 (stage 8).
 if (params.get("export") === "1") addSampleExport(map);
 // `models=1` stands a sample glTF model by the default view (stage 7).

@@ -12,8 +12,9 @@ The guide of `@artembobkin/immersive-map`, the browser port of the [ImmersiveMap
 8. [The scene](Scene.md): the globe and space, the sun and the shadows, the sky and the fog, the buildings and the trees.
 9. [Your own data](Layers.md): GeoJSON and shapes as layers, their styles, updates, memory and taps.
 10. [Annotations, pins and taps](AnnotationsAndPins.md): DOM annotations, pins and their frame, taps and selection.
-11. [3D content](3DContent.md): building models from a model archive, and your own glTF, GLB and OBJ models.
-12. [Export](Export.md): pictures and MP4 videos of the map.
+11. [The tile grid](TileGrid.md): the grid of XYZ tiles, picking tiles by a tap, the limit, the selectable area and your own texts.
+12. [3D content](3DContent.md): building models from a model archive, and your own glTF, GLB and OBJ models.
+13. [Export](Export.md): pictures and MP4 videos of the map.
 
 ## The examples
 

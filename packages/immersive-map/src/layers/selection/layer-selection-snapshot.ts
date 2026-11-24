@@ -2,15 +2,14 @@
 // SPDX-License-Identifier: MIT
 
 import type { GeoCoordinate } from "../../geo/geo-coordinate.ts";
-import { GeoProjectionBasis } from "../../geo/geo-projection-basis.ts";
-import { type GeoScreenProjectionFrameConstants, GeoScreenProjectionMath, makeScreenPointOutput } from "../../geo/geo-screen-projection-math.ts";
-import { ImmersiveMapProjection } from "../../geo/immersive-map-projection.ts";
+import { GeoScreenPlaceMath } from "../../geo/geo-screen-place-math.ts";
+import type { GeoScreenProjectionFrameConstants } from "../../geo/geo-screen-projection-math.ts";
 import { ImmersiveMapSelectionKind } from "../../selection/immersive-map-selection.ts";
 import type { SelectionPickData } from "../../selection/selectable-map-feature.ts";
 import { resolvePointStyle, resolvePolygonStyle, resolvePolylineStyle } from "../geojson/immersive-map-geojson.ts";
 import type { ImmersiveMapLayer } from "../immersive-map-layer.ts";
 import type { LayerSourceContent } from "../sources/layer-source-content.ts";
-import { LayerPickMath, type LayerPickPlace, type World } from "./layer-pick-math.ts";
+import { LayerPickMath, type LayerPickPlace } from "./layer-pick-math.ts";
 
 /** The shape of a layer a tap landed on. */
 export interface LayerSelectionHit {
@@ -25,8 +24,6 @@ export interface LayerSelectionEntry {
   readonly layer: ImmersiveMapLayer;
   readonly content: LayerSourceContent;
 }
-
-const scratch = makeScreenPointOutput();
 
 /**
  * Hit-test state of one rendered frame, the Swift `LayerSelectionSnapshot`:
@@ -62,7 +59,7 @@ export class LayerSelectionSnapshot implements SelectionPickData {
   hitTest(point: { readonly x: number; readonly y: number }, pixelsPerPoint: number): LayerSelectionHit | undefined {
     const projection = this.projection;
     if (this.entries.length === 0 || projection === undefined) return undefined;
-    const place = LayerPickMath.place([point.x, point.y], centre(projection), (world) => project(world, projection));
+    const place = GeoScreenPlaceMath.place([point.x, point.y], projection);
     if (place === undefined) return undefined;
     return LayerSelectionSnapshot.hit(this.entries, place, pixelsPerPoint);
   }
@@ -77,19 +74,6 @@ export class LayerSelectionSnapshot implements SelectionPickData {
     }
     return undefined;
   }
-}
-
-/** The world position the camera looks at, where the search for a tap's place starts. */
-function centre(projection: GeoScreenProjectionFrameConstants): World {
-  if (projection.mode === "flat") return ImmersiveMapProjection.centerWorldMercatorFromFlatPan(projection.flatPan);
-  return ImmersiveMapProjection.centerWorldMercatorFromGlobePan([projection.globe.panX, projection.globe.panY]);
-}
-
-function project(world: World, projection: GeoScreenProjectionFrameConstants): readonly [number, number] | undefined {
-  const coordinate = LayerPickMath.coordinateOfWorld(world);
-  const output = GeoScreenProjectionMath.project(GeoProjectionBasis.fromCoordinate(coordinate), projection, scratch);
-  if (output.visible === 0 || !(output.visibilityAlpha > 0) || !Number.isFinite(output.positionX) || !Number.isFinite(output.positionY)) return undefined;
-  return [output.positionX, output.positionY];
 }
 
 function hitTestEntry(entry: LayerSelectionEntry, place: LayerPickPlace, coordinate: GeoCoordinate, pixelsPerPoint: number): number | undefined {

@@ -14,7 +14,7 @@
 
 import type { ImmersiveMapScreenPoint, ImmersiveMapSelection, ImmersiveMapSelectionCommand, ImmersiveMapSelectionController, ImmersiveMapSelectionKind, ImmersiveMapSelectionSource } from "./immersive-map-selection.ts";
 import { selectionsEqual } from "./immersive-map-selection.ts";
-import type { SelectableMapFeature, SelectionHit, SelectionPickData } from "./selectable-map-feature.ts";
+import type { MapTapKind, SelectableMapFeature, SelectionHit, SelectionPickData } from "./selectable-map-feature.ts";
 
 /** What the selection needs of the map it serves: the drawable's scale, and a frame when the selection changed what the map shows. */
 export interface SelectionHost {
@@ -99,16 +99,30 @@ export class ImmersiveMapSelectionHandler {
    * first. A hit nothing consumes (no tap action, no selection controller)
    * is not interactive at all, and the feature underneath still gets its
    * chance.
+   *
+   * `kind`: the gesture. Only the features picked by it are asked. A
+   * gesture other than the single tap that lands on nothing is not a tap on
+   * the bare map: it ends no selection and reports nothing.
    */
-  handleMapTap(point: ImmersiveMapScreenPoint): MapTapResult {
+  handleMapTap(point: ImmersiveMapScreenPoint, kind: MapTapKind = "single"): MapTapResult {
     const contentsScale = this.host.contentsScale;
     for (const feature of this.features) {
+      if ((feature.tapKind ?? "single") !== kind) continue;
       const hit = feature.hitTest(point, contentsScale);
-      if (hit !== null && this.consumeTap(hit, feature, point)) return "consumed";
+      if (hit !== null && this.consumeTap(hit, feature, point)) {
+        if (feature.clearsSelectionOnTap === true) this.clear("tap", point);
+        return "consumed";
+      }
     }
+    if (kind !== "single") return "background";
     this.controller?.notifyMapBackgroundTap(point);
     this.clear("tap", point);
     return "background";
+  }
+
+  /** Whether a feature takes the gesture `kind` as its own now. */
+  isClaimed(kind: MapTapKind): boolean {
+    return this.features.some((feature) => (feature.tapKind ?? "single") === kind && feature.claimsItsTapKind === true);
   }
 
   /** The feature's tap event first, then the selection: a tap on an already selected object still delivers its event. */

@@ -46,6 +46,8 @@ import type {
 import type { ImmersiveMapTerrainSource } from "./terrain-source.ts";
 import { defaultTileSettings, groundReliefCredit, withTerrainSurroundings } from "./tile-settings.ts";
 import type { CacheSettings, GroundReliefSettings, TerrainSurroundingsSettings, TileSettings } from "./tile-settings.ts";
+import { defaultTileGridSettings, tileGridSettings } from "./tile-grid-settings.ts";
+import type { TileGridSettings } from "./tile-grid-settings.ts";
 import { ImmersiveMapTilesService } from "./tiles-service.ts";
 import {
   defaultControlsSettings,
@@ -87,6 +89,12 @@ export interface ImmersiveMapSettingsData {
    * See `ModelArchiveSettings`.
    */
   readonly modelArchive: ModelArchiveSettings;
+  /**
+   * The grid of tiles an app's user picks tiles on, shown while an
+   * `ImmersiveMapTileGridController` is attached (`ImmersiveMap.tileGrid`).
+   * See `TileGridSettings`.
+   */
+  readonly tileGrid: TileGridSettings;
 }
 
 /** The options of the ground relief's modifier (`ImmersiveMapSettings.groundRelief`). */
@@ -131,7 +139,8 @@ const curveField = (value: ZoomCurveInput) => zoomCurve(value);
 function normalized(data: ImmersiveMapSettingsData): ImmersiveMapSettingsData {
   const depthBias = clampedModelDepthBias(data.modelArchive.depthBias);
   const modelArchive = deepEqual(depthBias, data.modelArchive.depthBias) ? data.modelArchive : { ...data.modelArchive, depthBias };
-  return deepFreeze({ ...data, modelArchive });
+  // Settings written before the grid was a setting carry none: the defaults.
+  return deepFreeze({ ...data, modelArchive, tileGrid: data.tileGrid ?? defaultTileGridSettings });
 }
 
 /**
@@ -214,6 +223,10 @@ export class ImmersiveMapSettings {
     return this.data.controls;
   }
 
+  get tileGrid(): TileGridSettings {
+    return this.data.tileGrid;
+  }
+
   /** The map's defaults: the hosted tiles and models, the built-in style, the globe at low zoom. */
   static readonly default: ImmersiveMapSettings = new ImmersiveMapSettings({
     renderLoop: defaultRenderLoopSettings,
@@ -230,6 +243,7 @@ export class ImmersiveMapSettings {
     debug: defaultDebugSettings,
     controls: defaultControlsSettings,
     modelArchive: defaultModelArchiveSettings,
+    tileGrid: defaultTileGridSettings,
   });
 
   /** The settings of plain data, or the settings themselves. */
@@ -439,6 +453,38 @@ export class ImmersiveMapSettings {
     return this.withCamera({
       controlZones: controlZoneSettings({ isPitchZoneEnabled: options.pitch ?? true, isZoomZoneEnabled: options.zoom ?? true }),
     });
+  }
+
+  /**
+   * Turns the double tap zoom on or off: the double tap, or the double
+   * click with a mouse, that zooms the map in by one level toward the
+   * point. On by default. While it is on, a single tap waits for the double
+   * tap interval before it acts, and two quick taps on one place are the
+   * zoom and not two taps. Turn it off where a tap must act at once and a
+   * second tap on the same place must count: on a tile grid, the first tap
+   * then selects a tile immediately and the next deselects it.
+   *
+   * ```ts
+   * map.settings = map.settings.doubleTapZoom(false);
+   * ```
+   *
+   * The map still zooms by the pinch, the wheel and the zoom control.
+   * Applies live.
+   */
+  doubleTapZoom(isEnabled: boolean): ImmersiveMapSettings {
+    return this.withCamera({ isDoubleTapZoomEnabled: isEnabled });
+  }
+
+  /**
+   * Sets how far the cursor may move between the press and the release of
+   * a mouse button and still make a click, in points. A drag of the map
+   * begins only past it, so a click made with a moving hand picks what is
+   * under it and does not shift the map. The default is 4. Raise it for a
+   * mouse that slips under a click, lower it for a drag that answers
+   * sooner. Applies live.
+   */
+  tapMovementTolerance(points: number): ImmersiveMapSettings {
+    return this.withCamera({ tapMovementTolerancePoints: Math.max(points, 0) });
   }
 
   /**
@@ -1041,6 +1087,67 @@ export class ImmersiveMapSettings {
   shadows(options: ShadowOptions = {}): ImmersiveMapSettings {
     const shadows = mergeOptions(this.data.scene.shadows, options, shadowCurveFields);
     return this.withScene({ shadows: { ...shadows, isEnabled: options.isEnabled ?? true } });
+  }
+
+  // MARK: The tile grid
+
+  /**
+   * Which tiles the grid of `ImmersiveMap.tileGrid` shows, how it looks and
+   * what a tap may select, the values given, the rest as configured:
+   *
+   * ```ts
+   * settings.tileGridSettings({ zoomRange: [12, 15], lineWidthPoints: 2 });
+   * ```
+   *
+   * - `zoomRange`: the zooms whose tiles the grid shows: the tiles of the
+   *   camera's zoom clamped into the range, so `[15, 15]` shows the zoom 15
+   *   tiles alone at any camera zoom. Every zoom by default.
+   * - `minimumTileScreenPoints`: the grid hides while a tile is narrower on
+   *   screen than this, and the far tiles under a tilted camera fade by it.
+   * - `labelMinimumTileScreenPoints`: the texts hide while a tile is
+   *   narrower on screen than this.
+   * - `maximumDrawnTiles`: the most tiles drawn in a frame, the nearest to
+   *   where the camera looks first.
+   * - `lineColor`, `lineWidthPoints`, `labelColor`, `labelHaloColor`,
+   *   `labelHaloWidthPoints`, `selectedFillColor`: the look.
+   * - `labelFormat`: what is written inside a tile: `"zxy"`, `"xyz"` or
+   *   `"hidden"`. `ImmersiveMapTileGridController.labelProvider` takes its
+   *   place.
+   * - `labelMaximumWidthShare`, `labelMaximumHeightShare`: the text is sized
+   *   to the tile, within these shares of its width and height.
+   * - `isTapSelectionEnabled`: whether the user can select and deselect
+   *   tiles on the map at all.
+   * - `selectionGesture`: `"tap"`, `"doubleTap"` (the double tap then does
+   *   not zoom the map) or `"secondaryTap"` (the right button, a long press
+   *   on a touch screen).
+   * - `selectionMode`: `"multiple"` for any number of selected tiles,
+   *   `"single"` for one, which the gesture on another tile moves.
+   * - `selectionLimit`, `selectableBounds`: see `tileGridSelection`.
+   *
+   * Applies live.
+   */
+  tileGridSettings(options: Options<TileGridSettings>): ImmersiveMapSettings {
+    return this.with({ tileGrid: tileGridSettings(options, this.data.tileGrid) });
+  }
+
+  /**
+   * What a tap on the grid of `ImmersiveMap.tileGrid` may select: at most
+   * `limit` tiles, and only tiles that share an area with
+   * `selectableBounds`. Both are set as given, since null is a value here:
+   * no limit, the whole map. A tap past the limit or outside the area
+   * selects nothing and is reported to
+   * `ImmersiveMapTileGridController.onTapRejected`. A selected tile can
+   * always be deselected. A selection made from code is the app's own and
+   * is held to neither rule.
+   *
+   * ```ts
+   * settings.tileGridSelection({ limit: 20, selectableBounds: city });
+   * ```
+   *
+   * Applies live.
+   */
+  tileGridSelection(options: { readonly limit: number | null; readonly selectableBounds: TileGridSettings["selectableBounds"] }): ImmersiveMapSettings {
+    return this.with({ tileGrid: tileGridSettings({ selectionLimit: options.limit, selectableBounds: options.selectableBounds }, this.data.tileGrid) });
   }
 
   // MARK: The pins and the attribution

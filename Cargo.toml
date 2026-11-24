@@ -12,14 +12,14 @@ version = "0.1.0"
 [workspace.dependencies]
 # The shared engine code (github.com/artembobkin/ImmersiveMapCore), pinned to a
 # commit. docs/Development.md says how to build against a local checkout.
-pmtiles = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-tile-prep = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-ground-relief = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-layer-mesh = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-model-tile = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-map-frame = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-map-worker = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
-map-visibility = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "fe48c5f62ee61e422adf2df805499bd26de11372" }
+pmtiles = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+tile-prep = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+ground-relief = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+layer-mesh = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+model-tile = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+map-frame = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+map-worker = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
+map-visibility = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
 wasm-bindgen = "=0.2.130"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"

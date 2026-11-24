@@ -63,6 +63,7 @@ describe("makeFrameEvent", () => {
       pendingLayerMeshes: 1,
       pendingSceneModelMeshes: 0,
       drawnAppLayers: 4,
+      drawnTileGridTiles: 0,
       transition: 1,
       hasPendingWork: true,
     });

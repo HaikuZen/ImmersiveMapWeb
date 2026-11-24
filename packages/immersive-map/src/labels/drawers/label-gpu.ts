@@ -87,7 +87,7 @@ export type ScreenLabelPipeline = "text" | "roadText" | "poi" | "routeShield";
 export type SurfaceLabelSurface = "flat" | "sphere" | "morph";
 
 /** Decodes a lossless WebP atlas into a texture, every channel as it is stored. */
-async function loadAtlasTexture(device: GPUDevice, url: string, label: string): Promise<GPUTexture> {
+export async function loadLabelAtlasTexture(device: GPUDevice, url: string, label: string): Promise<GPUTexture> {
   const response = await fetch(url);
   if (!response.ok) throw new Error(`ImmersiveMap could not load its ${label} atlas ${url}: HTTP ${response.status}`);
   const bitmap = await createImageBitmap(await response.blob(), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
@@ -110,6 +110,8 @@ export class LabelGpu {
   /** The atlas bind groups (group 2): the bold and thin fonts and the POI sprites. */
   readonly atlasGroups: Readonly<Record<LabelFontWeight | "poi", GPUBindGroup>>;
   private readonly textures: GPUTexture[];
+  /** The bold font's atlas, which the tile grid writes its texts from too. */
+  readonly boldAtlas: GPUTexture;
   private readonly screenPipelines: Map<ScreenLabelPipeline, GPURenderPipeline>;
   private readonly surfacePipelines: Map<SurfaceLabelSurface, GPURenderPipeline>;
   private readonly frameUniform: GPUBuffer;
@@ -138,6 +140,7 @@ export class LabelGpu {
     this.textureLayout = layouts.texture;
     this.drawLayout = layouts.draw;
     this.textures = [textures.bold, textures.thin, textures.poi];
+    this.boldAtlas = textures.bold;
     this.screenPipelines = screenPipelines;
     this.surfacePipelines = surfacePipelines;
     const sampler = device.createSampler({ label: "label atlas", magFilter: "linear", minFilter: "linear" });
@@ -206,9 +209,9 @@ export class LabelGpu {
         })
         .then((pipeline) => [name, pipeline]);
     const [bold, thin, poi, screenPipelines, surfacePipelines] = await Promise.all([
-      loadAtlasTexture(device, labelAtlasAssets.bold, "label atlas bold"),
-      loadAtlasTexture(device, labelAtlasAssets.thin, "label atlas thin"),
-      loadAtlasTexture(device, labelAtlasAssets.poi, "poi sprites"),
+      loadLabelAtlasTexture(device, labelAtlasAssets.bold, "label atlas bold"),
+      loadLabelAtlasTexture(device, labelAtlasAssets.thin, "label atlas thin"),
+      loadLabelAtlasTexture(device, labelAtlasAssets.poi, "poi sprites"),
       Promise.all([
         screen("text", "labelVertex", "labelTextFragment"),
         screen("roadText", "roadLabelVertex", "roadLabelTextFragment"),

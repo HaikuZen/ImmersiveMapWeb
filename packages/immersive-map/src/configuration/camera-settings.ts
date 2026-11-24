@@ -266,6 +266,28 @@ export interface CameraSettings {
   readonly dragZoomVelocityLimit: number;
   readonly rotationGestureSensitivity: number;
   /**
+   * Whether a double tap (a double click with a mouse) zooms the map in by
+   * one level toward the point. On by default. While it is on, a single tap
+   * is not known to be single until the double tap interval has passed, so
+   * everything a tap does (a pin, a shape of a layer, a tile of the tile
+   * grid) answers that much later, and two quick taps on one place are the
+   * zoom and not two taps. Turn it off where a tap must act at once and a
+   * second tap on the same place must count, as when the user picks tiles
+   * on the grid. The map still zooms by the pinch, the wheel and the zoom
+   * control.
+   */
+  readonly isDoubleTapZoomEnabled: boolean;
+  /**
+   * How far the cursor may move between the press and the release of a
+   * mouse button and still make a click, in points. A drag of the map
+   * begins only past it. A hand that clicks moves the mouse a point or two,
+   * and without a tolerance such a click is taken for a drag: the map
+   * shifts and nothing is picked. 4 by default. Raise it for a mouse that
+   * slips under a click, lower it for a drag that answers sooner. A touch
+   * keeps its own, wider tolerance.
+   */
+  readonly tapMovementTolerancePoints: number;
+  /**
    * How fast a tilt drag tilts: the multiple of the full pitch range that a
    * drag across the whole view height sweeps. Applies to the two-finger
    * vertical drag on touch input and to the tilt drag (right button, or
@@ -333,6 +355,8 @@ export const defaultCameraSettings: CameraSettings = deepFreeze({
   dragZoomVelocityFactor: 0.35,
   dragZoomVelocityLimit: 5,
   rotationGestureSensitivity: -0.6,
+  isDoubleTapZoomEnabled: true,
+  tapMovementTolerancePoints: 4,
   tiltGestureSensitivity: 2,
   globePanInertiaEnabled: true,
   globePanInertiaHalfLife: 0.28,

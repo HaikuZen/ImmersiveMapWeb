@@ -85,7 +85,7 @@ const isolation = {
   "Cross-Origin-Embedder-Policy": "credentialless",
 };
 
-const pages = ["index", "bench", "bench-prep", "bench-inflate", "bench-transfer", "bench-storage", "bench-atlas", "bench-encode", "bench-planner", "bench-labels", "bench-pins", "bench-lines", "bench-layer-lines", "bench-terrain", "bench-geojson", "bench-threads", "bench-offscreen", "bench-precision", "bench-antialias", "bench-occlusion", "bench-export", "bench-models"];
+const pages = ["index", "bench", "bench-prep", "bench-inflate", "bench-transfer", "bench-storage", "bench-atlas", "bench-encode", "bench-planner", "bench-labels", "bench-pins", "bench-lines", "bench-layer-lines", "bench-terrain", "bench-geojson", "bench-threads", "bench-offscreen", "bench-precision", "bench-antialias", "bench-occlusion", "bench-export", "bench-models", "bench-tile-grid"];
 
 export default defineConfig({
   plugins: [fixtures(), traceSink(), remoteLogSink()],

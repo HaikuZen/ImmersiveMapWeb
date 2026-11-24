@@ -22,7 +22,8 @@ export type ImmersiveMapSettingsChangeDomain =
   | "postProcessing"
   | "debug"
   | "controls"
-  | "modelArchive";
+  | "modelArchive"
+  | "tileGrid";
 
 /** Every change domain, in the order declared. */
 export const settingsChangeDomains: readonly ImmersiveMapSettingsChangeDomain[] = Object.freeze([
@@ -39,6 +40,7 @@ export const settingsChangeDomains: readonly ImmersiveMapSettingsChangeDomain[] 
   "debug",
   "controls",
   "modelArchive",
+  "tileGrid",
 ]);
 
 /**
@@ -199,6 +201,11 @@ export function planSettingsApplication(
     } else {
       mark("modelArchive", ["recreateRenderer"]);
     }
+  }
+
+  // The grid is worked out anew every frame from its settings.
+  if (differ(previous.tileGrid, next.tileGrid)) {
+    mark("tileGrid", ["liveApply"]);
   }
 
   return { changedDomains, actions, requiresRendererRecreation: actions.has("recreateRenderer") };

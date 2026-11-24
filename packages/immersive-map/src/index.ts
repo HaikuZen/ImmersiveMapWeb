@@ -55,6 +55,15 @@ export type {
   ImmersiveMapPolyline,
   ImmersiveMapPolylineStyleOptions,
 } from "./layers/immersive-map-layer.ts";
+export { ImmersiveMapTileGridController } from "./tile-grid/immersive-map-tile-grid-controller.ts";
+export type {
+  ImmersiveMapTileGridLabelProvider,
+  ImmersiveMapTileGridSelectionChange,
+  ImmersiveMapTileGridTapRejection,
+  ImmersiveMapTileGridTapRejectionReason,
+} from "./tile-grid/immersive-map-tile-grid-controller.ts";
+export { ImmersiveMapTileID } from "./geo/immersive-map-tile-id.ts";
+export { ImmersiveMapGeoBounds } from "./geo/immersive-map-geo-bounds.ts";
 export { ImmersiveMapLayersController } from "./layers/immersive-map-layers-controller.ts";
 export type { ImmersiveMapGeoJSONSource, ImmersiveMapLayersControllerOptions, ImmersiveMapShapesSource } from "./layers/immersive-map-layers-controller.ts";
 export type { ImmersiveMapLayerTapEvent } from "./layers/immersive-map-layer-tap-event.ts";

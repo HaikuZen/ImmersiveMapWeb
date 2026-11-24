@@ -41,7 +41,7 @@ ImmersiveMap Web is a **WebGPU map** rendering engine for **web pages**, written
 
 ## Features
 
-Built-in Protomaps vector tiles from a PMTiles archive, offline maps from a PMTiles file your own site serves, a globe that unrolls into a flat map, terrain relief, map styling and colors, your own data as layers (GeoJSON zones, lines and points), DOM annotations, pins that make room for each other, 3D scene models (glTF, GLB and OBJ), 3D building models from a PMTiles model archive, tour video export.
+Built-in Protomaps vector tiles from a PMTiles archive, offline maps from a PMTiles file your own site serves, a globe that unrolls into a flat map, terrain relief, map styling and colors, your own data as layers (GeoJSON zones, lines and points), DOM annotations, pins that make room for each other, a tile grid your users pick XYZ tiles on, 3D scene models (glTF, GLB and OBJ), 3D building models from a PMTiles model archive, tour video export.
 
 ## Documentation
 

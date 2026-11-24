@@ -35,6 +35,7 @@ import type { ImmersiveMapPinTapEvent } from "../pins/selection/pin-selection.ts
 import { ImmersiveMapSceneModelsController } from "../scene-models/immersive-map-scene-models-controller.ts";
 import type { ImmersiveMapSceneModelTapEvent } from "../scene-models/immersive-map-scene-model-tap-event.ts";
 import type { ImmersiveMapSelectionController } from "../selection/immersive-map-selection.ts";
+import type { ImmersiveMapTileGridController } from "../tile-grid/immersive-map-tile-grid-controller.ts";
 import { TileArchiveDepths } from "../tile/loading/archive-depths.ts";
 import type { ImmersiveMapTerrainSurroundings } from "../tile/relief/lifts/terrain-surroundings.ts";
 import { ImmersiveMapCameraController } from "./camera/immersive-map-camera-controller.ts";
@@ -82,6 +83,7 @@ export class ImmersiveMap {
   private readonly options: ImmersiveMapOptions;
   private readonly sceneModelsController: ImmersiveMapSceneModelsController;
   private selectionController: ImmersiveMapSelectionController | null;
+  private tileGridController: ImmersiveMapTileGridController | null;
   private attachedTourVideoRecorder: ImmersiveMapTourVideoRecorder | null = null;
   /** The settings the map runs by, the debug panel's drags on top and the archive's depth resolved (the Swift `cameraRuntime.currentSettings`). */
   private currentSettings: ImmersiveMapSettings;
@@ -124,6 +126,7 @@ export class ImmersiveMap {
     this.layers = options.layers ?? new ImmersiveMapLayersController();
     this.sceneModelsController = options.sceneModels ?? new ImmersiveMapSceneModelsController();
     this.selectionController = options.selection ?? null;
+    this.tileGridController = options.tileGrid ?? null;
     this.renderer = null;
     const canvas = document.createElement("canvas");
     canvas.style.cssText = "display:block;width:100%;height:100%;cursor:grab";
@@ -158,6 +161,7 @@ export class ImmersiveMap {
       layers: this.layers,
       sceneModels: this.sceneModelsController,
       selection: this.selectionController,
+      tileGrid: this.tileGridController,
       tourVideoRecorder: null,
       canvas: this.canvas,
       annotationsController: this.annotations,
@@ -339,6 +343,43 @@ export class ImmersiveMap {
   set selection(controller: ImmersiveMapSelectionController | null) {
     this.selectionController = controller;
     if (this.renderer !== null) this.renderer.selection = controller;
+  }
+
+  /**
+   * The app's handle on the tile grid, null for none. Attaching a
+   * controller shows the grid: the borders of the XYZ tiles over the
+   * ground, each tile's numbers written inside it, drawn over everything
+   * the map draws, and a tap on a tile selecting or deselecting it (or
+   * another gesture, and one tile at a time, by the settings). The
+   * controller holds the selected tiles and reports every change:
+   *
+   * ```ts
+   * const grid = new ImmersiveMapTileGridController();
+   * grid.onSelectionChanged = (change) => console.log(change.selectedTiles);
+   * map.tileGrid = grid;
+   * map.settings = map.settings.tileGridSettings({ zoomRange: [15, 15] });
+   * ```
+   *
+   * The grid names squares of the ground, not the tiles the map loads, so
+   * it shows the tiles of any zoom whatever the archive holds. Which tiles
+   * it shows and how it looks is `ImmersiveMapSettings.tileGridSettings`,
+   * and what a tap may select is `ImmersiveMapSettings.tileGridSelection`.
+   * For a tap that selects at once, and a second tap on the same tile that
+   * deselects it however soon it comes, turn the double tap zoom off
+   * (`ImmersiveMapSettings.doubleTapZoom(false)`), or select by the double
+   * tap itself. While the grid shows, a tap on a tile is the grid's: it
+   * ends the selection of `selection` as a tap on the bare map does, and
+   * the background tap callbacks do not fire for it. Null detaches the
+   * controller, and the map shows no grid. A picture and a video of the map
+   * (`captureStill`, the tour video) show none either.
+   */
+  get tileGrid(): ImmersiveMapTileGridController | null {
+    return this.tileGridController;
+  }
+
+  set tileGrid(controller: ImmersiveMapTileGridController | null) {
+    this.tileGridController = controller;
+    if (this.renderer !== null) this.renderer.tileGrid = controller;
   }
 
   /** Every tap on a pin, also on one already selected. Returns the function that stops the listening. */

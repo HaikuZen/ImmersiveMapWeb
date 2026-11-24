@@ -14,12 +14,13 @@ const base: RenderPassAvailability = {
   starfieldEnabled: true,
   sceneModelsEnabled: true,
   appLayersEnabled: true,
+  tileGridEnabled: true,
 };
 
 describe("render layers", () => {
   test("the flat world draws the ground, what stands on it, what lies on it, the horizon last", () => {
     const layers = planRenderLayers(base).map((i) => i.layer);
-    expect(layers).toEqual(["placementStencil", "flatMapSurface", "buildingExtrusion", "sceneModels", "flatMapRoads", "appLayers", "surfaceLabels", "horizon", "labels", "pins", "debugOverlay"]);
+    expect(layers).toEqual(["placementStencil", "flatMapSurface", "buildingExtrusion", "sceneModels", "flatMapRoads", "appLayers", "surfaceLabels", "horizon", "labels", "tileGrid", "pins", "debugOverlay"]);
   });
 
   test("the globe paints the sky first and skips it with transparent space", () => {
@@ -33,6 +34,13 @@ describe("render layers", () => {
     expect(plan.find((i) => i.layer === "sceneModels")?.skipReason).toBe("noSceneModelContent");
     expect(plan.find((i) => i.layer === "appLayers")?.skipReason).toBe("noAppLayerContent");
     expect(plan.find((i) => i.layer === "labels")?.skipReason).toBe("noLabelContent");
+  });
+
+  test("the tile grid draws over the map's names and under the pins, and is left out without tiles", () => {
+    const plan = planRenderLayers({ ...base, tileGridEnabled: false });
+    const overlay = plan.slice(-4).map((i) => i.layer);
+    expect(overlay).toEqual(["labels", "tileGrid", "pins", "debugOverlay"]);
+    expect(plan.find((i) => i.layer === "tileGrid")).toEqual({ layer: "tileGrid", enabled: false, skipReason: "noTileGridContent" });
   });
 
   test("the buildings move before the ground in the drawn order", () => {

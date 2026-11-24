@@ -23,12 +23,13 @@ export type RenderLayer =
   | "horizon"
   | "postProcessing"
   | "labels"
+  | "tileGrid"
   | "pins"
   | "debugOverlay";
 
 export type RenderPassName = "shadowMap" | "farShadowMap" | "groundShadowMask" | "world" | "postProcessing" | "overlay";
 
-export type RenderSkipReason = "transparentSpace" | "noSceneModelContent" | "noAppLayerContent" | "noLabelContent" | "noPinContent" | "debugOverlayDisabled";
+export type RenderSkipReason = "transparentSpace" | "noSceneModelContent" | "noAppLayerContent" | "noLabelContent" | "noTileGridContent" | "noPinContent" | "debugOverlayDisabled";
 
 export interface RenderPassAvailability {
   renderSurfaceMode: "flat" | "spherical";
@@ -39,6 +40,8 @@ export interface RenderPassAvailability {
   starfieldEnabled: boolean;
   sceneModelsEnabled: boolean;
   appLayersEnabled: boolean;
+  /** The tile grid has tiles to draw (`TileGridRenderSubsystem`). */
+  tileGridEnabled: boolean;
 }
 
 export interface RenderLayerPlanItem {
@@ -61,7 +64,7 @@ const WORLD_LAYERS: ReadonlySet<RenderLayer> = new Set([
   "horizon",
 ]);
 
-const OVERLAY_LAYERS: ReadonlySet<RenderLayer> = new Set(["labels", "pins", "debugOverlay"]);
+const OVERLAY_LAYERS: ReadonlySet<RenderLayer> = new Set(["labels", "tileGrid", "pins", "debugOverlay"]);
 
 export const isWorldLayer = (layer: RenderLayer) => WORLD_LAYERS.has(layer);
 export const isOverlayLayer = (layer: RenderLayer) => OVERLAY_LAYERS.has(layer);
@@ -82,6 +85,8 @@ export function planRenderLayers(a: RenderPassAvailability): RenderLayerPlanItem
   });
   items.push(
     { layer: "labels", enabled: a.labelsEnabled, skipReason: a.labelsEnabled ? undefined : "noLabelContent" },
+    // The grid over the map's names and under the pins.
+    { layer: "tileGrid", enabled: a.tileGridEnabled, skipReason: a.tileGridEnabled ? undefined : "noTileGridContent" },
     { layer: "pins", enabled: a.pinsEnabled, skipReason: a.pinsEnabled ? undefined : "noPinContent" },
     { layer: "debugOverlay", enabled: a.debugOverlayEnabled, skipReason: a.debugOverlayEnabled ? undefined : "debugOverlayDisabled" },
   );
