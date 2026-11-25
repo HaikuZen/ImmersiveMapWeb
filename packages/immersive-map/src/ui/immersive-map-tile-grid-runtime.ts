@@ -56,7 +56,9 @@ export class ImmersiveMapTileGridRuntime implements TileGridSelectionSource {
       options.requestFrame,
     );
     this.selection = new TileGridSelection(this);
-    this.attach(options.controller);
+    // The map's first frame draws the grid: nothing is asked of a map still being built.
+    this.controller = options.controller;
+    options.controller?.setChangeHandler(options.requestFrame, this);
   }
 
   get tileGridController(): ImmersiveMapTileGridController | null {

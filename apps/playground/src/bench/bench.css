@@ -1,5 +1,0 @@
-body { margin: 24px; font: 14px/1.5 system-ui; background: #15171c; color: #eee; }
-table { border-collapse: collapse; margin: 18px 0; }
-caption { text-align: left; font-weight: 600; padding-bottom: 6px; }
-td, th { padding: 4px 12px; border-bottom: 1px solid #333; text-align: right; font-variant-numeric: tabular-nums; }
-th:first-child, td:first-child { text-align: left; }
