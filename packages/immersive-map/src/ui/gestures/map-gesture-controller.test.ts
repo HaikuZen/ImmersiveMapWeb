@@ -176,6 +176,8 @@ describe("MapGestureController", () => {
     expect(map.interactionRuntime.isActive("mapRotation")).toBe(true);
     const sensitivity = ImmersiveMapSettings.default.camera.rotationGestureSensitivity;
     expect(map.cameraRuntime.currentCameraState()!.bearing).toBeCloseTo(angle * sensitivity, 3);
+    // A growing bearing turns the map clockwise on screen: the map turns with the fingers.
+    expect(map.cameraRuntime.currentCameraState()!.bearing, "the map turns with the fingers").toBeGreaterThan(0);
   });
 
   test("a side-by-side vertical two-finger drag tilts, a stacked one never does", () => {

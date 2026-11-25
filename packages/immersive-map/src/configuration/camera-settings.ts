@@ -264,6 +264,12 @@ export interface CameraSettings {
   readonly dragZoomFactor: number;
   readonly dragZoomVelocityFactor: number;
   readonly dragZoomVelocityLimit: number;
+  /**
+   * The bearing's change per radian two fingers (or Safari's gesture
+   * events) turn on screen, clockwise counted positive. Positive turns the
+   * map with the fingers, as a growing bearing turns the map clockwise on
+   * screen; negative turns it against them.
+   */
   readonly rotationGestureSensitivity: number;
   /**
    * Whether a double tap (a double click with a mouse) zooms the map in by
@@ -354,7 +360,7 @@ export const defaultCameraSettings: CameraSettings = deepFreeze({
   dragZoomFactor: 2,
   dragZoomVelocityFactor: 0.35,
   dragZoomVelocityLimit: 5,
-  rotationGestureSensitivity: -0.6,
+  rotationGestureSensitivity: 0.6,
   isDoubleTapZoomEnabled: true,
   tapMovementTolerancePoints: 4,
   tiltGestureSensitivity: 2,
