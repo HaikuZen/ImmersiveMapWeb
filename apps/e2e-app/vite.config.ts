@@ -93,6 +93,8 @@ export default defineConfig({
   // it under this condition for its own repository.
   resolve: { conditions: ["immersive-map-source", ...defaultClientConditions] },
   worker: { format: "es" },
-  server: { port: 5173, headers: isolation, fs: { allow: [root] } },
+  // The first free port from Vite's 5173 up, as the terminal prints it. The
+  // e2e tests start the app on a port of their own (playwright.config.ts).
+  server: { headers: isolation, fs: { allow: [root] } },
   preview: { port: 4173, headers: isolation },
 });

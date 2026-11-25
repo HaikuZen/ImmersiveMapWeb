@@ -5,7 +5,7 @@
 // map with a panel of its settings. Nothing else of the engine is shown
 // here: the playground (apps/playground) holds every sample, the smoke
 // tests' pages.
-//   npm run dev        http://localhost:5180
+//   npm run dev        (the address Vite prints)
 
 import { type FrameEvent, ImmersiveMap, ImmersiveMapGeoBounds, ImmersiveMapSettings, ImmersiveMapTileGridController, ImmersiveMapTileID } from "@artembobkin/immersive-map";
 

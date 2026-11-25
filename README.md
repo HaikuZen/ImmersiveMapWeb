@@ -101,8 +101,8 @@ To build and run the repository you need Node.js, rustup with the `wasm32-unknow
 ```sh
 npm install
 npm run build:wasm   # the Rust to Wasm
-npm run dev          # the map with the feature in work, http://localhost:5180
-npm run e2e:app      # the app the e2e tests run in, every sample, http://localhost:5173
+npm run dev          # the map with the feature in work, at the address it prints
+npm run e2e:app      # the app the e2e tests run in, every sample, at the address it prints
 npm run fixtures     # the test tiles, once
 npm run check        # types, shaders, clippy, cargo test, Vitest
 npm run e2e          # the e2e tests: Playwright in Chrome with WebGPU, in the e2e app

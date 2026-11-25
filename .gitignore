@@ -4,7 +4,7 @@ dist
 /packages/immersive-map/src/wasm
 .DS_Store
 /fixtures
-/test-results
+/tests/e2e/results
 /playwright-report
 /packages/immersive-map/dist
 /packages/immersive-map/README.md

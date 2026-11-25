@@ -5,7 +5,7 @@
 // in the reference repo) from the e2e app, for a person to compare with
 // the reference's Assets/*.avif. Not a test: it streams the public archive.
 //   npm run dev -w e2e-app      (in another terminal)
-//   node scripts/screenshots.mjs stage-1 [--only manhattan] [--base http://localhost:5173]
+//   node scripts/screenshots.mjs stage-1 --base <the address it printed> [--only manhattan]
 // Each view is 2400 x 1720 pixels at 2 pixels per point, as the reference renders it.
 
 import { mkdir, readFile } from "node:fs/promises";
@@ -19,7 +19,11 @@ const option = (name, fallback) => {
   const i = args.indexOf(`--${name}`);
   return i >= 0 ? args[i + 1] : fallback;
 };
-const base = option("base", "http://localhost:5173");
+const base = option("base", undefined);
+if (base === undefined) {
+  console.error("Name the e2e app's address: --base http://localhost:<port>, as `npm run e2e:app` printed it.");
+  process.exit(1);
+}
 const only = option("only", undefined);
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const frames = JSON.parse(await readFile(join(root, "../ImmersiveMap/Tools/ReadmeFrames/frames.json"), "utf8"));

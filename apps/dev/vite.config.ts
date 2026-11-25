@@ -9,5 +9,6 @@ const root = resolve(import.meta.dirname, "../..");
 export default defineConfig({
   resolve: { conditions: ["immersive-map-source", ...defaultClientConditions] },
   worker: { format: "es" },
-  server: { port: 5180, strictPort: true, fs: { allow: [root] } },
+  // The first free port from Vite's 5173 up, as the terminal prints it.
+  server: { fs: { allow: [root] } },
 });
