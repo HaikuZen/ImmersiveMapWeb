@@ -61,17 +61,16 @@ export const LayerPickMath = {
     let step = 1e-3;
     for (let iteration = 0; iteration < 32; iteration++) {
       const here = project(world);
-      const east = project([world[0] + step, world[1]]);
-      const south = project([world[0], world[1] + step]);
-      if (here === undefined || east === undefined || south === undefined) return undefined;
-      const jacobian: Matrix2 = [(east[0] - here[0]) / step, (east[1] - here[1]) / step, (south[0] - here[0]) / step, (south[1] - here[1]) / step];
+      if (here === undefined) return undefined;
+      const measured = slopeAt(world, here, step, project);
+      if (measured === undefined) return undefined;
+      const jacobian = measured.jacobian;
+      step = measured.step;
       const determinant = jacobian[0] * jacobian[3] - jacobian[2] * jacobian[1];
       if (!(Math.abs(determinant) > Number.MIN_VALUE)) return undefined;
       const residual: [number, number] = [pixel[0] - here[0], pixel[1] - here[1]];
       const distance = Math.hypot(residual[0], residual[1]);
       if (distance < 0.25) return new LayerPickPlace(world, jacobian);
-      const slope = Math.max(Math.hypot(jacobian[0], jacobian[1]), Math.hypot(jacobian[2], jacobian[3]));
-      step = Math.min(Math.max(4 / slope, 1e-13), 1e-3);
 
       // The whole step, or the largest part of it that comes nearer: under a
       // tilted camera a whole step can cross the horizon.
@@ -187,6 +186,42 @@ export const LayerPickMath = {
     return false;
   },
 } as const;
+
+/** The step the slope is measured over: a few pixels on screen. */
+const slopeStepPixels = 4;
+
+/**
+ * The slope of `project` at `world` (whose pixel is `here`), measured over a
+ * step of a few pixels, and that step. It starts from `step` and is
+ * shortened while it is longer than a few pixels on screen, since under a
+ * tilted camera the slope over a longer step is not the slope here and sends
+ * the search the wrong way, and while it leaves the map (behind the camera,
+ * past the horizon), where it says nothing at all: a thousandth of the
+ * world, where the search starts, is tens of tiles at a street's zoom.
+ */
+function slopeAt(
+  world: World,
+  here: readonly [number, number],
+  step: number,
+  project: (world: World) => readonly [number, number] | undefined,
+): { readonly jacobian: Matrix2; readonly step: number } | undefined {
+  for (let attempt = 0; attempt < 16; attempt++) {
+    const east = project([world[0] + step, world[1]]);
+    const south = project([world[0], world[1] + step]);
+    if (east === undefined || south === undefined) {
+      step /= 8;
+      if (!(step > 1e-13)) return undefined;
+      continue;
+    }
+    const jacobian: Matrix2 = [(east[0] - here[0]) / step, (east[1] - here[1]) / step, (south[0] - here[0]) / step, (south[1] - here[1]) / step];
+    const slope = Math.max(Math.hypot(jacobian[0], jacobian[1]), Math.hypot(jacobian[2], jacobian[3]));
+    const fitting = Math.min(Math.max(slopeStepPixels / slope, 1e-13), 1e-3);
+    // Within a factor of two of a few pixels: the slope is the one here.
+    if (!(step > fitting * 2) || attempt === 15) return { jacobian, step: fitting };
+    step = fitting;
+  }
+  return undefined;
+}
 
 function invert(m: Matrix2): Matrix2 | undefined {
   const determinant = m[0] * m[3] - m[2] * m[1];

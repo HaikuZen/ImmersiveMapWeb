@@ -2,22 +2,27 @@
 // SPDX-License-Identifier: MIT
 
 // The dev page: the one feature being worked on now, the tile grid, on a
-// map with a panel of its settings. Nothing else of the engine is shown
+// map with a panel of its settings. The grid shows the zoom 15 tiles alone
+// and holds one selected tile: a tap on another moves the selection to it.
+// The 3D building models are on. Nothing else of the engine is shown
 // here: the playground (apps/playground) holds every sample, the smoke
 // tests' pages.
 //   npm run dev        (the address Vite prints)
 
-import { type FrameEvent, ImmersiveMap, ImmersiveMapGeoBounds, ImmersiveMapSettings, ImmersiveMapTileGridController, ImmersiveMapTileID } from "@artembobkin/immersive-map";
+import { type FrameEvent, ImmersiveMap, ImmersiveMapGeoBounds, ImmersiveMapSettings, ImmersiveMapTileGridController, ImmersiveMapTileID, ImmersiveMapTilesService } from "@artembobkin/immersive-map";
 
 const element = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
 const input = (id: string): HTMLInputElement => element<HTMLInputElement>(id);
 const select = (id: string): HTMLSelectElement => element<HTMLSelectElement>(id);
 const degrees = Math.PI / 180;
 
+/** The one zoom whose tiles the grid shows and a tap selects. */
+const gridZoom = 15;
+
 const grid = new ImmersiveMapTileGridController();
 const map = await ImmersiveMap.create({
   container: element("map"),
-  camera: { center: [37.6175, 55.752], zoom: 13.2 },
+  camera: { center: [37.6175, 55.752], zoom: 15.5, pitch: 55 * degrees },
   tileGrid: grid,
 });
 
@@ -27,21 +32,21 @@ const gardenRing = ImmersiveMapGeoBounds.make({ latitude: 55.729, longitude: 37.
 /** The settings of the page's controls, over the map's defaults. */
 function settingsOfThePanel(): ImmersiveMapSettings {
   const format = select("labelFormat").value;
-  const limit = input("limit").value.trim();
   let settings = ImmersiveMapSettings.default
     .tileGridSettings({
-      zoomRange: [Number(input("zoomMin").value), Number(input("zoomMax").value)],
+      zoomRange: [gridZoom, gridZoom],
       labelFormat: format === "xyz" || format === "hidden" ? format : "zxy",
       lineWidthPoints: Number(input("lineWidth").value),
       maximumDrawnTiles: Number(input("maximumTiles").value),
       selectionGesture: select("gesture").value as "tap" | "doubleTap" | "secondaryTap",
-      selectionMode: select("mode").value as "multiple" | "single",
+      selectionMode: "single",
       isTapSelectionEnabled: input("tapEnabled").checked,
     })
-    .tileGridSelection({ limit: limit === "" ? null : Number(limit), selectableBounds: input("bounds").checked ? gardenRing : null })
+    .tileGridSelection({ limit: null, selectableBounds: input("bounds").checked ? gardenRing : null })
     .doubleTapZoom(input("doubleTapZoom").checked);
   if (input("night").checked) settings = settings.night();
   if (input("flat").checked) settings = settings.globe({ isEnabled: false });
+  settings = settings.modelArchive(input("models").checked ? ImmersiveMapTilesService.modelArchiveURL : null);
   return settings;
 }
 
@@ -75,8 +80,9 @@ grid.onTapRejected = (rejection) => log(`rejected ${ImmersiveMapTileID.key(rejec
 element("clear").addEventListener("click", () => grid.clearSelection());
 element("selectView").addEventListener("click", () => {
   const view = map.view;
-  const zoom = Math.min(Math.max(Math.floor(view.zoom), Number(input("zoomMin").value)), Number(input("zoomMax").value));
-  grid.toggle(ImmersiveMapTileID.containing({ latitude: view.center[1], longitude: view.center[0] }, zoom));
+  const tile = ImmersiveMapTileID.containing({ latitude: view.center[1], longitude: view.center[0] }, gridZoom);
+  // As a tap does: the selection moves to the tile, or leaves it when it is the one selected.
+  grid.setSelectedTiles(grid.isSelected(tile) ? [] : [tile]);
 });
 for (const button of document.querySelectorAll<HTMLButtonElement>("#panel button[data-view]")) {
   button.addEventListener("click", () => {
