@@ -3,15 +3,15 @@
 
 import { type ImmersiveMap, ImmersiveMapSceneModel, ImmersiveMapSelectionController } from "@artembobkin/immersive-map";
 
-/** The playground's `models=1`: the app's own 3D models near the default view (the centre of Moscow), from the playground's own files, so nothing leaves the machine. */
+/** The e2e app's `models=1`: the app's own 3D models near the default view (the centre of Moscow), from the e2e app's own files, so nothing leaves the machine. */
 const centre = { latitude: 55.752, longitude: 37.6175 };
 
 /**
- * Stands two copies of the sample glTF tower (apps/playground/public/models/test-tower.gltf)
+ * Stands two copies of the sample glTF tower (apps/e2e-app/public/models/test-tower.gltf)
  * sized to 120 m, one turned and one sunk into the ground with its ground
  * cut, and the Spot model (OBJ) beside them. A selection controller makes a
  * tap select a model, and the taps and selections are counted on
- * `window.sampleSceneModelEvents` for the smoke test.
+ * `window.sampleSceneModelEvents` for the e2e test.
  */
 export function addSampleSceneModels(map: ImmersiveMap): void {
   map.sceneModels.set([

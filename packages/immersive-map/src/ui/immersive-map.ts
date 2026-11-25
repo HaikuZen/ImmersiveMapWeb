@@ -400,7 +400,7 @@ export class ImmersiveMapRenderer {
   private static async build(options: ImmersiveMapBuildOptions): Promise<ImmersiveMapRenderer> {
     let settings = options.settings ?? ImmersiveMapSettings.default;
     if (options.url !== undefined) settings = settings.tileArchive(options.url, settings.tiles.network.tileRequestHeaders);
-    // The frame Wasm module (the planner, decision B4) loads beside the GPU and the glyphs.
+    // The frame Wasm module (the planner) loads beside the GPU and the glyphs.
     const [gpu, atlasMetrics] = await Promise.all([createGpuContext(), fetchLabelAtlasMetrics(), initFrameWasm()]);
     const glyphs = atlasMetrics.glyphs;
     // The coverage plans by the archive's depth as last read (the Swift `resolvingArchiveDepth`).
@@ -493,7 +493,7 @@ export class ImmersiveMapRenderer {
     this.globeBuffer = device.createBuffer({ label: "globe", size: GlobeFrameUniformLayout.byteLength, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
     this.shadows = new ShadowFrameRuntime(device);
     // The ground relief: the terrain store, its frame state and its GPU side
-    // (decision B10 computes the occlusion of the sky on the GPU).
+    // (the occlusion of the sky is computed on the GPU).
     this.occlusionGpu = settings.tiles.groundRelief.isEnabled ? new GroundReliefOcclusionGpu(device) : undefined;
     const occlusionGpu = this.occlusionGpu;
     this.reliefGpu = new GroundReliefGpu(device, pipelines.reliefLayout, occlusionGpu === undefined ? undefined : (heights, tile, key) => occlusionGpu.compute(heights, tile, key));

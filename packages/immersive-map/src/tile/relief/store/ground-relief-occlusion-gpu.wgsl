@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-// The terrain's occlusion of the sky (decision B10), the Swift
+// The terrain's occlusion of the sky, the Swift
 // `GroundReliefOcclusion.compute` as a compute shader over the relief's
 // r16float height texture: one invocation per point of the grid, the same
 // rays (the texel offsets and one over the metres of each step, built on

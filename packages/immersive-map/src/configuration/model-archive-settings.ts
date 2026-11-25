@@ -53,7 +53,7 @@ export interface ModelArchiveSettings {
    * (`ImmersiveMapTilesService.modelArchiveURL`). The Swift engine reads the
    * hosted archive by default. The web port leaves it off for now because
    * the hosted Kremlin tile alone takes the GPU frame past its budget at
-   * zoom 14 (docs/STATUS.md, stage 7).
+   * zoom 14.
    */
   readonly archiveURL: string | null;
   /** HTTP header fields added to every archive request, for credentials that travel as headers. */

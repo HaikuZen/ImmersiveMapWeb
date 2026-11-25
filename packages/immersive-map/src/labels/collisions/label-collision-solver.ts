@@ -18,9 +18,7 @@
  *
  * The solve runs in Rust/Wasm on the main thread (crates/frame-wasm,
  * `collisions.rs`): it beat the same solver in TypeScript by about 1.8 times
- * with the copies across the boundary counted (docs/benchmarks/B04-labels.md).
- * The TypeScript solver is kept for the benchmark only
- * (apps/playground/src/bench/ts-label-collision-solver.ts).
+ * with the copies across the boundary counted.
  */
 
 import { assertFrameWasm } from "../../frame/frame-wasm.ts";

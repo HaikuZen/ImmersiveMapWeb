@@ -81,7 +81,7 @@ const maximumEncodeQueueSize = 3;
  * map: every frame waits for its tiles, the frame rate is exact, the export
  * runs as fast as the GPU and the encoder allow rather than in real time,
  * and the map on screen stays interactive. The frames go to WebCodecs'
- * `VideoEncoder` straight from the offscreen canvas (decision B20) and into
+ * `VideoEncoder` straight from the offscreen canvas and into
  * an MP4 file of the library's own muxer. The pins are drawn from a copy of
  * their state at the start, the annotations are rasterized once and drawn
  * over each frame at their projected points, and both can be left out by the

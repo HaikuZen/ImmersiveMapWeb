@@ -23,7 +23,7 @@
  * The per-draw records are larger than the shared ones (a matrix, the
  * ground plane and the base colour, 128 bytes), so they live in a storage
  * buffer of the subsystem's own, read at the draw's `firstInstance` as the
- * shared ones are (decision B6), written once a frame (`flush`).
+ * shared ones are, written once a frame (`flush`).
  */
 
 import { Frustum } from "../camera/frustum.ts";

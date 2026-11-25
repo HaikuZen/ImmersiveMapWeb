@@ -14,7 +14,7 @@
  *   that draws (`SurfaceLabelSelection`) and draws it in the world pass, on
  *   the flat map, the sphere and through the unroll, halos first.
  *
- * Every draw takes a record of the frame's draw parameters (decision B6):
+ * Every draw takes a record of the frame's draw parameters:
  * its style and its tile's first label ride in the record, so a run of a
  * tile is one draw with no uniform write.
  */

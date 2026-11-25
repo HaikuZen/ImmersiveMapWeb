@@ -10,14 +10,14 @@
  * worker's own Wasm (crates/model-wasm, the port of `ModelTileFormat`).
  * What goes back is the tile as the GPU takes it: its vertex and index
  * blocks and its texture, the ASTC blocks as stored, or decoded to RGBA8 on
- * a GPU without ASTC (decision B14), each transferred.
+ * a GPU without ASTC, each transferred.
  *
  * The archive is a PMTiles file like the map's, read by the same client:
  * the header and the directory once, then one range request per tile. A
  * tile the directory does not list costs no request, which matters here
  * because most of the map has no models.
  *
- * The disk cache (IndexedDB, decision B12) is a database of its own, under
+ * The disk cache (IndexedDB) is a database of its own, under
  * the archive's URL, with its own quota. An entry remembers the archive's
  * ETag: an archive published under one fixed name and overwritten is read
  * again, the tiles kept under the old upload missing (and pushed out by the

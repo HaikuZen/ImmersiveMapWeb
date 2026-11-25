@@ -73,7 +73,7 @@ export function rangeStart(contentRange: string): number | undefined {
 export async function inflate(bytes: Uint8Array<ArrayBuffer>, compression: number): Promise<Uint8Array<ArrayBuffer>> {
   if (compression === COMPRESSION_NONE || compression === 0) return bytes;
   if (compression !== COMPRESSION_GZIP) throw new Error(`compression ${compression} is not supported`);
-  // Fed through the writer, not Blob.stream(): 35% faster (docs/benchmarks/B02-inflate.md).
+  // Fed through the writer, not Blob.stream(): 35% faster.
   const stream = new DecompressionStream("gzip");
   const writer = stream.writable.getWriter();
   void writer.write(bytes);

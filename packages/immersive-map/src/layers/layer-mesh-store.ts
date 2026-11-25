@@ -30,8 +30,8 @@ export interface LayerMesh {
 export type LayerMeshFactory = (key: LayerMeshKey, file: ArrayBuffer) => LayerMesh | undefined;
 
 /**
- * The GPU form of a mesh file (decision B3: the buffers are made mapped at
- * creation and filled from the file's blocks), `undefined` for a file that
+ * The GPU form of a mesh file (the buffers are made mapped at creation
+ * and filled from the file's blocks), `undefined` for a file that
  * is not a mesh of this version.
  */
 export function gpuLayerMesh(device: GPUDevice, key: LayerMeshKey, file: ArrayBuffer): LayerMesh | undefined {

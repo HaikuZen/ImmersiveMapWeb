@@ -6,7 +6,7 @@
 // for, run on in-memory assets through an injected I/O: no DOM, no network.
 
 import { describe, expect, test } from "vitest";
-import towerSource from "../../../../../apps/playground/public/models/test-tower.gltf?raw";
+import towerSource from "../../../../../apps/e2e-app/public/models/test-tower.gltf?raw";
 import { mat4TransformVec4 } from "../../math/matrix.ts";
 import { makeSceneModelBounds } from "../scene-model-bounds.ts";
 import { type SceneModelAssetData, type SceneModelAssetIO, SceneModelAssetLoadError, type SceneModelAssetMesh, sceneModelAssetGeometryBytes, SceneModelVertexLayout } from "./scene-model-asset-data.ts";
@@ -615,7 +615,7 @@ describe("glTF", () => {
     await expectLoadError(parseSceneModelAsset({ bytes: outOfRange.toGltf(), url: assetURL, format: "gltf" }, makeIO()), "meshConversionFailed");
   });
 
-  test("the playground's test tower reads as a textured box standing on its origin", async () => {
+  test("the e2e app's test tower reads as a textured box standing on its origin", async () => {
     const url = "https://example.test/models/test-tower.gltf";
     const data = await parseSceneModelAsset({ bytes: bytesOf(towerSource), url, format: "gltf" }, makeIO());
     expect(data.meshes).toHaveLength(1);

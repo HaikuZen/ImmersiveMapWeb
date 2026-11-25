@@ -4,7 +4,7 @@
 import type { ImmersiveMap } from "@artembobkin/immersive-map";
 
 /**
- * The playground's `layers=1`: a sample of the app's own data over central
+ * The e2e app's `layers=1`: a sample of the app's own data over central
  * Moscow (public/layers/moscow.geojson, served with the page): zones with
  * their own simplestyle colours, two lines and a few stations, drawn by two
  * layers of the one source, the zones and the stations in one, the lines

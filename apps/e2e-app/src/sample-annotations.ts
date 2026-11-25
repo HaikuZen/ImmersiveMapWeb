@@ -3,7 +3,7 @@
 
 import { type GeoCoordinate, type ImmersiveMap, geoCoordinate } from "@artembobkin/immersive-map";
 
-/** A sample annotation of the playground's `annotations=1`: a place and how it shows. */
+/** A sample annotation of the e2e app's `annotations=1`: a place and how it shows. */
 interface SamplePlace {
   readonly id: string;
   readonly name: string;

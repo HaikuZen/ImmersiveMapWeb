@@ -13,7 +13,7 @@
 //   their own (`x.wgsl.js`, the source text as the default export), so the
 //   package asks nothing of the bundler beyond ES modules and `new URL`.
 // - The workers' URLs and the declarations' imports move from `.ts` to `.js`.
-// - The runtime Wasm modules (not the benchmarks') are copied next to the code.
+// - The runtime Wasm modules are copied next to the code.
 // - The package's README is the repository's, with its links made absolute
 //   (npm shows it away from the repository), and the LICENSE is copied.
 //

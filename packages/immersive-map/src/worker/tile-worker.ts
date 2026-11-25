@@ -11,8 +11,7 @@
  * Wasm parser and saves the result. A download keeps its bytes here under a
  * handle until the CPU stage of the same tile takes them, so the bytes never
  * cross to the main thread. Prepared tiles go back as transferred buffers.
- * The relief's terrain tiles are fetched and decoded here too (decision B9,
- * the Wasm decoder), their heights sent back as transferred half floats.
+ * The relief's terrain tiles are fetched and decoded here too (in Wasm), their heights sent back as transferred half floats.
  */
 
 import init, { Archive, decodeTerrainTile, LocateKind, TileParser as TileParser_ } from "../wasm/worker_wasm/worker_wasm.js";

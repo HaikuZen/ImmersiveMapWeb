@@ -3,8 +3,7 @@
 
 //! The binding of the tile grid's frame (`map_frame::tile_grid`): which
 //! tiles the grid draws under a camera, the selected among them and the
-//! glyphs of their texts, in one call a frame
-//! (docs/benchmarks/B23-tile-grid.md). The selection and the texts are
+//! glyphs of their texts, in one call a frame. The selection and the texts are
 //! copied in when they change and stay in Wasm memory, and the frame's
 //! tiles and glyphs are read back from the module's memory at the addresses
 //! the header gives, as the GPU takes them. The TypeScript side is

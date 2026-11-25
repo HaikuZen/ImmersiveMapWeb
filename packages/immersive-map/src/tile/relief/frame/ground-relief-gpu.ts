@@ -16,7 +16,7 @@ export interface GpuReliefTexture extends ReliefTexture {
 }
 
 /**
- * Where decision B10 computes a tile's occlusion of the sky: on the GPU,
+ * Where a tile's occlusion of the sky: on the GPU,
  * from the tile's heights texture, into an `r8unorm` texture of the key's
  * resolution (`GroundReliefOcclusionGpu.compute`).
  */
@@ -105,9 +105,8 @@ export class GroundReliefGpu implements GroundReliefTextures {
 
   /**
    * A tile's occlusion of the sky, computed on the GPU from the tile's
-   * heights (decision B10), queued before the frame that first draws it.
-   * `milliseconds` is the main thread's encode, the GPU's own time is in
-   * docs/benchmarks/B10-occlusion.md.
+   * heights, queued before the frame that first draws it.
+   * `milliseconds` is the main thread's encode, not the GPU's own time.
    */
   occlusion(tile: Tile, terrain: GroundReliefTile, key: GroundReliefOcclusionKey): { texture: ReliefTexture; milliseconds: number } | undefined {
     if (!(key.resolution > 0 && key.radiusMetres > 0) || this.computeOcclusion === undefined) return undefined;

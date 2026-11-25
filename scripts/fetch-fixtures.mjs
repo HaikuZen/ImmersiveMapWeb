@@ -1,7 +1,7 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-// Downloads the fixed set of real tiles the tests and benchmarks run on into
+// Downloads the fixed set of real tiles the tests run on into
 // fixtures/ (git-ignored), so neither ever touches the network. Run once:
 //   node scripts/fetch-fixtures.mjs
 // The map tiles are stored as the archive serves them (gzip), the terrain

@@ -12,7 +12,7 @@ import type { Tile } from "../../tile/tile.ts";
 /** The database the model tiles are kept in, apart from the prepared map tiles' and their quota. */
 export const modelTileDatabaseName = "immersive-map-model-tiles";
 
-/** How the worker prepares a tile's textures: the ASTC blocks as stored, or decoded to RGBA8 for a GPU without `texture-compression-astc` (decision B14). */
+/** How the worker prepares a tile's textures: the ASTC blocks as stored, or decoded to RGBA8 for a GPU without `texture-compression-astc`. */
 export type ModelTileTextureMode = "astc" | "rgba8";
 
 export interface ModelTileWorkerConfig {

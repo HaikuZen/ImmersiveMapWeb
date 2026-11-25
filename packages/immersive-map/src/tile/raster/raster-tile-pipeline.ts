@@ -54,7 +54,7 @@ const bakeVertexLayout: GPUVertexBufferLayout = {
 export interface RasterTileLayouts {
   /** The tile pipelines' frame group (camera, overview fade). */
   readonly frameLayout: GPUBindGroupLayout;
-  /** The per-draw storage array (decision B6). */
+  /** The per-draw storage array. */
   readonly drawLayout: GPUBindGroupLayout;
   /** A ground layer's style tables. */
   readonly stylesLayout: GPUBindGroupLayout;

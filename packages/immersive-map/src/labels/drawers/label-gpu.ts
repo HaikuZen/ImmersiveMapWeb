@@ -9,7 +9,7 @@
  * the per-frame buffers the screen label shaders read.
  *
  * The atlases are lossless WebP decoded by `createImageBitmap` with no
- * premultiplication and no colour conversion (docs/benchmarks/B13-atlas.md):
+ * premultiplication and no colour conversion:
  * every channel of a distance field is significant.
  */
 

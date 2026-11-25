@@ -4,18 +4,15 @@
 import { type ImmersiveMap, ImmersiveMapTileGridController, ImmersiveMapTileID } from "@artembobkin/immersive-map";
 
 /**
- * The playground's `grid=1`: the tile grid over the map, a tap on a tile
+ * The e2e app's `grid=1`: the tile grid over the map, a tap on a tile
  * selecting it. `gridZoom=15` shows the tiles of one zoom alone,
  * `gridGesture=doubleTap` (or `secondaryTap`) selects by another gesture,
  * `gridMode=single` holds one tile at a time, `gridLimit=5` caps the
  * selection, `gridSelect=15/19805/10240,15/19806/10240` selects from the
- * start, `gridNames=1` writes a text of the page's own inside each tile and
- * `gridFrames=0` draws every tile whole (the measurement's other variant,
- * docs/benchmarks/B23-tile-grid.md). The selection and the taps turned away
+ * start and `gridNames=1` writes a text of the page's own inside each tile. The selection and the taps turned away
  * are kept in `window.tileGrid` and `window.tileGridEvents`.
  */
-export function addSampleTileGrid(map: ImmersiveMap, params: URLSearchParams): void {
-  const grid = new ImmersiveMapTileGridController();
+export function addSampleTileGrid(map: ImmersiveMap, params: URLSearchParams, grid = new ImmersiveMapTileGridController()): void {
   const events: unknown[] = [];
   grid.onSelectionChanged = (change) => events.push({ kind: "selection", added: change.added.map(ImmersiveMapTileID.key), removed: change.removed.map(ImmersiveMapTileID.key), source: change.source, count: change.selectedTiles.length });
   grid.onTapRejected = (rejection) => events.push({ kind: "rejected", tile: ImmersiveMapTileID.key(rejection.tile), reason: rejection.reason.kind });

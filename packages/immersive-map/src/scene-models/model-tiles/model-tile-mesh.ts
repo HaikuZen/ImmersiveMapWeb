@@ -15,7 +15,7 @@
  *
  * The texture is the archive's ASTC blocks where the device samples ASTC
  * (`texture-compression-astc`), and RGBA8 decoded in the worker elsewhere
- * (decision B14, docs/benchmarks/B14-model-textures.md). Swift draws no
+ *. Swift draws no
  * models on a GPU without ASTC.
  */
 

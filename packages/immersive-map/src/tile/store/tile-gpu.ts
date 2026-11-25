@@ -248,7 +248,7 @@ export function readLabelSpans(meta: TileArenaMeta): GpuTileLabels {
 
 /**
  * Uploads a prepared tile: one buffer created mapped and filled in place
- * (docs/benchmarks/B03-transfer.md), the layers' views and style bind groups.
+ * (transferred, then `mappedAtCreation`), the layers' views and style bind groups.
  * Throws when the span table does not match the slot sequence: the caller
  * reports the image unreadable.
  */

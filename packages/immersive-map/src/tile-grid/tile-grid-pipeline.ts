@@ -110,7 +110,8 @@ const glyphBuffers: GPUVertexBufferLayout[] = [
  * The pipelines of the tile grid (tile-grid.wgsl), the Swift
  * `TileGridPipeline`: the patch of a selected tile, which carries its fill
  * and its border, the frame of a tile that is not selected, its border
- * alone (docs/benchmarks/B23-tile-grid.md), and the glyphs of the texts,
+ * alone, which costs the GPU 2 to 10 times less than a whole patch for the
+ * same picture, and the glyphs of the texts,
  * each in one variant per surface the ground is drawn on, in the overlay
  * pass's formats and its one sample, blended over the frame and tested
  * against no depth. With them the buffers a frame's grid is written into
@@ -124,13 +125,6 @@ export class TileGridPipeline {
   static readonly latticeSide = 64;
   /** How many quads along a side a patch may be drawn with, each a run of indices over the one lattice. */
   static readonly subdivisions: readonly number[] = [1, 4, 8, 16, 32, 64];
-
-  /**
-   * Whether a tile that is not selected is drawn as the frame of its border
-   * and not as a whole patch. On: the measurement's verdict. Off draws
-   * every tile as the Swift engine does, for the measurement to compare.
-   */
-  drawsFrames = true;
 
   private readonly layout: GPUBindGroupLayout;
   private readonly sampler: GPUSampler;
@@ -279,14 +273,13 @@ export class TileGridPipeline {
       pass.drawIndexed(range.count, count, range.first, 0, first);
       draws++;
     };
-    const patchFirst = this.drawsFrames ? draw.plainCount : 0;
-    if (draw.otherCount > 0 || gridCount > patchFirst) {
+    if (draw.otherCount > 0 || draw.selectedCount > 0) {
       pass.setPipeline(states.patch);
       pass.setIndexBuffer(this.latticeIndices, "uint16");
       patches(gridCount, draw.otherCount, draw.otherSubdivision);
-      patches(patchFirst, gridCount - patchFirst, draw.gridSubdivision);
+      patches(draw.plainCount, draw.selectedCount, draw.gridSubdivision);
     }
-    if (this.drawsFrames && draw.plainCount > 0) {
+    if (draw.plainCount > 0) {
       pass.setPipeline(states.frame);
       // Four sides, each a run of quads.
       pass.draw(24 * draw.gridSubdivision, draw.plainCount, 0, 0);

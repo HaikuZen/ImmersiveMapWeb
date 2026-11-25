@@ -171,7 +171,7 @@ export class ModelPipelines {
     this.sceneModelSampler = device.createSampler({ label: "scene model textures", minFilter: "linear", magFilter: "linear", mipmapFilter: "linear", addressModeU: "repeat", addressModeV: "repeat" });
   }
 
-  /** The shared per-draw records' layout the model tiles read (decision B6). */
+  /** The shared per-draw records' layout the model tiles read. */
   get standingDrawLayout(): GPUBindGroupLayout {
     return this.standing.drawLayout;
   }

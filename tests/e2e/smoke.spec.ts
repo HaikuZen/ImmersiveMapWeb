@@ -5,7 +5,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 const ARCHIVE = "/fixtures/fixtures.pmtiles";
 
-/** Opens the playground at a view of the fixture archive and checks that a frame draws its tiles with no error. */
+/** Opens the e2e app at a view of the fixture archive and checks that a frame draws its tiles with no error. */
 async function drawsWithoutError(page: Page, view: string, minimumTiles: number): Promise<void> {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));

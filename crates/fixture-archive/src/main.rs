@@ -3,7 +3,7 @@
 
 //! Packs the fixture tiles (fixtures/tiles/<z>-<x>-<y>.mvt.gz, as fetched by
 //! scripts/fetch-fixtures.mjs) into fixtures/fixtures.pmtiles, the local
-//! archive the smoke tests and the playground read with no network, and the
+//! archive the e2e tests and the e2e app read with no network, and the
 //! fixture model tiles (fixtures/models/<z>-<x>-<y>.immt, decompressed) into
 //! fixtures/models.pmtiles, a local model archive of the same format as the
 //! hosted one (gzip tiles, tile type unknown):

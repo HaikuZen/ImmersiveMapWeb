@@ -3,7 +3,7 @@
 
 import { type ImmersiveMap, ImmersiveMapPin, ImmersiveMapSelectionController, PinImageFactory, type PinImage } from "@artembobkin/immersive-map";
 
-/** The playground's `pins=1`: pins near the default view (the centre of Moscow) with pictures drawn locally, so nothing is fetched. */
+/** The e2e app's `pins=1`: pins near the default view (the centre of Moscow) with pictures drawn locally, so nothing is fetched. */
 const centre = { latitude: 55.752, longitude: 37.6175 };
 
 const palette = ["rgb(46, 51, 61)", "rgb(181, 62, 52)", "rgb(42, 111, 151)", "rgb(57, 129, 72)", "rgb(158, 104, 31)", "rgb(103, 64, 150)"];
@@ -13,7 +13,7 @@ const palette = ["rgb(46, 51, 61)", "rgb(181, 62, 52)", "rgb(42, 111, 151)", "rg
  * a dense pile of event pins (a flower), and a merged group with a
  * counter. A selection controller makes a tap select a pin, and the
  * counts of taps and selections are kept on `window.samplePinEvents` for
- * the smoke test.
+ * the e2e test.
  */
 export function addSamplePins(map: ImmersiveMap): void {
   const pictures: PinImage[] = palette.map((color, index) => PinImageFactory.number(index + 1, 128, color));

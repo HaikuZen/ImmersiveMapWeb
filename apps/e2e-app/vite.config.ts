@@ -4,7 +4,7 @@ import { defaultClientConditions, defineConfig, type Connect, type Plugin } from
 
 const root = resolve(import.meta.dirname, "../..");
 
-/** Serves the repository's fixtures/ (git-ignored real tiles) at /fixtures, for the benchmarks and the smoke tests. */
+/** Serves the repository's fixtures/ (git-ignored real tiles) at /fixtures, for the e2e tests. */
 function fixtures(): Plugin {
   const middleware: Connect.NextHandleFunction = (request, response, next) => {
     const url = request.url ?? "";
@@ -39,7 +39,7 @@ function fixtures(): Plugin {
   };
 }
 
-/** Dev only: `POST /__trace` saves the playground's `trace=1` record to fixtures/trace.json (git-ignored). */
+/** Dev only: `POST /__trace` saves the e2e app's `trace=1` record to fixtures/trace.json (git-ignored). */
 function traceSink(): Plugin {
   return {
     name: "trace-sink",
@@ -57,7 +57,7 @@ function traceSink(): Plugin {
   };
 }
 
-/** Dev only: `POST /__log` appends the playground's `remotelog=1` records to fixtures/remote-log.jsonl (git-ignored). */
+/** Dev only: `POST /__log` appends the e2e app's `remotelog=1` records to fixtures/remote-log.jsonl (git-ignored). */
 function remoteLogSink(): Plugin {
   const middleware: Connect.NextHandleFunction = (request, response, next) => {
     if (request.url !== "/__log" || request.method !== "POST") return next();
@@ -78,21 +78,17 @@ function remoteLogSink(): Plugin {
   };
 }
 
-// Cross-origin isolation gives performance.now() microsecond resolution for
-// the measurements. The library itself does not need it.
+// Cross-origin isolation gives performance.now() microsecond resolution. The
+// library itself does not need it.
 const isolation = {
   "Cross-Origin-Opener-Policy": "same-origin",
   "Cross-Origin-Embedder-Policy": "credentialless",
 };
 
-const pages = ["index", "bench", "bench-prep", "bench-inflate", "bench-transfer", "bench-storage", "bench-atlas", "bench-encode", "bench-planner", "bench-labels", "bench-pins", "bench-lines", "bench-layer-lines", "bench-terrain", "bench-geojson", "bench-threads", "bench-offscreen", "bench-precision", "bench-antialias", "bench-occlusion", "bench-export", "bench-models", "bench-tile-grid"];
 
 export default defineConfig({
   plugins: [fixtures(), traceSink(), remoteLogSink()],
-  build: {
-    target: "esnext",
-    rollupOptions: { input: Object.fromEntries(pages.map((p) => [p, resolve(import.meta.dirname, `${p}.html`)])) },
-  },
+  build: { target: "esnext" },
   // The library's TypeScript source, not its built dist: the package exports
   // it under this condition for its own repository.
   resolve: { conditions: ["immersive-map-source", ...defaultClientConditions] },

@@ -11,7 +11,7 @@
 // the Metal point sprite had, in pixels, and the quad's corner stands in
 // for the sprite's point coordinate. The sprite's terms are unit-range, the
 // Metal shader evaluates them in half: here they are f32 (f16 waits on
-// benchmark B15).
+// it measured no faster).
 
 struct StarfieldParams {
     /// The stars' own projection times the camera's view.

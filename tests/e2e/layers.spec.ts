@@ -27,7 +27,7 @@ async function watchLayerFrames(page: Page): Promise<void> {
 
 test("the layers of the app's data draw a local GeoJSON on the flat map, and a tap on a zone reports it", async ({ page }) => {
   const errors = collectErrors(page);
-  // Central Moscow: the sample's zones, lines and stations (apps/playground/public/layers/moscow.geojson).
+  // Central Moscow: the sample's zones, lines and stations (apps/e2e-app/public/layers/moscow.geojson).
   await page.goto(`/?archive=${ARCHIVE}&lon=37.6175&lat=55.752&zoom=14.2&layers=1`);
   await page.waitForFunction(() => (window as any).tileStats?.length >= 4, null, { timeout: 30_000 });
   await watchLayerFrames(page);

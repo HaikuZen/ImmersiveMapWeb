@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 //! The binding of the label collision solve (`map_frame::collisions`), the
-//! Wasm side of benchmark B4 (labels): the same algorithm as the TypeScript
-//! solver (packages/immersive-map/src/labels/collisions/
-//! label-collision-solver.ts). Everything crosses the boundary as flat typed
+//! engine's solver, which replaced the TypeScript one
+//! (packages/immersive-map/src/labels/collisions/label-collision-solver.ts
+//! is its adapter). Everything crosses the boundary as flat typed
 //! arrays: the base ranks once per topology change, the boxes and the road
 //! items every solve, the decisions back.
 

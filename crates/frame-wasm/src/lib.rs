@@ -2,11 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 //! The per-frame logic the main thread runs in Wasm, where the measurements
-//! found it faster than TypeScript: the tile placement planner
-//! (docs/benchmarks/B04-planner.md), the label collision solve
-//! (docs/benchmarks/B04-labels.md) and the pin collision layout
-//! (docs/benchmarks/B04-pins.md), the frame's tile coverage and the tile
-//! grid's frame (docs/benchmarks/B23-tile-grid.md). The logic is
+//! found it faster than TypeScript: the tile placement planner, the label
+//! collision solve, the pin collision layout, the frame's tile coverage and
+//! the tile grid's frame. The logic is
 //! the `map-frame` and `map-visibility` crates of ImmersiveMapCore, shared
 //! with the other hosts, and this module is their binding to JavaScript.
 

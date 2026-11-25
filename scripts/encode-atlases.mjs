@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 // Writes the Swift engine's MTSDF text atlases (raw BGRA) in every delivery
-// format benchmark B13 compares, into fixtures/atlas/:
+// format it was delivered in once, into fixtures/atlas/:
 //   <name>.rgba        raw RGBA, row major, top row first
 //   <name>.rgba.gz     the same, gzip -9 (inflated in the browser by DecompressionStream)
 //   <name>.png         lossless PNG, per-row adaptive filters, zlib 9

@@ -4,15 +4,14 @@
 import shaderSource from "./ground-relief-occlusion-gpu.wgsl?raw";
 
 /**
- * The terrain tiles' occlusion of the sky on the GPU (decision B10,
- * docs/benchmarks/B10-occlusion.md), the Swift `GroundReliefOcclusion`: for
+ * The terrain tiles' occlusion of the sky on the GPU, the Swift `GroundReliefOcclusion`: for
  * a grid of `resolution` points a side over a tile, the mean over
  * `directions` directions of the sine of the horizon's elevation, the
  * steepest line of sight to the terrain out to the radius, 255 for a point
  * that sees no sky. A compute shader reads the relief's own `r16float`
  * height texture and writes an `r8unorm` texture, the same bytes the Swift
- * engine computes on the CPU (checked by the benchmark against the Rust
- * port in crates/bench-wasm). The terrain is read within the tile alone.
+ * engine computes on the CPU (checked against a Rust port when it was
+ * ported). The terrain is read within the tile alone.
  *
  * The rays (texel offsets and one over the metres of each step) are built
  * here in f32 exactly as Swift builds them, so the offsets round alike.

@@ -67,6 +67,16 @@ test("the tile grid draws on the flat map, and a tap selects the tile under it a
   expect(errors).toEqual([]);
 });
 
+test("a grid handed to the map as it is built is drawn by its first frames", async ({ page }) => {
+  const errors = collectErrors(page);
+  await page.goto(`/?archive=${ARCHIVE}&lon=37.6175&lat=55.752&zoom=13.2&grid=1&gridAtCreate=1&gridZoom=15&gridSelect=15/19808/10243`);
+  await page.waitForFunction(() => (window as any).tileStats?.length >= 1, null, { timeout: 30_000 });
+  await watchGridFrames(page);
+  await page.waitForFunction(() => (window as any).gridFrame?.tiles >= 12, null, { timeout: 30_000 });
+  expect(await selected(page)).toEqual(["15/19808/10243"]);
+  expect(errors).toEqual([]);
+});
+
 test("the tile grid draws on the globe and through the unroll with no error, and the double tap can be its gesture", async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto(`/?archive=${ARCHIVE}&lon=37.6175&lat=55.752&zoom=2.6&grid=1&gridGesture=doubleTap&gridSelect=2/2/1,4/9/5`);

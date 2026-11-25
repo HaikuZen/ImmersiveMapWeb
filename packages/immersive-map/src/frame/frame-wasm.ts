@@ -3,7 +3,7 @@
 
 /**
  * The main thread's Wasm module (crates/frame-wasm): the per-frame logic the
- * measurements found faster in Rust (docs/benchmarks/B04-planner.md). It is
+ * measurements found faster in Rust. It is
  * initialised once, before the first frame, and its functions are then called
  * synchronously.
  */

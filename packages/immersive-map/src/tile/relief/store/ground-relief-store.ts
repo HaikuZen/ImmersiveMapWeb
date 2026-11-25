@@ -29,7 +29,7 @@ export interface GroundReliefTextures {
   writeHeights(texture: ReliefTexture, x: number, y: number, width: number, height: number, values: Uint16Array<ArrayBuffer>): void;
   /**
    * A tile's occlusion of the sky under `key` as an `r8unorm` texture,
-   * computed from its heights (on the GPU, decision B10), and how long the
+   * computed from its heights (on the GPU), and how long the
    * computation took to encode. Undefined for a key that computes nothing.
    */
   occlusion(tile: Tile, terrain: GroundReliefTile, key: GroundReliefOcclusionKey): { texture: ReliefTexture; milliseconds: number } | undefined;
@@ -363,7 +363,7 @@ export class GroundReliefStore<R extends ResidentTile = ResidentTile> implements
     const generation = this.occlusionGeneration;
     const tiles = [...this.terrains.values(), ...this.released.all];
     // A few tiles a frame: a tile costs a few tenths of a millisecond of the
-    // GPU (docs/benchmarks/B10-occlusion.md), and a whole store at once
+    // GPU, and a whole store at once
     // would take a frame's budget.
     const next = (index: number) => {
       if (this.destroyed || generation !== this.occlusionGeneration) return;
@@ -518,7 +518,7 @@ export class GroundReliefStore<R extends ResidentTile = ResidentTile> implements
           upperBound: Math.max(heights.minMetres, heights.maxMetres),
         });
         // The occlusion of a tile just decoded, under the key of the moment,
-        // before the tile is in (decision B10: on the GPU, queued before the
+        // before the tile is in (on the GPU, queued before the
         // frame that first draws the tile).
         const occlusionKey = this.occlusionKeyValue;
         const computed = this.textures.occlusion(tile, terrain, occlusionKey);

@@ -8,7 +8,7 @@
  * The buildings and the trees draw only the quarters a frame can see, so a
  * coarse tile of the far ring or a tile at the frame's edge sends its
  * visible part alone to the GPU. Not a Swift port: the Swift engine draws
- * every quarter the placement names (docs/STATUS.md, stage 4). The shadow
+ * every quarter the placement names. The shadow
  * casters are culled the same way against each window's light projection:
  * a building off screen still casts into the frame, but not one outside the
  * window's square in the light's view, along which the light projects.

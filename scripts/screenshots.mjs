@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 // Saves the views of the Swift engine's README (Tools/ReadmeFrames/frames.json
-// in the reference repo) from the playground, for a person to compare with
+// in the reference repo) from the e2e app, for a person to compare with
 // the reference's Assets/*.avif. Not a test: it streams the public archive.
-//   npm run dev -w playground      (in another terminal)
+//   npm run dev -w e2e-app      (in another terminal)
 //   node scripts/screenshots.mjs stage-1 [--only manhattan] [--base http://localhost:5173]
 // Each view is 2400 x 1720 pixels at 2 pixels per point, as the reference renders it.
 
@@ -23,7 +23,8 @@ const base = option("base", "http://localhost:5173");
 const only = option("only", undefined);
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const frames = JSON.parse(await readFile(join(root, "../ImmersiveMap/Tools/ReadmeFrames/frames.json"), "utf8"));
-const out = join(root, "docs/screenshots", stage);
+// Into fixtures/ (git-ignored): the README's pictures are encoded from these into Assets/.
+const out = join(root, "fixtures/screenshots", stage);
 await mkdir(out, { recursive: true });
 
 const browser = await chromium.launch({
@@ -47,7 +48,7 @@ for (const frame of frames) {
     // The reference renders every view with the ground relief on (Tools/ReadmeFrames).
     relief: "1",
     ...(frame.theme === "night" ? { night: "1" } : {}),
-    // The map draws no building models by default (docs/STATUS.md, stage 7):
+    // The map draws no building models by default:
     // the views made for the models name the hosted archive.
     ...(/kremlin|bolshoi|scene-models/.test(frame.name) ? { modelArchive: "hosted" } : {}),
   });
@@ -74,7 +75,7 @@ for (const frame of frames) {
   }
   // The views with scene models (a model by the Eiffel Tower) set them as the
   // reference does. The reference's USDZ files have glTF or OBJ copies in the
-  // playground's public/models (a browser reads no USDZ), under the same name.
+  // e2e app's public/models (a browser reads no USDZ), under the same name.
   if (frame.sceneModels?.length) {
     await tab.waitForFunction(() => window.map !== undefined && window.ImmersiveMapSceneModel !== undefined, null, { timeout: 60_000 });
     await tab.evaluate((models) => {

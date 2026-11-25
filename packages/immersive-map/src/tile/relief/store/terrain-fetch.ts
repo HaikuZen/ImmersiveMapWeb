@@ -16,7 +16,7 @@ export interface TerrainLoadRequest {
  * its heights as half floats' bits, `size` squared, row 0 north, and their
  * range in metres, or word that the source has no such tile. The occlusion
  * of the sky is not computed here: the GPU computes it from the uploaded
- * heights (decision B10, `GroundReliefOcclusionGpu`).
+ * heights (`GroundReliefOcclusionGpu`).
  */
 export type TerrainLoadResult =
   | { readonly kind: "heights"; readonly size: number; readonly halves: Uint16Array<ArrayBuffer>; readonly minMetres: number; readonly maxMetres: number }

@@ -4,7 +4,7 @@
 /**
  * GeoJSON (RFC 7946) as the layers read it, the TypeScript half of the Swift
  * `ImmersiveMapGeoJSON`. The document itself is read in Rust, in the layers'
- * worker (crates/layer-mesh, decision B11: `serde_json` in Wasm), into the
+ * worker (crates/layer-mesh, `serde_json` in Wasm), into the
  * flat arrays of a source (`LayerSourceContent`). What stays here is what the
  * main thread needs of it: the errors, and the style records a shape
  * carries, laid over the style of the layer that draws it for a tap to be

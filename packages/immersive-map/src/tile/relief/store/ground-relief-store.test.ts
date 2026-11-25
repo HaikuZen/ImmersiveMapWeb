@@ -7,8 +7,7 @@
 // released cache, the edges' weld and the status. The Swift textures are
 // plain objects here (`FakeReliefTextures`), and the URL source's fetches are
 // loads the test answers by hand (`FakeTerrainSource`). The decoding is
-// crates/ground-relief's, the occlusion's bytes are
-// crates/bench-wasm/src/occlusion.rs's and the GPU module's.
+// crates/ground-relief's, the occlusion's bytes are the GPU module's.
 
 import { afterEach, describe, expect, test } from "vitest";
 import { groundReliefSettings } from "../../../configuration/tile-settings.ts";

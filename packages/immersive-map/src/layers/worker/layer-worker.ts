@@ -5,7 +5,7 @@
 
 /**
  * The layers' worker: reads the GeoJSON documents of the app's sources and
- * builds the meshes of its layers, in Rust (crates/layer-wasm, decision B11:
+ * builds the meshes of its layers, in Rust (crates/layer-wasm:
  * `serde_json` in Wasm). A worker of its own, apart from the tile workers,
  * so the memory a large document grows its Wasm instance to is given back
  * to the system when the map ends the worker (`LayerWorkerClient`). Each

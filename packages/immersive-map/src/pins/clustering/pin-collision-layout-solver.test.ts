@@ -569,8 +569,8 @@ describe("PinCollisionLayoutSolver: cluster locality", () => {
 });
 
 describe("PinCollisionLayoutSolver: large scenes do bounded work", () => {
-  // The Swift `PinPerformanceTests` scenes: their timings are a benchmark
-  // (bench-pins), here only the structure of the result is checked.
+  // The Swift `PinPerformanceTests` scenes: here only the structure of the
+  // result is checked, not their timings.
   test("a 30 000 pin pile collapses into one flower", () => {
     const next = mulberry(42);
     const pins = range(1, 30_000).map((id) => {

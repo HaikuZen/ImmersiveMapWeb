@@ -30,7 +30,7 @@ export const ImmersiveMapDebugPanel = {
   /**
    * The debug HUD: the camera's coordinates and the frame's diagnostics,
    * the tile and terrain lists, the overlays (tile borders, the tile grid,
-   * the label boxes, the axes) and the bench controls over the settings,
+   * the label boxes, the axes) and the controls over the settings,
    * as a rail over the map's leading edge.
    */
   hud: Object.freeze<ImmersiveMapDebugPanelValue>({

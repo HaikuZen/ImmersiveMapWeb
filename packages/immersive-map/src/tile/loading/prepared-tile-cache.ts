@@ -3,8 +3,8 @@
 
 /**
  * The disk cache of prepared tiles: every tile the camera has looked at
- * comes back from here without the network. IndexedDB, by benchmark B12
- * (docs/benchmarks/B12-storage.md): every tile worker reads and writes it at
+ * comes back from here without the network. IndexedDB:
+ * every tile worker reads and writes it at
  * once, and eviction is a key's deletion.
  *
  * An entry is a tile's arena (its GPU bytes, one blob laid out as the

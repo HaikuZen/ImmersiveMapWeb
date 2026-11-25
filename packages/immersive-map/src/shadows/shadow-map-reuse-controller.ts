@@ -76,7 +76,7 @@ export interface ShadowCasterPlace {
  * one and the depth keeps the nearest occluder. Casters that left clear
  * the part of the slice they covered, which is drawn again
  * (`ShadowCasterPassPlan`). Not in Swift, which draws the whole map again
- * (docs/STATUS.md, stage 4).
+ *.
  *
  * The far window leaves out the casters whose whole shadow falls where the
  * receivers read the near window alone (`farCasterHoleShare`), and goes
@@ -163,7 +163,7 @@ export class ShadowMapReuseController {
       // frame never pays for two caster passes over the same casters. The far
       // window lies past the near one's fade, where a frame of a slightly
       // short window does not show. Never twice running. Not in Swift
-      // (docs/STATUS.md, stage 4).
+      //.
       if (slot === "far" && nearRefitted && cached !== undefined && !this.farDeferred) {
         farDeferred = true;
         continue;
@@ -202,7 +202,7 @@ export class ShadowMapReuseController {
      * Put a render whose only cause is the casters off to the next frame:
      * the window's fit and texture are those its slice was rendered with,
      * so the slice stays right for every caster it already holds. Never
-     * twice running for a window (not in Swift, docs/STATUS.md, stage 4).
+     * twice running for a window (not in Swift).
      */
     readonly mayDeferCasterChange?: boolean;
   }): boolean {

@@ -24,8 +24,7 @@
  *
  * Targets may overlap, so one stand-in found for two targets is placed once.
  *
- * The planning itself runs in Rust/Wasm (crates/frame-wasm/src/planner.rs,
- * decision B4): this module lays the inputs out as flat arrays, and turns the
+ * The planning itself runs in Rust/Wasm (crates/frame-wasm/src/planner.rs): this module lays the inputs out as flat arrays, and turns the
  * records back into placements of the caller's resident tiles.
  */
 

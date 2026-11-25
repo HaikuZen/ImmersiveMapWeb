@@ -6,7 +6,7 @@
  * storage array of fixed-size records, written once per frame. A draw takes a
  * record and passes its index as `firstInstance`, and the shader reads the
  * record at `instance_index`, so the bind group is set once a pass and not
- * once a draw (docs/benchmarks/B05-B07-encoding.md, B6).
+ * once a draw.
  *
  * The staging grows as a frame needs, and the buffer with it. A bind group
  * built on the old buffer is rebuilt on its next request, so a drawer asks

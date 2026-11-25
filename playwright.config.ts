@@ -15,7 +15,7 @@ const chrome = process.env.CHROME ||
     : ["/usr/bin/google-chrome", "/usr/bin/google-chrome-stable", "/usr/bin/chromium", "/usr/bin/chromium-browser"].find(existsSync));
 const platformArgs = process.platform === "linux" ? ["--enable-features=Vulkan", "--ignore-gpu-blocklist"] : [];
 
-// Smoke tests in the system Chrome (WebGPU), against the playground's dev
+// The e2e tests in the system Chrome (WebGPU), against the e2e app's dev
 // server, reading the local fixture archive: no test touches the network.
 export default defineConfig({
   testDir: "tests/e2e",
@@ -28,5 +28,5 @@ export default defineConfig({
     },
     viewport: { width: 1280, height: 800 },
   },
-  webServer: { command: "npm run dev -w playground", url: "http://localhost:5173", reuseExistingServer: true },
+  webServer: { command: "npm run dev -w e2e-app", url: "http://localhost:5173", reuseExistingServer: true },
 });

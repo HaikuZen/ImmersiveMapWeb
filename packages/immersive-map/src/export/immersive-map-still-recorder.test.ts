@@ -8,7 +8,7 @@ import { ImmersiveMapStillRecorder } from "./immersive-map-still-recorder.ts";
 /**
  * The CPU cases of the Swift `ImmersiveMapStillRecorderTests`: a capture
  * refuses what it cannot do before touching the GPU and leaves the recorder
- * free. The rendering cases run in the browser smoke (`tests/e2e/export.spec.ts`).
+ * free. The rendering cases run in the browser e2e tests (`tests/e2e/export.spec.ts`).
  */
 describe("ImmersiveMapStillRecorder", () => {
   async function captureError(recorder: ImmersiveMapStillRecorder, options: Parameters<ImmersiveMapStillRecorder["capture"]>[0]): Promise<ImmersiveMapStillCaptureErrorCode | null> {

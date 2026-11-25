@@ -93,7 +93,7 @@ export class ImmersiveMapStillRecorder {
 
   /**
    * Renders one frame and returns it encoded, a PNG unless `encoding` says
-   * otherwise (the canvas encodes it, decision B20). Rejects with an
+   * otherwise (the canvas encodes it). Rejects with an
    * `ImmersiveMapStillCaptureError`.
    */
   capture(options: ImmersiveMapStillCaptureOptions & ImmersiveMapStillEncoding = {}): Promise<Blob> {

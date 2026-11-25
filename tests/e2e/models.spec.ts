@@ -5,7 +5,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 // The fixture map archive, the fixture model archive (fixtures/models.pmtiles,
 // the model tiles of the public archive over the Kremlin, packed by
-// `cargo run -p fixture-archive`) and the playground's own glTF and OBJ
+// `cargo run -p fixture-archive`) and the e2e app's own glTF and OBJ
 // models (`models=1`): nothing leaves the machine.
 const ARCHIVE = "/fixtures/fixtures.pmtiles";
 const MODELS = "/fixtures/models.pmtiles";

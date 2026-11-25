@@ -1,11 +1,11 @@
 // Copyright (c) 2025-2026 Artem Bobkin.
 // SPDX-License-Identifier: MIT
 
-//! The terrain tiles a worker decodes (crates/ground-relief, decision B9):
+//! The terrain tiles a worker decodes (crates/ground-relief):
 //! the image's bytes to the half floats of the relief's `r16float`
 //! texture and their height range. The worker's TypeScript fetches the
 //! image. The occlusion of the sky is computed on the GPU from the
-//! texture (decision B10), not here.
+//! texture, not here.
 
 use ground_relief::{Encoding, decode, halves, height_range};
 use wasm_bindgen::prelude::*;

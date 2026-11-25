@@ -5,7 +5,7 @@
 //! document read into the flat shapes of a source, and a layer's mesh built
 //! from flat shapes into the one buffer the main thread uploads and the disk
 //! cache keeps. The worker runs on its own, so the map can end it after a
-//! large parse and its memory goes back to the system (decision B11).
+//! large parse and its memory goes back to the system.
 
 use layer_mesh::content::{LayerStyles, SourceContent, SourceView};
 use layer_mesh::geojson::{self, GeoJsonError};

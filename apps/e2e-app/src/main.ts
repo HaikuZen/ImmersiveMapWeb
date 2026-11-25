@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { watchMapRemotely } from "./remote-log.ts";
-import { type FrameEvent, ImmersiveMap, ImmersiveMapPin, ImmersiveMapSceneModel, ImmersiveMapSettings, ImmersiveMapTerrainSource, ImmersiveMapTilesService, type TileLoadedEvent } from "@artembobkin/immersive-map";
+import { type FrameEvent, ImmersiveMap, ImmersiveMapPin, ImmersiveMapTileGridController, ImmersiveMapSceneModel, ImmersiveMapSettings, ImmersiveMapTerrainSource, ImmersiveMapTilesService, type TileLoadedEvent } from "@artembobkin/immersive-map";
 import { addSampleAnnotations } from "./sample-annotations.ts";
 import { addTraceRecorder } from "./trace-recorder.ts";
 import { addSamplePins } from "./sample-pins.ts";
@@ -48,13 +48,13 @@ let settings = ImmersiveMapSettings.default;
 if (params.get("night") === "1") settings = settings.night();
 // `globe=0` keeps the flat map at every zoom (for A/B measurements).
 if (params.get("globe") === "0") settings = settings.globe({ isEnabled: false });
-// Stage 4 switches, for the antialiasing screenshots (B16) and A/B measurements.
+// Stage 4 switches: the antialiasing and the scene's parts.
 if (params.get("msaa") === "1") settings = settings.msaa({ isEnabled: true });
 if (params.get("fxaa") === "1") settings = settings.fxaa({ isEnabled: true });
 if (params.get("shadows") === "0") settings = settings.shadows({ isEnabled: false });
 if (params.get("trees") === "0") settings = settings.trees({ isEnabled: false });
 // Stage 5: `relief=1` raises the ground on the terrain, `terrain=` names a
-// template of its tiles in place of Mapterhorn's (the smoke test reads the
+// template of its tiles in place of Mapterhorn's (the e2e test reads the
 // fixtures with `terrain=/fixtures/terrain/{z}-{x}-{y}.webp`).
 if (params.get("relief") === "1") settings = settings.groundRelief({ isEnabled: true });
 // `reliefShadows=1` lets the shadows in from zoom 11, where the relief stands, so the mountains cast.
@@ -74,8 +74,11 @@ const archive = params.get("archive");
 const modelArchive = params.get("modelArchive");
 if (modelArchive === "hosted") settings = settings.modelArchive(ImmersiveMapTilesService.modelArchiveURL);
 else if (modelArchive && modelArchive !== "none") settings = settings.modelArchive(modelArchive);
+// `gridAtCreate=1` hands the tile grid's controller to the map as it is built, in place of attaching it after.
+const gridAtCreate = params.get("gridAtCreate") === "1" ? new ImmersiveMapTileGridController() : undefined;
 const map = await ImmersiveMap.create({
   container: document.getElementById("map")!,
+  ...(gridAtCreate ? { tileGrid: gridAtCreate } : {}),
   settings,
   camera: { center: [lon, lat], zoom, bearing, pitch },
   ...(archive ? { url: archive } : {}),
@@ -117,7 +120,7 @@ if (params.get("pins") === "1") addSamplePins(map);
 // `layers=1` draws a sample of the app's own data over central Moscow (stage 6).
 if (params.get("layers") === "1") addSampleLayers(map);
 // `grid=1` lays the tile grid over the map, a tap on a tile selecting it.
-if (params.get("grid") === "1") addSampleTileGrid(map, params);
+if (params.get("grid") === "1") addSampleTileGrid(map, params, gridAtCreate);
 // `export=1` adds the export panel: a still and a short tour to MP4 (stage 8).
 if (params.get("export") === "1") addSampleExport(map);
 // `models=1` stands a sample glTF model by the default view (stage 7).
@@ -128,5 +131,5 @@ if (params.get("trace") === "1") addTraceRecorder(map);
 watchMapRemotely(map);
 // What scripts/screenshots.mjs adds the reference's pins and scene models with.
 Object.assign(window, { ImmersiveMapPin, ImmersiveMapSceneModel, ImmersiveMapSettings });
-// The debug panel stands where the playground's own HUD does.
-if (params.get("hud") === "0" || params.get("debug") === "1") for (const id of ["hud", "bench"]) document.getElementById(id)!.style.display = "none";
+// The debug panel stands where the e2e app's own HUD does.
+if (params.get("hud") === "0" || params.get("debug") === "1") document.getElementById("hud")!.style.display = "none";

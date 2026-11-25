@@ -6,7 +6,7 @@
 //! inflates them, and this module decodes a model tile (`decodeModelTile`)
 //! into what the main thread uploads: the vertex and index blocks as
 //! stored, the texture array as stored ASTC or decoded to RGBA8 for a GPU
-//! without ASTC (decision B14), and a JSON description of the rest.
+//! without ASTC, and a JSON description of the rest.
 
 use std::ops::Range;
 

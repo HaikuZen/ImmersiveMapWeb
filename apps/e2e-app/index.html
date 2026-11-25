@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <link rel="icon" href="data:," />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ImmersiveMap Web: playground</title>
+    <title>ImmersiveMap Web: e2e app</title>
     <style>
       html, body { margin: 0; height: 100%; overflow: hidden; background: #9ec4e4; }
       #map { position: fixed; inset: 0; }
@@ -14,13 +14,11 @@
         background: rgb(20 22 28 / 0.78); backdrop-filter: blur(8px); white-space: pre; pointer-events: none;
       }
       #hud b { color: #ffd479; font-weight: 600; }
-      #bench { position: fixed; top: 12px; right: 12px; font: 13px system-ui; color: #123; }
     </style>
   </head>
   <body>
     <div id="map"></div>
     <div id="hud">starting…</div>
-    <a id="bench" href="./bench.html">draw-call benchmark →</a>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

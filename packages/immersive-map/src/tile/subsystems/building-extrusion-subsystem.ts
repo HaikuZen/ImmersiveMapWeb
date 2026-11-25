@@ -83,7 +83,7 @@ const hiddenWhole = {};
  * shadows grow in these steps (every 0.1 s over the default 0.6 s rise), not
  * every frame, so a frame of a rising city pays for a caster pass only now
  * and then. Not in Swift, which draws the casters again every frame of the
- * rise (docs/STATUS.md, stage 4). A step adds over the kept shadow map the
+ * rise. A step adds over the kept shadow map the
  * tiles that rose alone (`ShadowCasterPassPlan.added`).
  */
 export const riseShadowSteps = 6;

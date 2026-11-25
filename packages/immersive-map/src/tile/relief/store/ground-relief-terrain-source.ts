@@ -29,7 +29,7 @@ export type GroundReliefTerrainResponse =
  * grows with each failure. A tile the source has but cannot be read is no
  * failure of the moment: the source answers `missing` for it, and the store
  * asks for its ancestor in its place. The tile's occlusion of the sky is
- * computed on the GPU once its heights are in (decision B10).
+ * computed on the GPU once its heights are in.
  */
 export interface GroundReliefTerrainSource {
   heights(tile: Tile, signal: AbortSignal): Promise<GroundReliefTerrainResponse>;
@@ -52,7 +52,7 @@ export interface GroundReliefTerrainLoader {
 /**
  * Terrain tiles as images at a URL template
  * (`ImmersiveMapTerrainSource.tileURLTemplate`), fetched and decoded by
- * their encoding in the tile workers (decision B9, the Wasm decoder): the
+ * their encoding in the tile workers (in Wasm): the
  * Swift `GroundReliefURLTerrainSource`. An HTTP 404 is a tile the source
  * does not have, and so is an image the decoder cannot read.
  */

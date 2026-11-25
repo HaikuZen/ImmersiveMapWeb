@@ -1,8 +1,6 @@
 [workspace]
 resolver = "3"
 members = ["crates/*"]
-# B17 only: built with nightly (atomics, build-std) by scripts/build-rayon.sh, kept out of the stable checks.
-exclude = ["crates/bench-rayon"]
 
 [workspace.package]
 edition = "2024"
@@ -11,7 +9,8 @@ version = "0.1.0"
 
 [workspace.dependencies]
 # The shared engine code (github.com/artembobkin/ImmersiveMapCore), pinned to a
-# commit. docs/Development.md says how to build against a local checkout.
+# commit. To build against a local checkout of it, add a `[patch]` section
+# naming its crates by path while you work, without committing it.
 pmtiles = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
 tile-prep = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
 ground-relief = { git = "https://github.com/artembobkin/ImmersiveMapCore", rev = "f089003851157e645898350df00086d3e27d7c45" }
@@ -24,7 +23,6 @@ wasm-bindgen = "=0.2.130"
 wasm-bindgen-futures = "0.4"
 js-sys = "0.3"
 web-sys = "0.3"
-wgpu = { version = "30", default-features = false }
 
 [profile.release]
 opt-level = 3

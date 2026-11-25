@@ -7,7 +7,7 @@
  * to their parent), only the texels their boxes project to in the light's
  * view can hold their depth, so the pass clears that rectangle and draws
  * again the casters over it (`ShadowCasterPassPlan.region`). Not in Swift,
- * which draws the whole map again (docs/STATUS.md, stage 4).
+ * which draws the whole map again.
  */
 
 import { ImmersiveMapProjection } from "../geo/immersive-map-projection.ts";

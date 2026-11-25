@@ -5,7 +5,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 const ARCHIVE = "/fixtures/fixtures.pmtiles";
 
-/** Collects the page's errors and warnings, as the map smoke tests count them. */
+/** Collects the page's errors and warnings, as the map e2e tests count them. */
 function collectErrors(page: Page): string[] {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
@@ -15,7 +15,7 @@ function collectErrors(page: Page): string[] {
   return errors;
 }
 
-/** Opens the playground at a view and waits for a frame drawn after its first tiles landed. */
+/** Opens the e2e app at a view and waits for a frame drawn after its first tiles landed. */
 async function openAndDraw(page: Page, view: string): Promise<void> {
   await page.goto(`/?archive=${ARCHIVE}&${view}`);
   await page.waitForFunction(() => (window as any).tileStats?.length >= 1, null, { timeout: 30_000 });

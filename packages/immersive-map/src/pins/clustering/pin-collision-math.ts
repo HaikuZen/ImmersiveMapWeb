@@ -9,8 +9,7 @@
  * Swift computes in `Float`. The port computes in doubles, here and in the
  * engine's Rust solver (crates/frame-wasm/src/pins.rs), which in Wasm takes
  * its sines, cosines, powers and logarithms from `Math` too, so the
- * TypeScript port of the benchmark and the engine give the same layout bit
- * for bit. The constants are the same.
+ * engine gives the layout the TypeScript solver gave, bit for bit. The constants are the same.
  *
  * Pin ids are whole numbers up to 2^53 (the Swift `UInt64` within a
  * double's exact range). The 64 bit hash below runs on two 32 bit halves.

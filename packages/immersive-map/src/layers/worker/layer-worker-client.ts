@@ -20,7 +20,7 @@ export interface LayerJobRunner {
  * is made on the first job, and ended once it has nothing to do and its
  * Wasm memory has grown past `retainedMemoryBytes` (a large document read,
  * a large mesh built): Wasm memory never shrinks, and the end of the worker
- * is the only way it goes back to the system (decision B11). The next job
+ * is the only way it goes back to the system. The next job
  * makes a new one, whose module the browser has compiled already.
  */
 export class LayerWorkerClient implements LayerJobRunner {

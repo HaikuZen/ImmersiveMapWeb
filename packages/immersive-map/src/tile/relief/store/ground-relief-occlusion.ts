@@ -9,7 +9,7 @@ import type { ImmersiveMapTerrainOcclusion } from "../../../style/theme.ts";
  * style that darkens nothing has a resolution of 0, and nothing is computed
  * for it. The computation itself (the mean over `directions` of the sine of
  * the horizon's elevation out to the radius, for a grid of `resolution`
- * points a side) runs where decision B10 put it (docs/benchmarks/B10-occlusion.md).
+ * points a side) runs on the GPU.
  */
 export interface GroundReliefOcclusionKey {
   readonly radiusMetres: number;

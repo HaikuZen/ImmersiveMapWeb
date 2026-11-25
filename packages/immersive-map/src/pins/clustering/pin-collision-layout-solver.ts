@@ -10,9 +10,7 @@
  *
  * The solve runs in Rust/Wasm on the main thread (crates/frame-wasm,
  * `pins.rs`): it beat the same solver in TypeScript by 1.25 to 1.45 times
- * with the copies across the boundary counted (docs/benchmarks/B04-pins.md).
- * The TypeScript solver is kept for the benchmark only
- * (apps/playground/src/bench/ts-pin-collision-layout-solver.ts).
+ * with the copies across the boundary counted.
  *
  * The pins cross into Wasm as one flat
  * `Float64Array`, ten doubles per pin in their given order, and the result

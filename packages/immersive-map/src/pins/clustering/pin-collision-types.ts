@@ -125,7 +125,7 @@ export const PinCollisionLayout = Object.freeze({
 
 /**
  * A projected pin with the world position derived from the screen, the
- * Swift `ProjectedPin` fallback for synthetic calls (tests and benchmarks):
+ * Swift `ProjectedPin` fallback for synthetic calls (tests):
  * any linear mapping of the screen into the world is consistent with the
  * grid split.
  */

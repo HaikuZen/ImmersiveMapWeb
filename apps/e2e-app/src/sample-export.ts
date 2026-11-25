@@ -10,7 +10,7 @@ import {
   ImmersiveMapTourVideoRecorder,
 } from "@artembobkin/immersive-map";
 
-/** What the last export made, for the smoke test (`window.exportDemo`). */
+/** What the last export made, for the e2e test (`window.exportDemo`). */
 interface ExportDemoResult {
   readonly kind: "still" | "video";
   readonly type: string;
@@ -38,12 +38,12 @@ async function describeBlob(kind: "still" | "video", blob: Blob, started: number
 }
 
 /**
- * The playground's `export=1`: a panel with "Capture still" (a 1280 × 720
+ * The e2e app's `export=1`: a panel with "Capture still" (a 1280 × 720
  * PNG of the view at 2 pixels per point) and "Record tour" (a 3 second
  * MP4 tour at 1280 × 720, 30 frames per second, in the first codec the
  * browser encodes), each shown below the buttons with a download link. The
  * same actions are `window.exportDemo.captureStill()` and
- * `window.exportDemo.recordTour()` for the smoke test.
+ * `window.exportDemo.recordTour()` for the e2e test.
  */
 export function addSampleExport(map: ImmersiveMap): void {
   const recorder = new ImmersiveMapTourVideoRecorder();

@@ -18,7 +18,7 @@
  *
  * Their frame group (`standingFrameLayout`, tile/shaders/standing-frame.wgsl)
  * holds the camera, the fogs, the shadows and the trees' frame. The draws
- * read the shared per-draw records (`drawLayout`, decision B6), the trees'
+ * read the shared per-draw records (`drawLayout`), the trees'
  * tile a dynamic uniform offset each (their instance index is the tree's).
  */
 

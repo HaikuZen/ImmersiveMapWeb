@@ -351,7 +351,7 @@ export const ShadowFrameStateResolver = {
    * units: the margin's share of the window's radius (10% of it at the reuse
    * controller's 1.1), none for a frame-exact fit. The camera may turn as far
    * as it may pan before the window is fitted again. Not in Swift, whose fit
-   * scales the footprint about the camera alone (docs/STATUS.md, stage 4).
+   * scales the footprint about the camera alone.
    */
   travelPadding(radius: number, radiusMargin: number): number {
     return Math.max(radiusMargin - 1, 0) * radius;

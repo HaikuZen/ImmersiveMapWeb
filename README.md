@@ -43,15 +43,11 @@ ImmersiveMap Web is a **WebGPU map** rendering engine for **web pages**, written
 
 Built-in Protomaps vector tiles from a PMTiles archive, offline maps from a PMTiles file your own site serves, a globe that unrolls into a flat map, terrain relief, map styling and colors, your own data as layers (GeoJSON zones, lines and points), DOM annotations, pins that make room for each other, a tile grid your users pick XYZ tiles on, 3D scene models (glTF, GLB and OBJ), 3D building models from a PMTiles model archive, tour video export.
 
-## Documentation
-
-The guides are in this repository: **[docs/guide](docs/guide/README.md)**, starting with [Getting started](docs/guide/GettingStarted.md). Their examples are TypeScript files that the type check compiles.
-
 ## Map Data
 
-The map draws OpenStreetMap data from a single [PMTiles](https://docs.protomaps.com/pmtiles/) file with no tile server. Out of the box it works online: the map streams a hosted archive of the whole planet over HTTP, loading only the tiles in view. I host that archive on Cloudflare R2 as a public source for this library, so that you can see the map right away. You are free to host an archive yourself, wherever you like: any storage that serves HTTP range requests will do (R2, S3, a CDN, your own server). The 3D building models come from a second PMTiles archive, which the map draws once you turn it on, and the globe's biomes ship inside the package. To point the map at an archive you host, or to draw tiles of another schema, see [Setting up the tile source](docs/guide/TileSource.md).
+The map draws OpenStreetMap data from a single [PMTiles](https://docs.protomaps.com/pmtiles/) file with no tile server. Out of the box it works online: the map streams a hosted archive of the whole planet over HTTP, loading only the tiles in view. I host that archive on Cloudflare R2 as a public source for this library, so that you can see the map right away. You are free to host an archive yourself, wherever you like: any storage that serves HTTP range requests will do (R2, S3, a CDN, your own server). The 3D building models come from a second PMTiles archive, which the map draws once you turn it on, and the globe's biomes ship inside the package. To point the map at an archive you host, pass its URL: `ImmersiveMap.create({ container, url: "https://example.com/planet.pmtiles" })`.
 
-The same map works with no outside network: serve a `.pmtiles` file from your own origin and point the map at it (see [Offline maps](docs/guide/TileSource.md#offline-maps)).
+The same map works with no outside network: serve a `.pmtiles` file from your own origin and point the map at it.
 
 ## Quick Start
 
@@ -94,11 +90,25 @@ The default map is built from open data, and three of its sources ask to be cred
 2. **RESOLVE Ecoregions 2017**: the biomes the engine paints under the land of the globe are under CC BY 4.0, so "Biomes © RESOLVE" is required while they are on screen.
 3. **Mapterhorn**: the terrain the ground relief rises by is Mapterhorn's open elevation data, so "© Mapterhorn" is required while the relief is on screen.
 
-The map's badge shows these credits on its own (see [Attribution](docs/guide/Attribution.md)). The engine is MIT licensed, and its "Powered by ImmersiveMap" credit is not required.
+The map's badge shows these credits on its own. The engine is MIT licensed, and its "Powered by ImmersiveMap" credit is not required.
 
 ## Contributing
 
-ImmersiveMap is made and maintained by Artem Bobkin, as a single-maintainer project. Pull requests are accepted. How to build, run and test the repository is in [Development](docs/Development.md).
+ImmersiveMap is made and maintained by Artem Bobkin, as a single-maintainer project. Pull requests are accepted.
+
+To build and run the repository you need Node.js, rustup with the `wasm32-unknown-unknown` target, `wasm-bindgen-cli` of the version pinned in `Cargo.toml`, binaryen (`wasm-opt`) and Chrome:
+
+```sh
+npm install
+npm run build:wasm   # the Rust to Wasm
+npm run dev          # the map with the feature in work, http://localhost:5180
+npm run e2e:app      # the app the e2e tests run in, every sample, http://localhost:5173
+npm run fixtures     # the test tiles, once
+npm run check        # types, shaders, clippy, cargo test, Vitest
+npm run e2e          # the e2e tests: Playwright in Chrome with WebGPU, in the e2e app
+```
+
+The Rust shared with the engine's other ports is [ImmersiveMapCore](https://github.com/artembobkin/ImmersiveMapCore), a git dependency pinned to a commit in `Cargo.toml`.
 
 ## License
 

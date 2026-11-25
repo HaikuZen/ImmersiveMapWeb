@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: MIT
 
 //! The binding of the pin collision layout (`map_frame::pins`), the
-//! engine's solver after benchmark B4 (pins, docs/benchmarks/B04-pins.md).
-//! It is built with the `js-math` feature, so its transcendental functions
-//! are the JS engine's own and the layout matches the TypeScript port kept
-//! for the benchmark (apps/playground/src/bench/
-//! ts-pin-collision-layout-solver.ts) bit for bit. Everything crosses the
+//! engine's solver: it beat the same solver in TypeScript by 1.25 to 1.45
+//! times. It is built with the `js-math` feature, so its transcendental
+//! functions are the JS engine's own, as the TypeScript solver's were.
+//! Everything crosses the
 //! boundary as flat `f64` arrays: the pins in, the items and the flowers out.
 
 use wasm_bindgen::prelude::*;
