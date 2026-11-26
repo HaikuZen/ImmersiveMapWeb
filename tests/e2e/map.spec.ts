@@ -58,3 +58,11 @@ test("the ground relief rises on the fixture terrain with no error", async ({ pa
   // On the terrain the map reads the country around the camera off the relief's heights: the Alps are mountains.
   await page.waitForFunction(() => (window as any).map.terrainSurroundings?.kind === "mountains", null, { timeout: 30_000 });
 });
+
+test("a tile worker whose script is not served stops the map being built, saying why, in place of hanging", async ({ page }) => {
+  // A bundler that wrote the workers' paths where the server serves nothing, as Vite's build.lib does from the site's root.
+  await page.route(/tile-worker/, (route) => route.fulfill({ status: 404, body: "not found" }));
+  const error = page.waitForEvent("pageerror", { timeout: 15_000 });
+  await page.goto(`/?archive=${ARCHIVE}`);
+  expect((await error).message).toMatch(/tile worker's script did not load.*base/);
+});

@@ -4,6 +4,7 @@
 import type { LayerSourceBuffers } from "../sources/layer-source-content.ts";
 import { buildLayerMesh, type LayerParseOutcome, type LayerWasmModule, parseLayerDocument } from "./layer-jobs.ts";
 import { type FromLayerWorker, type LayerDocument, type ToLayerWorker } from "./layer-worker-protocol.ts";
+import { workerFailure } from "../../worker/worker-failure.ts";
 
 /** What reads the documents of the app's sources and builds the meshes of its layers. */
 export interface LayerJobRunner {
@@ -88,7 +89,8 @@ export class LayerWorkerClient implements LayerJobRunner {
       if (this.worker !== worker) return;
       this.worker = undefined;
       worker.terminate();
-      for (const pending of this.pending.values()) pending.reject(new Error(`the layers' worker failed: ${event.message}`));
+      const error = workerFailure("layers' worker", event);
+      for (const pending of this.pending.values()) pending.reject(error);
       this.pending.clear();
     });
     return worker;

@@ -11,6 +11,7 @@
  */
 
 import type { Tile } from "../../tile/tile.ts";
+import { workerFailure } from "../../worker/worker-failure.ts";
 import { ModelTileLoadFailure } from "./model-tile-store.ts";
 import type { DecodedModelTile, FromModelTileWorker, ModelTileWorkerConfig, ToModelTileWorker } from "./model-tile-worker-protocol.ts";
 
@@ -26,7 +27,7 @@ export class ModelTileSource {
   constructor(config: ModelTileWorkerConfig) {
     this.worker = new Worker(new URL("./model-tile-worker.ts", import.meta.url), { type: "module", name: "model-tiles" });
     this.worker.addEventListener("message", (event: MessageEvent<FromModelTileWorker>) => this.receive(event.data));
-    this.worker.addEventListener("error", (event) => this.fail(new Error(`the model tile worker failed: ${event.message}`)));
+    this.worker.addEventListener("error", (event) => this.fail(workerFailure("model tile worker", event)));
     this.post({ type: "init", config });
   }
 

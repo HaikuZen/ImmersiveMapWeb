@@ -23,6 +23,7 @@ import type { DownloadOutcome, MaterializeOutcome, PrepareOutcome, TileLoadPipel
 import { type TerrainLoadRequest, type TerrainLoadResult, terrainTileURL } from "../tile/relief/store/terrain-fetch.ts";
 import { type Tile, tileKey } from "../tile/tile.ts";
 import type { FromWorker, PreparedTilePayload, ToWorker, WorkerConfig } from "./protocol.ts";
+import { workerFailure } from "./worker-failure.ts";
 
 export interface DownloadHandle {
   worker: number;
@@ -45,6 +46,8 @@ export class WorkerTilePipeline implements TileLoadPipeline<DownloadHandle> {
   private readonly workers: Worker[] = [];
   private readonly pending = new Map<number, Pending>();
   private readonly available = new Set<string>();
+  /** The workers that failed, by index, and their errors. */
+  private readonly failures = new Map<number, Error>();
   private nextId = 1;
 
   constructor(config: WorkerConfig, size: number) {
@@ -68,6 +71,14 @@ export class WorkerTilePipeline implements TileLoadPipeline<DownloadHandle> {
             } else {
               this.receive(message);
             }
+          });
+          // A script that does not load, or throws, sends no message: the
+          // map is not built on it (ready rejects), and its tiles fail.
+          worker.addEventListener("error", (event) => {
+            event.preventDefault();
+            const error = workerFailure("tile worker", event);
+            reject(error);
+            this.fail(index, error);
           });
         }),
       );
@@ -164,6 +175,11 @@ export class WorkerTilePipeline implements TileLoadPipeline<DownloadHandle> {
         reject(new DOMException("aborted", "AbortError"));
         return;
       }
+      const failure = this.failures.get(worker);
+      if (failure) {
+        reject(failure);
+        return;
+      }
       this.pending.set(id, { resolve, reject, worker });
       signal.addEventListener(
         "abort",
@@ -177,6 +193,16 @@ export class WorkerTilePipeline implements TileLoadPipeline<DownloadHandle> {
       );
       this.workers[worker]!.postMessage(make(id));
     });
+  }
+
+  /** A worker that failed: its calls on their way reject, and every later one at once. */
+  private fail(worker: number, error: Error): void {
+    this.failures.set(worker, error);
+    for (const [id, pending] of this.pending) {
+      if (pending.worker !== worker) continue;
+      this.pending.delete(id);
+      pending.reject(error);
+    }
   }
 
   private receive(message: FromWorker): void {
