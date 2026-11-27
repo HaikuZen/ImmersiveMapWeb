@@ -82,6 +82,8 @@ describe("PreparedTileDiskCache", () => {
     const other = new PreparedTileDiskCache<{ n: number }>(db, "other", { byteQuota: 1e9, timeToLive: 3600 }, () => 1000);
     await other.put(tile(3), entry(10));
     expect([...(await c.availableTiles()).keys()].sort()).toEqual(["14/1/1", "14/2/1"]);
+    // With when each was last used, read off the keys alone.
+    expect([...(await c.availableTiles()).values()]).toEqual([1000, 1000]);
   });
 
   test("the archive ETag is remembered", async () => {

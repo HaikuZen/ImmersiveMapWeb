@@ -220,12 +220,18 @@ export class PreparedTileDiskCache<Meta> {
 
   /** The tiles of this namespace that are not expired, with their access times: the availability index's seed. */
   async availableTiles(): Promise<Map<string, number>> {
+    // Keys only. An entry's value holds its tile's arena, up to megabytes,
+    // and reading every value to list the tiles took seconds a worker on a
+    // tablet (11 s for 430 tiles, 73 ms by the keys): every worker lists
+    // them as it starts, at a map's creation and at every change of style.
+    // The accessedAt index has what the list needs: its key is the time, and
+    // the entry's own key is the namespace and the tile (`key(tile)`).
     const tx = this.db.transaction(TILES, "readonly");
-    const range = IDBKeyRange.only(this.namespace);
+    const prefix = `${this.namespace}|`;
     const entries = new Map<string, number>();
     const now = this.now();
     await new Promise<void>((resolve, reject) => {
-      const cursor = tx.objectStore(TILES).index("namespace").openCursor(range);
+      const cursor = tx.objectStore(TILES).index("accessedAt").openKeyCursor();
       cursor.onerror = () => reject(cursor.error);
       cursor.onsuccess = () => {
         const c = cursor.result;
@@ -233,8 +239,11 @@ export class PreparedTileDiskCache<Meta> {
           resolve();
           return;
         }
-        const value = c.value as StoredEntry<Meta>;
-        if (!this.isExpired(value.accessedAt, now)) entries.set(value.tile, value.accessedAt);
+        const key = c.primaryKey;
+        const accessedAt = c.key;
+        if (typeof key === "string" && key.startsWith(prefix) && typeof accessedAt === "number" && !this.isExpired(accessedAt, now)) {
+          entries.set(key.slice(prefix.length), accessedAt);
+        }
         c.continue();
       };
     });
