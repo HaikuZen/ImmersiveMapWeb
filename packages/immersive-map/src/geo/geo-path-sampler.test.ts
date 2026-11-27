@@ -119,6 +119,53 @@ describe("GeoPathSampler", () => {
     }
   });
 
+  test("the heading of a street-level path follows its own legs, not the chord across it", () => {
+    // About 1.1 km east, then 1.1 km north: one sample step of 0.25 degrees
+    // (27.8 km) is longer than the whole path.
+    const metrics = metricsOf(ImmersiveMapGeoPath.make([geoCoordinate(46.5, 11.8), geoCoordinate(46.5, 11.8145), geoCoordinate(46.51, 11.8145)]));
+    expectClose(metrics.sample(0.25).headingDegrees, 90, 0.05);
+    expectClose(metrics.sample(0.75).headingDegrees, 0, 0.05);
+    // The arm is short (50 m, the minimum, on a 2.2 km path): it crosses the
+    // corner only within 50 m of it, and 0.47 and 0.53 are some 67 m away.
+    expectClose(metrics.sample(0.47).headingDegrees, 90, 0.05);
+    expectClose(metrics.sample(0.53).headingDegrees, 0, 0.05);
+  });
+
+  test("a short loop's heading goes round with the loop", () => {
+    // A circle of about 1.1 km radius, drawn by 72 waypoints.
+    const waypoints = Array.from({ length: 73 }, (_, index) => {
+      const angle = (index / 72) * 2 * Math.PI;
+      return geoCoordinate(46.5 + 0.01 * Math.cos(angle), 11.8 + (0.01 * Math.sin(angle)) / Math.cos((46.5 * Math.PI) / 180));
+    });
+    const metrics = metricsOf(ImmersiveMapGeoPath.make(waypoints));
+    // From the north point the loop runs clockwise: east at the top, south at the right.
+    expectClose(metrics.sample(0.01).headingDegrees, 90 + 3.6, 3);
+    expectClose(metrics.sample(0.26).headingDegrees, 180 + 3.6, 3);
+  });
+
+  test("a long flight keeps the half-step arm it always had", () => {
+    // Paris to New York, 5,840 km: 1% of it is longer than half a step, so
+    // the arm is the half step, as before the arm took a share of the path.
+    const metrics = metricsOf(ImmersiveMapGeoPath.make([geoCoordinate(48.8566, 2.3522), geoCoordinate(40.7128, -74.006)]));
+    expectClose(metrics.derivativeFraction, 0.5 / (metrics.sampleCount - 1), 1e-15);
+  });
+
+  test("a model turns round a corner over the same share of any path", () => {
+    // The share of the path over which the heading swings from one leg's
+    // course to the other's: 2% (1% either side), for a 300 km flight and a
+    // 30 km ride alike. A fixed 50 m arm would snap the flight round at once.
+    for (const legDegrees of [1.35, 0.135]) {
+      const metrics = metricsOf(ImmersiveMapGeoPath.make([geoCoordinate(0, 0), geoCoordinate(0, legDegrees), geoCoordinate(legDegrees, legDegrees)]));
+      const steps = 4000;
+      let turning = 0;
+      for (let step = 0; step <= steps; step++) {
+        const heading = metrics.sample(step / steps).headingDegrees;
+        if (heading > 1 && heading < 89) turning++;
+      }
+      expectClose(turning / steps, 0.02, 0.002);
+    }
+  });
+
   test("the pitch climbs on the first half and descends on the second", () => {
     const metrics = metricsOf(ImmersiveMapGeoPath.make([geoCoordinate(0, 0), geoCoordinate(0, 90)], { peakAltitudeMeters: 400_000 }));
     expect(metrics.sample(0.1).pitchDegrees).toBeGreaterThan(0);

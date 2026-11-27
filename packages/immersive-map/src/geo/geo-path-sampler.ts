@@ -42,6 +42,25 @@ export class GeoPathMetrics {
    */
   static readonly angularStepRadians = (0.25 * Math.PI) / 180.0;
   static readonly maximumSampleCount = 2048;
+  /**
+   * The arm of the central difference for the heading and the pitch, as a
+   * share of the path's length, between `minimumDerivativeArmMeters` and
+   * half a sample step.
+   *
+   * Half a sample step alone (13.9 km) is too long for a short path: on a
+   * path shorter than one step the whole path is one step, and the arm
+   * reached halfway across it, so the heading of a street-level path was the
+   * chord toward its middle (on a loop, across the loop), not the course
+   * along the street. A fixed short arm instead would turn a model on a long
+   * flight round its corners at once, where it banks round them over the
+   * arm. A share of the length does both: a model or the camera turns round
+   * a corner over the same share of the path whatever its length, a street-
+   * level path reads its own legs, and a path of 2,780 km or more keeps the
+   * half step it always had.
+   */
+  static readonly derivativeArmShare = 0.01;
+  /** The shortest arm, in meters of ground: below it, a path of a few hundred meters would read the noise of its waypoints. */
+  static readonly minimumDerivativeArmMeters = 50;
 
   readonly path: ImmersiveMapGeoPath;
   /** Waypoints with zero-length segments removed. At least two entries. */
@@ -100,11 +119,17 @@ export class GeoPathMetrics {
   }
 
   /**
-   * Half a sample step: the arm of the central difference used for heading
-   * and pitch, shared by the ribbon and the animated model so both agree.
+   * The arm of the central difference used for heading and pitch: a share
+   * of the path (`derivativeArmShare`), at least `minimumDerivativeArmMeters`
+   * of ground, at most half a sample step. Shared by the ribbon, the animated
+   * model and the camera's follow, so they agree.
    */
   get derivativeFraction(): number {
-    return 0.5 / (this.sampleCount - 1);
+    const halfStep = 0.5 / (this.sampleCount - 1);
+    const pathMeters = this.totalAngleRadians * groundRadiusMeters;
+    if (!(pathMeters > 0)) return halfStep;
+    const arm = Math.max(GeoPathMetrics.derivativeArmShare, GeoPathMetrics.minimumDerivativeArmMeters / pathMeters);
+    return Math.min(halfStep, arm);
   }
 
   coordinate(fraction: number): GeoCoordinate {
