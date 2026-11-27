@@ -9,3 +9,5 @@ dist
 /packages/immersive-map/dist
 /packages/immersive-map/README.md
 /packages/immersive-map/LICENSE
+/publish.sh
+/.idea
