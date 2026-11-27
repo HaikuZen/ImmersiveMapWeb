@@ -66,3 +66,52 @@ test("a tile worker whose script is not served stops the map being built, saying
   await page.goto(`/?archive=${ARCHIVE}`);
   expect((await error).message).toMatch(/tile worker's script did not load.*base/);
 });
+
+test("the map draws again on a new device after the browser took its GPU device away", async ({ page }) => {
+  // Every device the page asks for, kept, so the test can take the map's away.
+  await page.addInitScript(() => {
+    const devices: GPUDevice[] = [];
+    (window as any).gpuDevices = devices;
+    const request = GPUAdapter.prototype.requestDevice;
+    GPUAdapter.prototype.requestDevice = async function (this: GPUAdapter, descriptor?: GPUDeviceDescriptor) {
+      const device = await request.call(this, descriptor);
+      devices.push(device);
+      return device;
+    };
+  });
+  await page.goto(`/?archive=${ARCHIVE}&lon=37.6175&lat=55.752&zoom=14.2`);
+  await page.waitForFunction(() => (window as any).tileStats?.length >= 4, null, { timeout: 30_000 });
+  const before = await page.evaluate(() => (window as any).map.view as { center: [number, number]; zoom: number });
+  // The loss told, the renderer built again on a second device, and a frame of tiles drawn on it.
+  const restored = await page.evaluate(
+    () =>
+      new Promise<{ restoring: boolean; devices: number }>((resolve) => {
+        const map = (window as any).map;
+        let restoring = false;
+        map.onDeviceLost((e: { restoring: boolean }) => (restoring = e.restoring));
+        map.onDeviceRestored(() => resolve({ restoring, devices: (window as any).gpuDevices.length }));
+        (window as any).gpuDevices[0].destroy();
+      }),
+  );
+  expect(restored.restoring).toBe(true);
+  expect(restored.devices).toBeGreaterThanOrEqual(2);
+  const frame = await page.evaluate(
+    () =>
+      new Promise<{ renderedTiles: number; draws: number }>((resolve) => {
+        const map = (window as any).map;
+        const off = map.onFrame((e: { renderedTiles: number; draws: number }) => {
+          if (e.renderedTiles === 0) return map.requestFrame();
+          off();
+          resolve({ renderedTiles: e.renderedTiles, draws: e.draws });
+        });
+        map.requestFrame();
+      }),
+  );
+  expect(frame.renderedTiles).toBeGreaterThan(0);
+  expect(frame.draws).toBeGreaterThan(0);
+  // The camera kept where it was.
+  const after = await page.evaluate(() => (window as any).map.view as { center: [number, number]; zoom: number });
+  expect(after.zoom).toBeCloseTo(before.zoom, 3);
+  expect(after.center[0]).toBeCloseTo(before.center[0], 5);
+  expect(after.center[1]).toBeCloseTo(before.center[1], 5);
+});

@@ -4,6 +4,7 @@
 // The public surface of `@artembobkin/immersive-map`.
 
 export { ImmersiveMap } from "./ui/immersive-map-host.ts";
+export type { ImmersiveMapDeviceLostEvent } from "./ui/device-recovery.ts";
 export type { ImmersiveMapOptions } from "./ui/immersive-map-host.ts";
 export type { TileLoadedEvent } from "./ui/immersive-map.ts";
 export type { ImmersiveMapDebugPanel } from "./ui/immersive-map-debug-panel.ts";

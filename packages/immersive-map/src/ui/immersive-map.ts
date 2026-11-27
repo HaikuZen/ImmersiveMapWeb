@@ -211,6 +211,8 @@ export interface ImmersiveMapRendererOptions extends ImmersiveMapOptions {
   readonly onArchiveDepthChange?: (settings: ImmersiveMapSettings) => void;
   /** The debug panel's side of the frame (`ImmersiveMapDebugFrameHooks`), none without a panel. */
   readonly debugHooks?: ImmersiveMapDebugFrameHooks;
+  /** The browser took the GPU device away: the renderer has stopped, for the map to build another (`DeviceRecovery`). */
+  readonly onDeviceLost?: (info: { readonly reason: string; readonly message: string }) => void;
 }
 
 type ImmersiveMapBuildOptions = ImmersiveMapRendererOptions & { readonly offscreen?: OffscreenMapRendering };
@@ -757,6 +759,7 @@ export class ImmersiveMapRenderer {
       if (this.destroyed) return;
       console.error(`ImmersiveMap lost its WebGPU device: ${info.message}`);
       this.loop.stop();
+      options.onDeviceLost?.({ reason: info.reason ?? "unknown", message: info.message });
     });
     if (options.tourVideoRecorder) this.tourVideoRecorder = options.tourVideoRecorder;
     this.loop.requestFrame();

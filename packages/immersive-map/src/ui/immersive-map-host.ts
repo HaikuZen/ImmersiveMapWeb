@@ -42,6 +42,7 @@ import { ImmersiveMapCameraController } from "./camera/immersive-map-camera-cont
 import { ImmersiveMapDebugRuntimeSlot, type ImmersiveMapDebugPanel } from "./immersive-map-debug-panel.ts";
 import { ImmersiveMapRenderer, type ImmersiveMapOptions as ImmersiveMapRendererAppOptions, type TileLoadedEvent } from "./immersive-map.ts";
 import { resolveSettingsRebuild } from "./immersive-map-settings-rebuild.ts";
+import { DeviceRecovery, type ImmersiveMapDeviceLostEvent } from "./device-recovery.ts";
 import type { FrameEvent, MapView } from "./immersive-map-view.ts";
 
 export interface ImmersiveMapOptions extends ImmersiveMapRendererAppOptions {
@@ -92,6 +93,10 @@ export class ImmersiveMap {
   private destroyed = false;
   private readonly archiveDepths = new TileArchiveDepths();
   private readonly debug: ImmersiveMapDebugRuntimeSlot;
+  /** How often a renderer is built again after a lost GPU device. */
+  private readonly deviceRecovery = new DeviceRecovery();
+  private readonly deviceLostListeners = new Set<(event: ImmersiveMapDeviceLostEvent) => void>();
+  private readonly deviceRestoredListeners = new Set<() => void>();
 
   private readonly frameEvents = forwarded<(event: FrameEvent) => void>((renderer, listener) => renderer.onFrame(listener));
   private readonly tileEvents = forwarded<(event: TileLoadedEvent) => void>((renderer, listener) => renderer.onTileLoaded(listener));
@@ -152,6 +157,8 @@ export class ImmersiveMap {
    */
   private async buildRenderer(settings: ImmersiveMapSettings, cameraPosition: ImmersiveMapCameraPosition | null | undefined, isRecreation: boolean): Promise<void> {
     const { camera: _camera, ...appOptions } = this.options;
+    // The renderer a loss is of, known once it is built (a loss before that is a failed build).
+    let built: ImmersiveMapRenderer | null = null;
     const renderer = await ImmersiveMapRenderer.create({
       ...appOptions,
       ...(cameraPosition === undefined ? (this.options.camera === undefined ? {} : { camera: this.options.camera }) : cameraPosition === null ? {} : { camera: cameraPosition }),
@@ -168,11 +175,15 @@ export class ImmersiveMap {
       isRecreation,
       onArchiveDepthChange: (next) => this.applySettings(next),
       debugHooks: this.debug.frameHooks,
+      onDeviceLost: (info) => {
+        if (built !== null) this.deviceLost(built, info);
+      },
     });
     if (this.destroyed) {
       renderer.destroy();
       return;
     }
+    built = renderer;
     this.renderer = renderer;
     // The renderer resolved the archive's depth as last read: the map runs by it.
     if (!isRecreation) this.currentSettings = renderer.settings;
@@ -280,6 +291,61 @@ export class ImmersiveMap {
       });
     this.recreation = recreation;
     return recreation;
+  }
+
+  // MARK: A lost GPU device
+
+  /**
+   * The browser took the renderer's GPU device away: the renderer stopped,
+   * and another is built on a new device, the camera kept where it is, as
+   * for new settings (`DeviceRecovery` says when, and when to give up). A
+   * hidden page is restored once it shows again, since the browser may not
+   * give a hidden page a device.
+   */
+  private deviceLost(lost: ImmersiveMapRenderer, info: { readonly reason: string; readonly message: string }): void {
+    if (this.destroyed || this.renderer !== lost) return;
+    const wait = this.deviceRecovery.nextAttempt(performance.now());
+    const event: ImmersiveMapDeviceLostEvent = { reason: info.reason, message: info.message, restoring: wait !== null };
+    for (const listener of this.deviceLostListeners) listener(event);
+    if (wait === null) {
+      console.error("ImmersiveMap lost its WebGPU device too often and stops drawing.");
+      return;
+    }
+    const restore = (): void => {
+      if (this.destroyed || this.renderer !== lost) return;
+      void this.recreateRenderer().then(() => {
+        if (this.destroyed) return;
+        if (this.renderer !== null) {
+          for (const listener of this.deviceRestoredListeners) listener();
+        } else {
+          // No renderer could be built (no adapter yet): tried again as a loss of its own.
+          this.renderer = lost;
+          this.deviceLost(lost, { reason: "unknown", message: "no renderer could be built on a new device" });
+        }
+      });
+    };
+    const whenShown = (): void => {
+      if (!document.hidden) setTimeout(restore, wait);
+      else document.addEventListener("visibilitychange", whenShown, { once: true });
+    };
+    whenShown();
+  }
+
+  /**
+   * Every loss of the map's GPU device (`ImmersiveMapDeviceLostEvent`): the
+   * map builds its renderer again on a new device and tells `onDeviceRestored`,
+   * unless it lost devices too often and gave up (`restoring` false). Returns
+   * the function that stops the listening.
+   */
+  onDeviceLost(listener: (event: ImmersiveMapDeviceLostEvent) => void): () => void {
+    this.deviceLostListeners.add(listener);
+    return () => this.deviceLostListeners.delete(listener);
+  }
+
+  /** The map drawing again on a new GPU device after a loss. Returns the function that stops the listening. */
+  onDeviceRestored(listener: () => void): () => void {
+    this.deviceRestoredListeners.add(listener);
+    return () => this.deviceRestoredListeners.delete(listener);
   }
 
   // MARK: Debug panel
