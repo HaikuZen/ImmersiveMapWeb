@@ -67,6 +67,16 @@ export class ImmersiveMapCameraAnimationRuntime implements CameraAnimationOwner 
     return this.pathFollowController.isActive;
   }
 
+  /** Whether a tilt's easing toward its target pitch is under way. */
+  get isCameraPitchFollowActive(): boolean {
+    return this.cameraPitchFollowIsActive;
+  }
+
+  /** Whether a turn's easing toward its target bearing is under way. */
+  get isCameraBearingFollowActive(): boolean {
+    return this.cameraBearingFollowIsActive;
+  }
+
   get isGlobeCameraPanInertiaActive(): boolean {
     return this.globeCameraPanInertiaIsActive;
   }
@@ -227,6 +237,12 @@ export class ImmersiveMapCameraAnimationRuntime implements CameraAnimationOwner 
     this.globeCameraPanInertia.cancel();
     this.globeCameraPanInertiaIsActive = false;
     this.refreshRenderingState();
+  }
+
+  /** Cancels the app's own camera motion, a flight or a path follow, and leaves the gestures' easing and inertia running. */
+  cancelCameraMovements(): void {
+    this.flightController.cancel(true);
+    this.pathFollowController.cancel(true);
   }
 
   cancelAnimations(): void {

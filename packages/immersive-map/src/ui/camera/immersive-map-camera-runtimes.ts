@@ -57,7 +57,7 @@ export function createImmersiveMapCameraRuntimes(options: ImmersiveMapCameraRunt
   });
   const interactionRuntime = new ImmersiveMapInteractionRuntime(cameraRuntime, options.render);
   const cameraAnimationRuntime = new ImmersiveMapCameraAnimationRuntime(cameraRuntime, interactionRuntime, options.render, now);
-  const commandHandler = new ImmersiveMapCameraCommandHandler(cameraRuntime, cameraAnimationRuntime);
+  const commandHandler = new ImmersiveMapCameraCommandHandler(cameraRuntime, cameraAnimationRuntime, interactionRuntime);
   cameraRuntime.makeRenderCamera(options.settings, options.initialCameraPosition ?? null);
   if (options.cameraController !== undefined && options.cameraController !== null) {
     cameraRuntime.attachController(options.cameraController, (command) => commandHandler.handle(command));

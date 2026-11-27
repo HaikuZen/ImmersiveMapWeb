@@ -9,7 +9,7 @@ export type { ImmersiveMapOptions } from "./ui/immersive-map-host.ts";
 export type { TileLoadedEvent } from "./ui/immersive-map.ts";
 export type { ImmersiveMapDebugPanel } from "./ui/immersive-map-debug-panel.ts";
 export type { FrameEvent, ImmersiveMapCameraOption, MapView } from "./ui/immersive-map-view.ts";
-export { ImmersiveMapCameraController } from "./ui/camera/immersive-map-camera-controller.ts";
+export { ImmersiveMapCameraController, ImmersiveMapCameraJumpOptions } from "./ui/camera/immersive-map-camera-controller.ts";
 export type { CameraCompletion } from "./ui/camera/immersive-map-camera-controller.ts";
 export { ImmersiveMapCameraControlPanel } from "./ui/camera/immersive-map-camera-control-panel.ts";
 export type { ImmersiveMapCameraControlPanelOptions } from "./ui/camera/immersive-map-camera-control-panel.ts";

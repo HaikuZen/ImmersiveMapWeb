@@ -10,9 +10,39 @@ import type { ImmersiveMapCameraSnapshot } from "./immersive-map-camera-snapshot
 /** Called once when a flight or a follow ends: true when it ran out, false when it was cancelled or superseded. */
 export type CameraCompletion = (finished: boolean) => void;
 
+/** How `ImmersiveMapCameraController.jump` treats the user's gestures. */
+export interface ImmersiveMapCameraJumpOptions {
+  /**
+   * Leave the user's gestures alone: what a gesture is changing keeps the
+   * user's value, and the rest goes where the jump says. The centre while a
+   * pan (or the globe's pan inertia) runs; the zoom while a pinch, the wheel
+   * or the zoom control does; the bearing while a turn does, or its easing
+   * after the mouse lets go; the pitch while a tilt or the pitch control
+   * does, or its easing. The gestures' easing goes on, where a plain jump
+   * cancels it.
+   *
+   * For an app that drives the camera with a jump every frame and lets the
+   * user look around meanwhile: once a gesture ends, the next jump puts
+   * every value where it says, so an app that wants to keep the user's
+   * framing reads it from the camera (`currentCameraPosition`) first.
+   * A pinch still zooms, about the jump's centre rather than the fingers.
+   * False by default: the jump puts the camera where it says, and cancels
+   * the gestures' easing as any camera command does.
+   */
+  readonly yieldsToGestures: boolean;
+}
+
+export const ImmersiveMapCameraJumpOptions = {
+  default: Object.freeze({ yieldsToGestures: false }) as ImmersiveMapCameraJumpOptions,
+  /** The options given, the rest at their defaults. */
+  make(options: Partial<ImmersiveMapCameraJumpOptions> = {}): ImmersiveMapCameraJumpOptions {
+    return { yieldsToGestures: options.yieldsToGestures ?? false };
+  },
+} as const;
+
 /** A command of the camera controller, as the map's command handler receives it. */
 export type ImmersiveMapCameraCommand =
-  | { readonly kind: "jump"; readonly position: ImmersiveMapCameraPosition }
+  | { readonly kind: "jump"; readonly position: ImmersiveMapCameraPosition; readonly options: ImmersiveMapCameraJumpOptions }
   | {
       readonly kind: "fly";
       readonly position: ImmersiveMapCameraPosition;
@@ -60,10 +90,16 @@ export class ImmersiveMapCameraController {
   onCameraPositionChanged: ((position: ImmersiveMapCameraPosition) => void) | null = null;
   onCameraSnapshotChanged: ((snapshot: ImmersiveMapCameraSnapshot) => void) | null = null;
 
-  /** Puts the camera at `position` at once. */
-  jump(position: ImmersiveMapCameraPosition): void {
-    this.updateCurrentCameraPosition(position);
-    this.enqueue({ kind: "jump", position });
+  /**
+   * Puts the camera at `position` at once. With
+   * `{ yieldsToGestures: true }`, what the user's gestures are changing stays
+   * as they leave it (`ImmersiveMapCameraJumpOptions`).
+   */
+  jump(position: ImmersiveMapCameraPosition, options: Partial<ImmersiveMapCameraJumpOptions> = ImmersiveMapCameraJumpOptions.default): void {
+    const resolved = ImmersiveMapCameraJumpOptions.make(options);
+    // Yielding, the camera may not end where the position says: the map reports where it does.
+    if (!resolved.yieldsToGestures) this.updateCurrentCameraPosition(position);
+    this.enqueue({ kind: "jump", position, options: resolved });
   }
 
   /** Flies the camera to `position`. `completion` is called once, true on arrival. */

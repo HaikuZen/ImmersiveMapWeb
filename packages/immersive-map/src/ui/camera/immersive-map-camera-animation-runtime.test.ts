@@ -188,3 +188,80 @@ describe("ImmersiveMapCameraTourController", () => {
     expect(tour.isRunning).toBe(false);
   });
 });
+
+/** A jump that yields to the user's gestures, for an app that drives the camera every frame. */
+describe("A jump that yields to gestures", () => {
+  // At zoom 16 over Paris: the flat map, past the globe's upright pull.
+  const start = ImmersiveMapCameraPosition.make(48.8566, 2.3522, 16, 0, 0.5);
+  const next = ImmersiveMapCameraPosition.make(48.857, 2.353, 16.5, 0.3, 0.7);
+
+  test("with no gesture under way it goes where it says", () => {
+    const map = makeMap(start);
+    map.camera.jump(next, { yieldsToGestures: true });
+    const at = map.cameraRuntime.currentCameraPosition()!;
+    expect(at.latitudeDegrees).toBeCloseTo(next.latitudeDegrees, 9);
+    expect(at.zoom).toBeCloseTo(next.zoom, 9);
+    expect(at.bearing).toBeCloseTo(next.bearing, 9);
+    expect(at.pitch).toBeCloseTo(next.pitch, 9);
+  });
+
+  test("a plain jump cancels a turn's easing, a yielding one lets it run to the user's bearing", () => {
+    for (const yieldsToGestures of [false, true]) {
+      const map = makeMap(start);
+      // A mouse turn: the bearing eases toward its target over the next frames.
+      map.interactionRuntime.setActive(true, "mapTilt", true);
+      map.cameraAnimationRuntime.setBearingTarget(0.8);
+      map.run(0.05);
+      map.interactionRuntime.setActive(false, "mapTilt", false);
+      map.camera.jump(next, { yieldsToGestures });
+      map.run(1.5);
+      const bearing = map.cameraRuntime.currentCameraPosition()!.bearing;
+      if (yieldsToGestures) expect(bearing).toBeCloseTo(0.8, 3);
+      else expect(bearing).toBeCloseTo(next.bearing, 9);
+    }
+  });
+
+  test("while a tilt drag runs it keeps the user's bearing and pitch, and moves the centre and zoom", () => {
+    const map = makeMap(start);
+    map.interactionRuntime.setActive(true, "mapTilt", true);
+    const user = map.cameraRuntime.currentCameraPosition()!;
+    map.camera.jump(next, { yieldsToGestures: true });
+    const at = map.cameraRuntime.currentCameraPosition()!;
+    expect(at.bearing).toBeCloseTo(user.bearing, 9);
+    expect(at.pitch).toBeCloseTo(user.pitch, 9);
+    expect(at.latitudeDegrees).toBeCloseTo(next.latitudeDegrees, 9);
+    expect(at.zoom).toBeCloseTo(next.zoom, 9);
+  });
+
+  test("while a pan runs it keeps the centre, and while a pinch or the wheel runs, the zoom", () => {
+    const map = makeMap(start);
+    map.interactionRuntime.setActive(true, "mapPan", true);
+    map.camera.jump(next, { yieldsToGestures: true });
+    let at = map.cameraRuntime.currentCameraPosition()!;
+    expect(at.latitudeDegrees).toBeCloseTo(start.latitudeDegrees, 9);
+    expect(at.longitudeDegrees).toBeCloseTo(start.longitudeDegrees, 9);
+    expect(at.bearing).toBeCloseTo(next.bearing, 9);
+    map.interactionRuntime.setActive(false, "mapPan", false);
+    for (const source of ["mapPinch", "scrollZoom"] as const) {
+      map.camera.jump(start, { yieldsToGestures: true });
+      map.interactionRuntime.setActive(true, source, true);
+      map.camera.jump(next, { yieldsToGestures: true });
+      at = map.cameraRuntime.currentCameraPosition()!;
+      expect(at.zoom, source).toBeCloseTo(start.zoom, 9);
+      expect(at.latitudeDegrees, source).toBeCloseTo(next.latitudeDegrees, 9);
+      map.interactionRuntime.setActive(false, source, false);
+    }
+    // Once the gesture is over, the next jump puts everything where it says.
+    map.camera.jump(next, { yieldsToGestures: true });
+    at = map.cameraRuntime.currentCameraPosition()!;
+    expect(at.zoom).toBeCloseTo(next.zoom, 9);
+  });
+
+  test("it still cancels the app's own flight", () => {
+    const map = makeMap(start);
+    let finished: boolean | null = null;
+    map.camera.fly(ImmersiveMapCameraPosition.make(52.52, 13.405, 13), CameraFlightOptions.make(1), (value) => (finished = value));
+    map.camera.jump(next, { yieldsToGestures: true });
+    expect(finished).toBe(false);
+  });
+});
