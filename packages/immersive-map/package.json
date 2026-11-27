@@ -2,56 +2,21 @@
   "name": "@artembobkin/immersive-map",
   "version": "0.2.4",
   "description": "A WebGPU map for web pages: a globe that unrolls into a flat map, vector tiles from PMTiles, buildings, terrain, shadows, pins, layers and 3D models, with a Rust core compiled to WebAssembly.",
-  "keywords": [
-    "map",
-    "maps",
-    "webgpu",
-    "globe",
-    "pmtiles",
-    "vector-tiles",
-    "openstreetmap",
-    "3d",
-    "terrain",
-    "webassembly"
-  ],
+  "keywords": ["map", "maps", "webgpu", "globe", "pmtiles", "vector-tiles", "openstreetmap", "3d", "terrain", "webassembly"],
   "license": "MIT",
   "author": "Artem Bobkin",
   "homepage": "https://github.com/artembobkin/ImmersiveMapWeb#readme",
   "bugs": "https://github.com/artembobkin/ImmersiveMapWeb/issues",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/artembobkin/ImmersiveMapWeb.git",
-    "directory": "packages/immersive-map"
-  },
+  "repository": { "type": "git", "url": "git+https://github.com/artembobkin/ImmersiveMapWeb.git", "directory": "packages/immersive-map" },
   "type": "module",
   "exports": {
-    ".": {
-      "immersive-map-source": "./src/index.ts",
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./debug": {
-      "immersive-map-source": "./src/debug/index.ts",
-      "types": "./dist/debug/index.d.ts",
-      "default": "./dist/debug/index.js"
-    },
+    ".": { "immersive-map-source": "./src/index.ts", "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./debug": { "immersive-map-source": "./src/debug/index.ts", "types": "./dist/debug/index.d.ts", "default": "./dist/debug/index.js" },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "assets"
-  ],
+  "files": ["dist", "assets"],
   "sideEffects": false,
-  "peerDependencies": {
-    "@webgpu/types": ">=0.1.60"
-  },
-  "peerDependenciesMeta": {
-    "@webgpu/types": {
-      "optional": true
-    }
-  },
-  "scripts": {
-    "build": "node ../../scripts/build-package.mjs",
-    "prepack": "node ../../scripts/build-package.mjs"
-  }
+  "peerDependencies": { "@webgpu/types": ">=0.1.60" },
+  "peerDependenciesMeta": { "@webgpu/types": { "optional": true } },
+  "scripts": { "build": "node ../../scripts/build-package.mjs", "prepack": "node ../../scripts/build-package.mjs" }
 }
