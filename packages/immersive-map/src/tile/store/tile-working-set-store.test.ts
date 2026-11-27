@@ -315,4 +315,56 @@ describe("TileWorkingSetStore", () => {
     expect(store.residentByteCount).toBe(bytes);
     expect(store.get(tile)).toBeDefined();
   });
+
+  // A superseded parse: the old tiles stand in until the new ones land.
+
+  test("a stale tile is drawn but not contained, so the demand asks for it again", () => {
+    const store = makeStore();
+    const tile = t(5, 6, 10);
+    store.insertStale(resident(tile));
+    expect(store.residentTiles().has(tileKey(tile)), "drawn as any resident").toBe(true);
+    expect(store.contains(tile), "the demand wants its replacement").toBe(false);
+    expect(store.isStale(tile)).toBe(true);
+    store.updateDemandedTiles([tile]);
+    expect(store.get(tile), "kept while demanded").toBeDefined();
+  });
+
+  test("a fresh insert replaces a stale tile and ends its staleness", () => {
+    const store = makeStore();
+    const tile = t(5, 6, 10);
+    const old = resident(tile);
+    const fresh = resident(tile);
+    store.insertStale(old);
+    store.insert(fresh);
+    expect(store.get(tile)).toBe(fresh);
+    expect(store.contains(tile)).toBe(true);
+    expect(store.isStale(tile)).toBe(false);
+  });
+
+  test("a stale tile nothing needs is released, the world cover too", () => {
+    const store = makeStore();
+    const leaving = t(2, 0, 10);
+    const cover = t(0, 0, 0);
+    store.insertStale(resident(leaving));
+    store.insertStale(resident(cover));
+    store.updateDemandedTiles([t(1, 0, 10)]);
+    expect(store.get(leaving)).toBeUndefined();
+    expect(store.get(cover), "a stale cover is not pinned: it comes back fresh when asked for").toBeUndefined();
+    // A fresh cover stays pinned, as before.
+    store.insert(resident(cover));
+    store.updateDemandedTiles([t(1, 0, 10)]);
+    expect(store.get(cover)).toBeDefined();
+  });
+
+  test("a stale ancestor stands in for its loading children, and goes once they land", () => {
+    const store = makeStore();
+    const parent = t(4, 4, 9);
+    const children = quad(10, 8, 8);
+    store.insertStale(resident(parent));
+    store.updateDemandedTiles(children);
+    expect(store.get(parent), "the old parent covers the children that are on their way").toBeDefined();
+    for (const child of children) store.insert(resident(child));
+    store.updateDemandedTiles(children);
+    expect(store.get(parent)).toBeUndefined();
+  });
 });

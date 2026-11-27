@@ -811,23 +811,19 @@ export class ImmersiveMapRenderer {
    * The map takes this path too for a settings change that only the tile
    * workers read (`resolveSettingsRebuild`): the style's prepared part, the
    * parse, the cache and the overview, live settings applied with it.
+   *
+   * Nothing goes blank meanwhile. The new workers start while the old ones
+   * keep the map going (on a tablet a worker takes a second or more to
+   * start), then the two swap at once: the old loads stop with their
+   * workers, and the tiles the map holds stay drawn as stale stand-ins
+   * (`TileWorkingSetStore.insertStale`), each until its replacement lands.
+   * The terrain stays: the style does not change it.
    */
   rebuildTiles(settings: ImmersiveMapSettings): void {
     this.currentSettings = settings;
     const previous = this.rebuilding ?? Promise.resolve();
     this.rebuilding = previous.then(async () => {
       if (this.destroyed) return;
-      this.loader.cancelAll();
-      this.workingSet.evict();
-      this.workers.destroy();
-      this.tileState = { ...this.tileState, placements: [] };
-      // The labels let go of the tiles too: every one is made again.
-      this.labelPrepare?.reset();
-      this.labelInput = undefined;
-      this.surfaceLabelFrame = undefined;
-      for (const tile of this.gpuTiles.values()) tile.gpu.buffer.destroy();
-      this.gpuTiles.clear();
-      this.parseTimes.clear();
       const workers = makeWorkerPipeline(this.settings, this.glyphs, this.workerCount);
       try {
         await workers.ready;
@@ -840,8 +836,18 @@ export class ImmersiveMapRenderer {
         workers.destroy();
         return;
       }
+      const kept = [...this.store.residentTiles().values()];
+      this.loader.cancelAll();
+      this.workers.destroy();
+      // The labels let go of the tiles too: every one is made again.
+      this.labelPrepare?.reset();
+      this.labelInput = undefined;
+      this.surfaceLabelFrame = undefined;
+      this.parseTimes.clear();
       this.workers = workers;
       this.startTiles(workers);
+      // The new store starts with the old tiles, stale: drawn where they were, asked for again.
+      for (const resident of kept) this.store.insertStale(resident);
       this.loop.requestFrame("externalStateChanged");
     });
   }

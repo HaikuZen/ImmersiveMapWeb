@@ -72,6 +72,12 @@ export class TileWorkingSetStore<R extends ResidentTile> {
   private readonly byteSize: (resident: R) => number;
   private readonly trace: ((event: TileStoreTraceEvent) => void) | undefined;
   private readonly residents = new Map<string, R>();
+  /**
+   * Residents of a superseded parse (`insertStale`), by `tileKey`: drawn as
+   * any resident, but not what the demand wants, so `contains` says no and
+   * the loader is asked for them again. A fresh insert under the key ends it.
+   */
+  private readonly stale = new Set<string>();
   private readonly byteCounts = new Map<string, number>();
   /** The frame's demanded set, by `tileKey`. */
   private readonly demandedTiles = new Map<string, Tile>();
@@ -167,7 +173,8 @@ export class TileWorkingSetStore<R extends ResidentTile> {
     this.releaseScratch.length = 0;
     for (const [key, resident] of this.residents) {
       if (this.demandedTiles.has(key)) continue;
-      if (resident.tile.z <= pinnedWorldCoverMaxZoomLevel && !pinnedCoverToo) continue;
+      // A stale cover tile is not pinned: it goes once nothing needs it, and comes back fresh when asked for.
+      if (resident.tile.z <= pinnedWorldCoverMaxZoomLevel && !pinnedCoverToo && !this.stale.has(key)) continue;
       // What the last frame showed stays while the planner keeps showing it
       // (`buildPlacements`): the ground keeps its tiles until the target
       // lands.
@@ -212,6 +219,7 @@ export class TileWorkingSetStore<R extends ResidentTile> {
   insert(resident: R, key: Tile = resident.tile): void {
     const byteCount = this.byteSize(resident);
     const stringKey = tileKey(key);
+    this.stale.delete(stringKey);
     const replacedBytes = this.byteCounts.get(stringKey);
     this.residents.set(stringKey, resident);
     this.byteCounts.set(stringKey, byteCount);
@@ -226,9 +234,31 @@ export class TileWorkingSetStore<R extends ResidentTile> {
     });
   }
 
-  /** Residency without the lookup trace, for the per-frame checks that would drown the log with a trace event each. */
+  /**
+   * A tile of a superseded parse (the style or the archive changed and the
+   * tiles are made again): it stands in, drawn where it was, until its
+   * replacement lands, and nothing is left blank meanwhile. Not `contains`,
+   * so the demand asks for it again; released by the usual rules once
+   * nothing needs it.
+   */
+  insertStale(resident: R, key: Tile = resident.tile): void {
+    this.insert(resident, key);
+    this.stale.add(tileKey(key));
+  }
+
+  /** Whether the tile under `key` is a stale stand-in (`insertStale`). */
+  isStale(key: Tile): boolean {
+    return this.stale.has(tileKey(key));
+  }
+
+  /**
+   * Residency without the lookup trace, for the per-frame checks that would
+   * drown the log with a trace event each. A stale tile is not counted: the
+   * demand wants its fresh replacement.
+   */
   contains(key: Tile): boolean {
-    return this.residents.has(tileKey(key));
+    const stringKey = tileKey(key);
+    return this.residents.has(stringKey) && !this.stale.has(stringKey);
   }
 
   /** The resident tile under `key`, traced as a lookup. */
@@ -258,6 +288,7 @@ export class TileWorkingSetStore<R extends ResidentTile> {
     const removedBytes = this.residentBytes;
     this.residents.clear();
     this.byteCounts.clear();
+    this.stale.clear();
     this.residentBytes = 0;
     this.mutationVersion += 1;
     this.trace?.({ kind: "removeAll", removedCount, removedBytes });
@@ -268,6 +299,7 @@ export class TileWorkingSetStore<R extends ResidentTile> {
     if (bytes === undefined) return;
     this.residents.delete(key);
     this.byteCounts.delete(key);
+    this.stale.delete(key);
     this.residentBytes = Math.max(0, this.residentBytes - bytes);
   }
 

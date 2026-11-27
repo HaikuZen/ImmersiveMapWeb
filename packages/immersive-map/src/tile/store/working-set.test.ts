@@ -114,4 +114,18 @@ describe("TileWorkingSet", () => {
     expect(store.residentTileCount).toBe(0);
     expect(workingSet.update(frame(1)).placeTilesContext.tilePlacements).toEqual([]);
   });
+
+  test("a stale target is drawn in its place and asked for again until its replacement lands", () => {
+    const { store, loader, workingSet } = makeWorkingSet();
+    for (const target of targets) store.insertStale(resident(target.tile));
+    const state = workingSet.update(frame(1));
+    const drawn = state.placeTilesContext.tilePlacements;
+    expect(drawn.filter(inOwnSlot).map((p) => tileKey(p.resident.tile)).sort(), "the old tiles draw where they were").toEqual(targets.map((t) => tileKey(t.tile)).sort());
+    expect(new Set(loader.requests.at(-1)), "and their replacements are on their way").toEqual(new Set([...targets.map((t) => tileKey(t.tile)), tileKey(TileWorkingSet.horizonBackdropTile)]));
+    expect(state.readyTilesCount).toBe(0);
+    for (const target of targets) store.insert(resident(target.tile));
+    const after = workingSet.update(frame(1));
+    expect(after.readyTilesCount).toBe(4);
+    expect(loader.requests.at(-1)).toEqual([tileKey(TileWorkingSet.horizonBackdropTile)]);
+  });
 });
